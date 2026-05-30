@@ -30,6 +30,7 @@ fun FolderScreen(
                 NavigationItems.Search),listOf({showDialog = true},{}),onClick)
         }
     ) {
+        // Kirill Lox
         if(showDialog){
             AlertDialog(
                 onDismissRequest = {showDialog = false},
