@@ -1,8 +1,0 @@
-<resources>
-    <string name="app_name">v</string>
-    <string name="basket_app">Корзина</string>
-    <string name="packege">Архивы</string>
-    <string name="new_packege">Новая папка</string>
-    <string name="setting">Настройки</string>
-    <string name="Home">Все заметки</string>
-</resources>

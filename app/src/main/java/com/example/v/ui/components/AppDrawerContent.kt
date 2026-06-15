@@ -59,14 +59,26 @@ fun AppDrawerContent(
             isSelected = thScreen?.hasRoute<Route.HomeScreen>(),
             painter = NavigationItems.Home.painter
         ) {
-            navController.navigate(Route.HomeScreen)
+            navController.navigate(Route.HomeScreen){
+                launchSingleTop = true
+                popUpTo(navController.graph.startDestinationId){
+                    saveState = true
+                }
+                restoreState = true
+            }
         }
         DrawItem(
             NavigationItems.Folder.title,
             isSelected = thScreen?.hasRoute<Route.FolderScreen>(),
             painter = NavigationItems.Folder.painter,
         ) {
-            navController.navigate(Route.FolderScreen)
+            navController.navigate(Route.FolderScreen){
+                launchSingleTop = true
+                popUpTo(Route.HomeScreen){
+                    saveState = true
+                }
+                restoreState = true
+            }
         }
         HorizontalDivider(
             Modifier.padding(
@@ -78,7 +90,13 @@ fun AppDrawerContent(
         )
         DrawItem(NavigationItems.Setting.title, painter = NavigationItems.Setting.painter) {
             onDetailsScreensClick()
-            navController.navigate(Route.SettingsScreen)
+            navController.navigate(Route.SettingsScreen){
+                launchSingleTop = true
+                popUpTo(Route.HomeScreen){
+                    saveState = true
+                }
+                restoreState = true
+            }
         }
         DrawItem(NavigationItems.Basket.title, painter = NavigationItems.Basket.painter) {}
     }
@@ -110,12 +128,12 @@ fun DrawItem(
             imVect?.let { Icon(
                 modifier = Modifier.padding(end = 5.dp),
                 imageVector = imVect, contentDescription = null,
-                tint = Color.White
+                tint = MaterialTheme.colorScheme.onSurface
             ) }
             painter?.let { Icon(
                 modifier = Modifier.padding(end = 5.dp),
                 painter = painterResource(painter), contentDescription = null,
-                tint = Color.White
+                tint =  MaterialTheme.colorScheme.onSurface
             ) }
         },
     )

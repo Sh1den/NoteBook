@@ -6,6 +6,7 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
+import com.example.v.LocalSharedStateLanguage
 import com.example.v.data.model.NavigationItems
 import com.example.v.ui.components.CastFloatingActionButton
 import com.example.v.ui.components.NavigationTopAppBar
@@ -17,7 +18,8 @@ fun MainScreen(
     Scaffold(
         contentColor = MaterialTheme.colorScheme.background,
         topBar = {
-            NavigationTopAppBar("NoteBook", NavigationItems.Menu,mutableListOf(NavigationItems.Search,
+            var appName = LocalSharedStateLanguage.current
+            NavigationTopAppBar(appName.value, NavigationItems.Menu,mutableListOf(NavigationItems.Search,
                 NavigationItems.More),null,onClick)
         },
         floatingActionButton = {

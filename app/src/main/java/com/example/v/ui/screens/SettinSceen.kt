@@ -1,5 +1,6 @@
 package com.example.v.ui.screens
 
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
@@ -13,9 +14,11 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
+import com.example.v.LocalSharedStateTheme
 import com.example.v.R
 import com.example.v.data.model.NavigationItems
 import com.example.v.ui.components.NavigationTopAppBar
@@ -27,7 +30,7 @@ fun SettingsScreen(
     navController: NavController,
     onClick: () -> Unit
 ){
-
+    val context = LocalContext.current
     Scaffold(
         contentColor = MaterialTheme.colorScheme.onSurface,
         containerColor = MaterialTheme.colorScheme.surface,
@@ -52,9 +55,9 @@ fun SettingsScreen(
                     containerColor = MaterialTheme.colorScheme.tertiary
                 )
             ) {
-                SettingEligment(R.drawable.outline_contrast_24,"Тема приложения","По умолчанию")
-                HorizontalDivider()
-                SettingEligment(R.drawable.outline_language_24,"Язык приложения","Russin (Русский)")
+                SettingEligment(R.drawable.outline_contrast_24,"Тема приложения",LocalSharedStateTheme.current.value.getTheme(),listOf("Темная","Светлая"))
+                HorizontalDivider(color = MaterialTheme.colorScheme.onTertiary)
+                SettingEligment(R.drawable.outline_language_24,"Язык приложения","Russin (Русский)",listOf("Русский","Английский"))
             }
         }
 

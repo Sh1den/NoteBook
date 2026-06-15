@@ -1,0 +1,16 @@
+<resources>
+    <string name="name_app" translatable="false">Блокнот</string>
+    <string name="menu" translatable="false">Меню</string>
+    <string name="app_name" translatable="false">v</string>
+    <string name="basket_app" translatable="false">Корзина</string>
+    <string name="packege" translatable="false">Архивы</string>
+    <string name="new_packege" translatable="false">Новая папка</string>
+    <string name="setting" translatable="false">Настройки</string>
+    <string name="Home" translatable="false">Все заметки</string>
+    <string name="thema_app" translatable="false">Тема приложения</string>
+    <string name="language_app" translatable="false">Язык приложения</string>
+    <string name="dark_theme" translatable="false">Темная</string>
+    <string name="light_theme" translatable="false">Светлая</string>
+    <string name="language_rus" translatable="false">Русский</string>
+    <string name="language_en" translatable="false">Английский</string>
+</resources>
