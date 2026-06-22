@@ -26,6 +26,5 @@ fun MainScreen(
         floatingActionButton = {
             CastFloatingActionButton(Modifier.size(60.dp))
         }
-    ) { gg ->
-    }
+    ) {_ ->}
 }

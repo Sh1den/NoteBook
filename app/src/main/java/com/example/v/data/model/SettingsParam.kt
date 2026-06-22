@@ -1,20 +1,17 @@
 package com.example.v.data.model
 
-import androidx.compose.ui.res.stringResource
-import com.example.v.R
-import org.intellij.lang.annotations.Language
-
 data class Theme(
     var strTheme: String? = null,
     var colorTheme: ColorTheme = ColorTheme.None
 ){
     init {
        strTheme?.let{
-            it -> when(it){
-                "light" -> colorTheme = ColorTheme.Light
-                 "dark" -> colorTheme = ColorTheme.Dark
-                 else -> colorTheme = ColorTheme.None
-            }
+            it ->
+           colorTheme = when(it){
+               "light" -> ColorTheme.Light
+               "dark" -> ColorTheme.Dark
+               else -> ColorTheme.None
+           }
         }
     }
     fun getTheme(language: String): String{
