@@ -26,7 +26,8 @@ android {
 
     buildTypes {
         release {
-            isMinifyEnabled = false
+            isMinifyEnabled = true
+            isShrinkResources = true
             proguardFiles(
                 getDefaultProguardFile("proguard-android-optimize.txt"),
                 "proguard-rules.pro"
@@ -40,9 +41,15 @@ android {
     buildFeatures {
         compose = true
     }
+    bundle {
+        language {
+            enableSplit = false
+        }
+    }
 }
 
 dependencies {
+    implementation(libs.androidx.appcompat)
     implementation(libs.androidx.core.ktx)
     implementation(libs.androidx.lifecycle.runtime.ktx)
     implementation(libs.androidx.activity.compose)

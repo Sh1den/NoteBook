@@ -26,6 +26,7 @@ import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import androidx.navigation.NavDestination
 import androidx.navigation.NavDestination.Companion.hasRoute
+import com.example.v.R
 import com.example.v.data.model.NavigationItems
 import com.example.v.ui.navigation.Route
 
@@ -42,7 +43,7 @@ fun AppDrawerContent(
             .safeDrawingPadding()
     ) {
         Text(
-            text = "Menu",
+            text = stringResource(R.string.menu),
             fontSize = 32.sp,
             modifier = Modifier
                 .padding(

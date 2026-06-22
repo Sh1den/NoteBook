@@ -1,5 +1,7 @@
 package com.example.v.ui.components
 
+import android.content.Context.MODE_PRIVATE
+import androidx.appcompat.app.AppCompatDelegate
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.core.FastOutLinearInEasing
 import androidx.compose.animation.core.FastOutSlowInEasing
@@ -28,6 +30,7 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -36,18 +39,22 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.RectangleShape
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.core.os.LocaleListCompat
 import com.example.v.LocalSharedStateTheme
 import com.example.v.data.model.Theme
+import com.example.v.data.model.TypeSetting
+import org.intellij.lang.annotations.Language
 
 @Composable
 fun SettingEligment(
     painter: Int,
     primaryText: String,
     secondaryText: String,
-    optionParam: List<String>
+    type: TypeSetting
 ){
     var optionOpen by remember { mutableStateOf(false) }
         TextButton(
@@ -83,24 +90,62 @@ fun SettingEligment(
         enter = fadeIn(tween(500,100))+expandVertically(tween(600,100, easing = FastOutSlowInEasing)),
         exit = fadeOut(tween(500,100))+shrinkVertically(tween(600,100, easing = FastOutSlowInEasing))
     ) {
-        Column() {
-            var thTheme by LocalSharedStateTheme.current
-            TextButton(
-                modifier = Modifier.fillMaxWidth(),
-                onClick = {
-                    thTheme = Theme(Theme.ColorTheme.Dark)
-                }
-            ) {
-                Text(optionParam[0])
-            }
-            TextButton(
-                modifier = Modifier.fillMaxWidth(),
-                onClick = {
-                    thTheme = Theme(Theme.ColorTheme.Light)
-                }) {
-                Text(optionParam[1])
-            }
+        when(type){
+            TypeSetting.Theme -> SettingTheme()
+            TypeSetting.Language -> SettingLanguage()
         }
     }
-
+}
+@Composable
+fun SettingTheme(){
+    val sharedPreferences = LocalContext.current.applicationContext.getSharedPreferences("settings_param",MODE_PRIVATE)
+    var thTheme by LocalSharedStateTheme.current
+    Column() {
+        TextButton(
+            modifier = Modifier.fillMaxWidth(),
+            onClick = {
+                thTheme = Theme(colorTheme = Theme.ColorTheme.Dark)
+                sharedPreferences.edit().apply{
+                    putString("theme","dark")
+                    apply()
+                }
+            }
+        ) {
+            Text("Темная")
+        }
+        TextButton(
+            modifier = Modifier.fillMaxWidth(),
+            onClick = {
+                thTheme = Theme(colorTheme = Theme.ColorTheme.Light)
+                sharedPreferences.edit().apply{
+                    putString("theme","light")
+                    apply()
+                }
+            }) {
+            Text("Светлая")
+        }
+    }
+}
+@Composable
+fun SettingLanguage(){
+    Column() {
+        val sharedPreferences = LocalContext.current.applicationContext.getSharedPreferences("settings_param",MODE_PRIVATE)
+        TextButton(
+            modifier = Modifier.fillMaxWidth(),
+            onClick = {
+                val localeListCompat = LocaleListCompat.forLanguageTags("ru")
+                AppCompatDelegate.setApplicationLocales(localeListCompat)
+            }
+        ) {
+            Text("Русский")
+        }
+        TextButton(
+            modifier = Modifier.fillMaxWidth(),
+            onClick = {
+                val localeListCompat = LocaleListCompat.forLanguageTags("eu")
+                AppCompatDelegate.setApplicationLocales(localeListCompat)
+            }) {
+            Text("Английский")
+        }
+    }
 }

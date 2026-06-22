@@ -4,6 +4,7 @@ import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
+import androidx.appcompat.app.AppCompatActivity
 import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.material3.dynamicDarkColorScheme
 import androidx.compose.runtime.getValue
@@ -18,23 +19,22 @@ import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.compositionLocalOf
 import androidx.compose.runtime.staticCompositionLocalOf
-import com.example.v.data.model.Language
+import androidx.compose.ui.platform.LocalContext
 import com.example.v.data.model.Theme
 import dagger.hilt.android.AndroidEntryPoint
-
 val LocalSharedStateTheme = staticCompositionLocalOf<MutableState<Theme>>{error("")}
-val LocalSharedStateLanguage = staticCompositionLocalOf<MutableState<Language>> { error("") }
 @AndroidEntryPoint
-class MainActivity : ComponentActivity() {
+class MainActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
         setContent {
-            var settingsTheme =  remember { mutableStateOf(Theme()) }
-            var settingLanguage = remember { mutableStateOf(Language()) }
+            val sharedPreferences = this.applicationContext.getSharedPreferences("settings_param",MODE_PRIVATE)
+            val theme = sharedPreferences.getString("theme",null)
+            var settingsTheme =  remember { mutableStateOf(Theme(theme)) }
             VTheme(settingsTheme = settingsTheme.value) {
                 val navController = rememberNavController()
-                CompositionLocalProvider(LocalSharedStateTheme provides settingsTheme,LocalSharedStateLanguage provides settingLanguage) {
+                CompositionLocalProvider(LocalSharedStateTheme provides settingsTheme) {
                     NavAppGraph(navController = navController)
                 }
             }

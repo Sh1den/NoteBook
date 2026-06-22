@@ -1,16 +1,17 @@
+<?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string name="name_app" translatable="false">Блокнот</string>
-    <string name="menu" translatable="false">Меню</string>
-    <string name="app_name" translatable="false">v</string>
-    <string name="basket_app" translatable="false">Корзина</string>
-    <string name="packege" translatable="false">Архивы</string>
-    <string name="new_packege" translatable="false">Новая папка</string>
-    <string name="setting" translatable="false">Настройки</string>
-    <string name="Home" translatable="false">Все заметки</string>
-    <string name="thema_app" translatable="false">Тема приложения</string>
-    <string name="language_app" translatable="false">Язык приложения</string>
-    <string name="dark_theme" translatable="false">Темная</string>
-    <string name="light_theme" translatable="false">Светлая</string>
-    <string name="language_rus" translatable="false">Русский</string>
-    <string name="language_en" translatable="false">Английский</string>
+    <string name="menu">Меню</string>
+    <string name="app_name">Блокнот</string>
+    <string name="basket_app">Корзина</string>
+    <string name="packege">Архивы</string>
+    <string name="new_packege">Новая папка</string>
+    <string name="setting">Настройки</string>
+    <string name="Home">Все заметки</string>
+    <string name="thema_app">Тема приложения</string>
+    <string name="language_app">Язык приложения</string>
+    <string name="dark_theme">Темная</string>
+    <string name="light_theme">Светлая</string>
+    <string name="language_rus">Русский</string>
+    <string name="language_en">Английский</string>
+    <string name="general">Общие</string>
 </resources>
