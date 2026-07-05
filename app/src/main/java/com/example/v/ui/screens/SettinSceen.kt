@@ -55,11 +55,10 @@ fun SettingsScreen(
                     containerColor = MaterialTheme.colorScheme.tertiary
                 )
             ) {
-                SettingEligment(R.drawable.outline_contrast_24,stringResource(R.string.thema_app),LocalSharedStateTheme.current.value.getTheme(AppCompatDelegate.getApplicationLocales()[0]?.language ?: "ru"),
+                SettingEligment(R.drawable.outline_contrast_24,stringResource(R.string.thema_app),
                     TypeSetting.Theme)
                 HorizontalDivider(color = MaterialTheme.colorScheme.onTertiary)
                 SettingEligment(R.drawable.outline_language_24,stringResource(R.string.language_app),
-                    getLang(AppCompatDelegate.getApplicationLocales()[0]?.language ?: "ru"),
                     TypeSetting.Language
                 )
             }

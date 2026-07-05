@@ -25,6 +25,7 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.currentBackStackEntryAsState
 import com.example.v.ui.components.AppDrawerContent
+import com.example.v.ui.screens.AddNoteScreen
 import com.example.v.ui.screens.FolderScreen
 import com.example.v.ui.screens.MainScreen
 import com.example.v.ui.screens.SettingsScreen
@@ -92,7 +93,7 @@ fun NavAppGraph(
                         ) { -it }
                     }
                 ) {
-                    MainScreen() {
+                    MainScreen(navController) {
                         scope.launch {
                             drawerState.open()
                         }
@@ -115,6 +116,9 @@ fun NavAppGraph(
                             drawerState.open()
                         }
                     }
+                }
+                composable<Route.NoteScreen> {
+                    AddNoteScreen(navController)
                 }
             }
         }

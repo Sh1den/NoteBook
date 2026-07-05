@@ -9,4 +9,6 @@ sealed interface Route {
     }
     @Serializable
     object FolderScreen
+    @Serializable
+    object NoteScreen
 }

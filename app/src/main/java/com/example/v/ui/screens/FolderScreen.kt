@@ -30,7 +30,7 @@ fun FolderScreen(
                 NavigationItems.Search),listOf({showDialog = true},{}),onClick)
         }
     ) {
-        if(showDialog){
+        if(showDialog) {
             AlertDialog(
                 onDismissRequest = {showDialog = false},
                 modifier = Modifier.padding(it)

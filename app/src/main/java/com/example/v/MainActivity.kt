@@ -9,25 +9,30 @@ import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.staticCompositionLocalOf
+import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.compose.rememberNavController
 import com.example.v.data.model.Theme
 import com.example.v.ui.navigation.NavAppGraph
 import com.example.v.ui.theme.VTheme
+import com.example.v.ui.viewmodels.MainViewModel
 import dagger.hilt.android.AndroidEntryPoint
+import androidx.compose.runtime.State
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
 
-val LocalSharedStateTheme = staticCompositionLocalOf<MutableState<Theme>>{error("")}
+val LocalSharedStateTheme = staticCompositionLocalOf<Theme>{error("")}
 @AndroidEntryPoint
 class MainActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
         setContent {
-            val sharedPreferences = this.applicationContext.getSharedPreferences("settings_param",MODE_PRIVATE)
-            val theme = sharedPreferences.getString("theme",null)
-            val settingsTheme = remember { mutableStateOf(Theme(theme)) }
-            VTheme(settingsTheme = settingsTheme.value) {
+            val mainViewModel: MainViewModel = hiltViewModel()
+            val stateTheme by mainViewModel.theme.collectAsState()
+            VTheme(settingsTheme = stateTheme) {
                 val navController = rememberNavController()
-                CompositionLocalProvider(LocalSharedStateTheme provides settingsTheme) {
+                CompositionLocalProvider(LocalSharedStateTheme provides stateTheme) {
                     NavAppGraph(navController = navController)
                 }
             }

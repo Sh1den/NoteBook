@@ -35,17 +35,24 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.core.os.LocaleListCompat
+import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import com.example.v.LocalSharedStateTheme
+import com.example.v.MainActivity
 import com.example.v.data.model.Theme
 import com.example.v.data.model.TypeSetting
+import com.example.v.data.model.getLang
+import com.example.v.ui.viewmodels.MainViewModel
 
 @Composable
 fun SettingEligment(
     painter: Int,
     primaryText: String,
-    secondaryText: String,
     type: TypeSetting
 ){
+    val secondaryText = when(type){
+        TypeSetting.Theme -> LocalSharedStateTheme.current.getTheme(AppCompatDelegate.getApplicationLocales()[0]?.language ?: "ru")
+        TypeSetting.Language -> getLang(AppCompatDelegate.getApplicationLocales()[0]?.language ?: "ru")
+    }
     var optionOpen by remember { mutableStateOf(false) }
         TextButton(
             modifier = Modifier.fillMaxWidth().height(70.dp),
@@ -88,17 +95,13 @@ fun SettingEligment(
 }
 @Composable
 fun SettingTheme(){
-    val sharedPreferences = LocalContext.current.applicationContext.getSharedPreferences("settings_param",MODE_PRIVATE)
-    var thTheme by LocalSharedStateTheme.current
+    val activity = LocalContext.current
+    val mainViewModel: MainViewModel = hiltViewModel(activity as MainActivity)
     Column() {
         TextButton(
             modifier = Modifier.fillMaxWidth(),
             onClick = {
-                thTheme = Theme(colorTheme = Theme.ColorTheme.Dark)
-                sharedPreferences.edit().apply{
-                    putString("theme","dark")
-                    apply()
-                }
+                mainViewModel.setTheme("dark", Theme.ColorTheme.Dark)
             }
         ) {
             Text("Темная")
@@ -106,11 +109,7 @@ fun SettingTheme(){
         TextButton(
             modifier = Modifier.fillMaxWidth(),
             onClick = {
-                thTheme = Theme(colorTheme = Theme.ColorTheme.Light)
-                sharedPreferences.edit().apply{
-                    putString("theme","light")
-                    apply()
-                }
+                mainViewModel.setTheme("light", Theme.ColorTheme.Light)
             }) {
             Text("Светлая")
         }
@@ -119,7 +118,6 @@ fun SettingTheme(){
 @Composable
 fun SettingLanguage(){
     Column() {
-        val sharedPreferences = LocalContext.current.applicationContext.getSharedPreferences("settings_param",MODE_PRIVATE)
         TextButton(
             modifier = Modifier.fillMaxWidth(),
             onClick = {

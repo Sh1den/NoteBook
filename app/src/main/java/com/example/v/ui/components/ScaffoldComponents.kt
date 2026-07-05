@@ -20,6 +20,7 @@ import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 import com.example.v.data.model.NavigationItems
+import com.example.v.data.model.Table
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -85,4 +86,9 @@ fun CastFloatingActionButton(
            modifier = Modifier.size(50.dp)
        )
     }
+}
+
+@Composable
+fun NoteCard(note: Table?){
+
 }
