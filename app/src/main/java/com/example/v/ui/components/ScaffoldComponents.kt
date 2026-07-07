@@ -1,5 +1,6 @@
 package com.example.v.ui.components
 
+import androidx.compose.ui.graphics.Color
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.size
@@ -25,21 +26,24 @@ import com.example.v.data.model.Table
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun NavigationTopAppBar(
-    titleBar: String?,
-    navIcons: NavigationItems,
-    actionIcons: MutableList<NavigationItems>?,
+    titleBar: String? = null,
+    navIcons: NavigationItems? = null,
+    actionIcons: MutableList<NavigationItems>? = null,
     onActionsClicks: List<(() -> Unit)>? = null,
-    onNavClick: () -> Unit
+    colorCont: Color? = null,
+    onNavClick: () -> Unit = {}
 ){
     TopAppBar(
         colors = TopAppBarDefaults.topAppBarColors(
+            containerColor = colorCont ?: Color.Unspecified,
             navigationIconContentColor = MaterialTheme.colorScheme.onBackground
         ),
         title = {Text(titleBar?:"")},
         navigationIcon = {
             Row() {
-                CastIconButton(navIcons.imageVector,navIcons.painter,onNavClick)
-                Spacer(modifier = Modifier.size(10.dp))
+                navIcons?.let {
+                    CastIconButton(navIcons.imageVector,navIcons.painter,onNavClick)
+                    Spacer(modifier = Modifier.size(10.dp)) }
             }
         },
         actions = {

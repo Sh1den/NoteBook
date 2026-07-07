@@ -27,7 +27,7 @@ fun FolderScreen(
     Scaffold(
         topBar = {
             NavigationTopAppBar("Архивы заметок", NavigationItems.Menu,mutableListOf(NavigationItems.NewFolder,
-                NavigationItems.Search),listOf({showDialog = true},{}),onClick)
+                NavigationItems.Search),listOf({showDialog = true},{}), onNavClick = onClick)
         }
     ) {
         if(showDialog) {

@@ -33,7 +33,7 @@ fun MainScreen(
         topBar = {
             NavigationTopAppBar(
                 stringResource(R.string.app_name), NavigationItems.Menu,mutableListOf(NavigationItems.Search,
-                NavigationItems.More),null,onClick)
+                NavigationItems.More),null, onNavClick = onClick)
         },
         floatingActionButton = {
             CastFloatingActionButton(Modifier.size(60.dp)){

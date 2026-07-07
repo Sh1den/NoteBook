@@ -45,6 +45,7 @@ androidx-room-runtime = {module = "androidx.room:room-runtime",version.ref = "ro
 androidx-room-ktx = {module = "androidx.room:room-ktx",version.ref = "room"}
 androidx-paging-common = {module = "androidx.paging:paging-common",version.ref = "paging"}
 androidx-paging-compose = {module = "androidx.paging:paging-compose",version.ref = "paging"}
+androidx-room-paging = {module = "androidx.room:room-paging",version.ref = "room"}
 
 
 

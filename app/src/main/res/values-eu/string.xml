@@ -14,4 +14,7 @@
     <string name="language_rus">Russian</string>
     <string name="language_en">English</string>
     <string name="general">General</string>
+    <string name="title_note">Title</string>
+    <string name="description_note">Description</string>
+    <string name="symbols_note">symb</string>
 </resources>

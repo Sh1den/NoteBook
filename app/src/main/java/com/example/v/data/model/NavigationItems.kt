@@ -2,6 +2,7 @@ package com.example.v.data.model
 
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowBack
+import androidx.compose.material.icons.filled.Check
 import androidx.compose.material.icons.filled.Menu
 import androidx.compose.material.icons.filled.MoreVert
 import androidx.compose.material.icons.filled.Search
@@ -13,6 +14,9 @@ sealed class NavigationItems(
     val imageVector: ImageVector? = null,
     val painter: Int? = null
 ){
+    object Ok: NavigationItems(
+        imageVector = Icons.Default.Check
+    )
     object Search: NavigationItems(
         imageVector = Icons.Default.Search
     )
@@ -45,4 +49,5 @@ sealed class NavigationItems(
         title = R.string.new_packege,
         painter = R.drawable.outline_create_new_folder_24
     )
+
 }

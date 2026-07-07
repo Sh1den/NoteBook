@@ -10,5 +10,7 @@ data class Table(
     val id: Int,
     @ColumnInfo(name = "name_notes")
     val nameNotes: String,
-    val text: String
+    val text: String,
+    val time: String,
+    val lenText: Long
 )

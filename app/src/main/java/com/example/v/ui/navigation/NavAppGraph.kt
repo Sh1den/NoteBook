@@ -117,7 +117,28 @@ fun NavAppGraph(
                         }
                     }
                 }
-                composable<Route.NoteScreen> {
+                composable<Route.NoteScreen>(
+                    enterTransition = {
+                        slideInHorizontally(
+                            animationSpec = tween(400, easing = LinearOutSlowInEasing)
+                        ) { it }
+                    },
+                    exitTransition = {
+                        slideOutHorizontally(
+                            animationSpec = tween(400, easing = FastOutLinearInEasing)
+                        ) { -it / 4 }
+                    },
+                    popEnterTransition =  {
+                        slideInHorizontally(
+                            animationSpec = tween(400, easing = LinearOutSlowInEasing)
+                        ) { it }
+                    },
+                    popExitTransition = {
+                        slideOutHorizontally(
+                            animationSpec = tween(400, easing = FastOutLinearInEasing)
+                        ) { -it }
+                    }
+                ) {
                     AddNoteScreen(navController)
                 }
             }
