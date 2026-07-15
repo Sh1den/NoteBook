@@ -26,7 +26,6 @@ fun CastTextField(
     state: TextFieldState,
     secondText: String,
     lineLimits: TextFieldLineLimits,
-    cnt: MutableState<Int>? = null
 ){
     BasicTextField(
         state,
@@ -39,7 +38,6 @@ fun CastTextField(
                     fontSize = 23.sp
                 )
             }
-            cnt?.value = state.text.length
             it()
         },
         textStyle = TextStyle(

@@ -12,9 +12,17 @@ import kotlinx.coroutines.flow.Flow
 
 @Dao
 interface NoteDao {
-    @Query("Select * from notes")
-    fun getInfo(): PagingSource<Int, Table>
+    @Query("Select * from notes Where category = 'Basket'")
+    fun getBasket(): PagingSource<Int, Table>
 
+    @Query("Select * from notes Where category = 'Main'")
+    fun getMain(): PagingSource<Int, Table>
+
+    @Query("Select * from notes Where category = :category")
+    fun getOther(category: String): PagingSource<Int, Table>
+
+    @Query("Select * from notes Where id = :id")
+    suspend fun getById(id: Int): Table
     @Insert(
         onConflict = OnConflictStrategy.ABORT
     )
@@ -24,9 +32,7 @@ interface NoteDao {
     )
     suspend fun deleteNote(note: Table)
 
-    @Update(
-        onConflict = OnConflictStrategy.ABORT
-    )
+    @Update
     suspend fun updateNote(note: Table)
 
 }

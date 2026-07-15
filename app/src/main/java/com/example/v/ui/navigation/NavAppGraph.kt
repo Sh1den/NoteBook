@@ -20,15 +20,19 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Modifier
+import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.currentBackStackEntryAsState
+import androidx.navigation.toRoute
+import com.example.v.data.model.Category
 import com.example.v.ui.components.AppDrawerContent
 import com.example.v.ui.screens.AddNoteScreen
 import com.example.v.ui.screens.FolderScreen
 import com.example.v.ui.screens.MainScreen
 import com.example.v.ui.screens.SettingsScreen
+import com.example.v.ui.viewmodels.EditNoteViewModel
 import kotlinx.coroutines.launch
 
 @Composable
@@ -45,7 +49,7 @@ fun NavAppGraph(
         drawerState = drawerState,
         gesturesEnabled = isTopLevel,
         drawerContent = {
-            AppDrawerContent(navController,thScreen){
+            AppDrawerContent(navController,thScreen,backStackEntry){
                 scope.launch { drawerState.close() }
             }
         }
@@ -53,7 +57,7 @@ fun NavAppGraph(
         Box(modifier = Modifier.background(MaterialTheme.colorScheme.background)) {
             NavHost(
                 navController = navController,
-                startDestination = Route.HomeScreen
+                startDestination = Route.HomeScreen()
             ) {
 
                 composable<Route.SettingsScreen>(
@@ -93,7 +97,9 @@ fun NavAppGraph(
                         ) { -it }
                     }
                 ) {
-                    MainScreen(navController) {
+                    val route = it.toRoute<Route.HomeScreen>()
+                    val category = Category(route.typeCategory,route.stringCategory)
+                    MainScreen(navController, category) {
                         scope.launch {
                             drawerState.open()
                         }
@@ -111,7 +117,7 @@ fun NavAppGraph(
                         ) { -it }
                     }
                 ) {
-                    FolderScreen {
+                    FolderScreen(navController) {
                         scope.launch {
                             drawerState.open()
                         }
@@ -139,7 +145,8 @@ fun NavAppGraph(
                         ) { -it }
                     }
                 ) {
-                    AddNoteScreen(navController)
+                    val editNoteViewModel: EditNoteViewModel = hiltViewModel()
+                    AddNoteScreen(navController,editNoteViewModel)
                 }
             }
         }

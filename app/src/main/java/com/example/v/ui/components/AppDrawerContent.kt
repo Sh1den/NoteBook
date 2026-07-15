@@ -22,17 +22,21 @@ import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.navigation.NavBackStackEntry
 import androidx.navigation.NavController
 import androidx.navigation.NavDestination
 import androidx.navigation.NavDestination.Companion.hasRoute
+import androidx.navigation.toRoute
 import com.example.v.R
 import com.example.v.data.model.NavigationItems
+import com.example.v.data.model.TypeCategory
 import com.example.v.ui.navigation.Route
 
 @Composable
 fun AppDrawerContent(
     navController: NavController,
     thScreen: NavDestination?,
+    backStackEntry: NavBackStackEntry?,
     onDetailsScreensClick: () -> Unit
 ){
     ModalDrawerSheet(
@@ -56,25 +60,20 @@ fun AppDrawerContent(
         )
         DrawItem(
             NavigationItems.Home.title,
-            isSelected = thScreen?.hasRoute<Route.HomeScreen>(),
+            isSelected = thScreen?.hasRoute<Route.HomeScreen>() ?: false && backStackEntry?.toRoute<Route.HomeScreen>()?.typeCategory == TypeCategory.MAIN,
             painter = NavigationItems.Home.painter
         ) {
-            navController.navigate(Route.HomeScreen){
-                launchSingleTop = true
-                popUpTo(navController.graph.startDestinationId){
-                    saveState = true
-                }
-                restoreState = true
+            navController.navigate(Route.HomeScreen()){
             }
         }
         DrawItem(
             NavigationItems.Folder.title,
-            isSelected = thScreen?.hasRoute<Route.FolderScreen>(),
+            isSelected = (thScreen?.hasRoute<Route.FolderScreen>() ?: false) || (thScreen?.hasRoute<Route.HomeScreen>() ?: false && backStackEntry?.toRoute<Route.HomeScreen>()?.typeCategory == TypeCategory.OTHER),
             painter = NavigationItems.Folder.painter,
         ) {
             navController.navigate(Route.FolderScreen){
                 launchSingleTop = true
-                popUpTo(Route.HomeScreen){
+                popUpTo(Route.HomeScreen()){
                     saveState = true
                 }
                 restoreState = true
@@ -92,7 +91,7 @@ fun AppDrawerContent(
             onDetailsScreensClick()
             navController.navigate(Route.SettingsScreen){
                 launchSingleTop = true
-                popUpTo(Route.HomeScreen){
+                popUpTo(Route.HomeScreen()){
                     saveState = true
                 }
                 restoreState = true

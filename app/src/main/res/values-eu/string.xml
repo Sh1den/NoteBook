@@ -17,4 +17,9 @@
     <string name="title_note">Title</string>
     <string name="description_note">Description</string>
     <string name="symbols_note">symb</string>
+    <string name="delete">Delete</string>
+    <string name="archives_of_notes">Archives of notes</string>
+    <string name="name">Name</string>
+    <string name="cancel">Cancel</string>
+    <string name="save">Save</string>
 </resources>
