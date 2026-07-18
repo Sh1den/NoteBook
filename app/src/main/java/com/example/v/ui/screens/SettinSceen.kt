@@ -35,8 +35,8 @@ fun SettingsScreen(
         contentColor = MaterialTheme.colorScheme.onSurface,
         containerColor = MaterialTheme.colorScheme.surface,
         topBar = {
-            NavigationTopAppBar(stringResource(R.string.setting), NavigationItems.Back,null){
-                navController.navigate(Route.HomeScreen())
+            NavigationTopAppBar({},stringResource(R.string.setting), NavigationItems.Back,null){
+                navController.navigate(Route.HomeScreen)
             }
         }
     ) {

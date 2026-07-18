@@ -56,6 +56,13 @@ class MainViewModel @Inject constructor(
 
     fun deleteNotes(note: Note) = viewModelScope.launch(Dispatchers.IO) { noteRepository.deleteNote(note) }
 
+    fun toBasket(note:Note){
+
+    }
+
+    fun SearchNote(title: String){
+        _category.value = _category.value.copy().apply {this.toSearch(title)}
+    }
     fun setCategory(newCategory: Category){
         _category.value = newCategory
     }

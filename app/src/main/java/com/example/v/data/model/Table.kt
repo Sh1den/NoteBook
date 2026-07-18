@@ -12,8 +12,8 @@ import kotlinx.serialization.Serializable
     foreignKeys = [
         ForeignKey(
             entity = Folders::class,
-            parentColumns = ["category_id"],
-            childColumns = ["category"],
+            parentColumns = ["category_id","isSystem"],
+            childColumns = ["category","isSystem"],
             onDelete = ForeignKey.CASCADE,
             onUpdate = ForeignKey.CASCADE
         )
@@ -22,7 +22,9 @@ import kotlinx.serialization.Serializable
 data class Table(
     @PrimaryKey(autoGenerate = true)
     val id: Int = 0,
-    @ColumnInfo(name = "name_notes")
+    @ColumnInfo(
+        name = "name_notes",
+        collate = ColumnInfo.NOCASE)
     val nameNotes: String = "",
     val text: String = "",
     val time: String = "",

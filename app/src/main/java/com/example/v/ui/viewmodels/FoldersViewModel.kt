@@ -8,6 +8,8 @@ import com.example.v.data.model.Folder
 import com.example.v.data.model.Folders
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.flatMapLatest
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
@@ -15,7 +17,11 @@ import javax.inject.Inject
 class FoldersViewModel @Inject constructor(
     private val folderRepository: FolderRepository
 ): ViewModel() {
-    val folders = folderRepository.getFolders().cachedIn(viewModelScope)
+
+    private var _searchQuery = MutableStateFlow<String>("")
+    var folders = _searchQuery.flatMapLatest {
+        searchString -> folderRepository.getFolders(searchString)
+    }.cachedIn(viewModelScope)
 
     fun insertFolder(folder: Folder){
        viewModelScope.launch(Dispatchers.IO) { folderRepository.insertFolder(folder) }
@@ -25,5 +31,8 @@ class FoldersViewModel @Inject constructor(
     }
     fun deleteFolder(folder: Folder){
         viewModelScope.launch(Dispatchers.IO) { folderRepository.deleteFolder(folder) }
+    }
+    fun searchFolder(stringSearch: String){
+        _searchQuery.value = stringSearch
     }
 }

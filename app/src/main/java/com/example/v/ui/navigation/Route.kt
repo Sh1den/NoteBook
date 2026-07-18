@@ -7,10 +7,7 @@ sealed interface Route {
     @Serializable
     object SettingsScreen
     @Serializable
-    data class HomeScreen(
-        val stringCategory: String = "Main",
-        val typeCategory: TypeCategory = TypeCategory.MAIN
-    )
+    object HomeScreen
     @Serializable
     object FolderScreen
     @Serializable
@@ -19,5 +16,11 @@ sealed interface Route {
         val stringCategory: String = "Main",
         val typeCategory: TypeCategory = TypeCategory.MAIN
     )
+    @Serializable
+    data class FolderNotes(
+        val stringCategory: String = ""
+    )
+    @Serializable
+    object BasketNotes
 }
 

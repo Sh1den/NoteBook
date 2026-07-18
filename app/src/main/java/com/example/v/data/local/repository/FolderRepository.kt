@@ -14,14 +14,14 @@ import kotlinx.coroutines.flow.map
 class FolderRepository(
     private val foldersDao: FoldersDao
 ) {
-    fun getFolders(): Flow<PagingData<Folder>>{
+    fun getFolders(searchFolder: String = ""): Flow<PagingData<Folder>>{
         return Pager(
             config = PagingConfig(
                 pageSize = 20,
                 prefetchDistance = 5,
                 enablePlaceholders = false
             ),
-            pagingSourceFactory = {foldersDao.getFolders()}
+            pagingSourceFactory = {foldersDao.getFolders(searchFolder)}
         ).flow.map { pagingData -> pagingData.map { it.toDomain() } }
     }
     suspend fun insertFolder(folder: Folder){

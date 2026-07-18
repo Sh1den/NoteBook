@@ -36,7 +36,6 @@ import com.example.v.ui.navigation.Route
 fun AppDrawerContent(
     navController: NavController,
     thScreen: NavDestination?,
-    backStackEntry: NavBackStackEntry?,
     onDetailsScreensClick: () -> Unit
 ){
     ModalDrawerSheet(
@@ -60,20 +59,25 @@ fun AppDrawerContent(
         )
         DrawItem(
             NavigationItems.Home.title,
-            isSelected = thScreen?.hasRoute<Route.HomeScreen>() ?: false && backStackEntry?.toRoute<Route.HomeScreen>()?.typeCategory == TypeCategory.MAIN,
+            isSelected = thScreen?.hasRoute<Route.HomeScreen>(),
             painter = NavigationItems.Home.painter
         ) {
-            navController.navigate(Route.HomeScreen()){
+            navController.navigate(Route.HomeScreen) {
+                launchSingleTop = true
+                popUpTo(navController.graph.startDestinationId) {
+                    saveState = true
+                }
+                restoreState = true
             }
         }
         DrawItem(
             NavigationItems.Folder.title,
-            isSelected = (thScreen?.hasRoute<Route.FolderScreen>() ?: false) || (thScreen?.hasRoute<Route.HomeScreen>() ?: false && backStackEntry?.toRoute<Route.HomeScreen>()?.typeCategory == TypeCategory.OTHER),
+            isSelected = thScreen?.hasRoute<Route.FolderScreen>(),
             painter = NavigationItems.Folder.painter,
         ) {
             navController.navigate(Route.FolderScreen){
                 launchSingleTop = true
-                popUpTo(Route.HomeScreen()){
+                popUpTo(Route.HomeScreen){
                     saveState = true
                 }
                 restoreState = true
@@ -91,13 +95,22 @@ fun AppDrawerContent(
             onDetailsScreensClick()
             navController.navigate(Route.SettingsScreen){
                 launchSingleTop = true
-                popUpTo(Route.HomeScreen()){
+                popUpTo(Route.HomeScreen){
                     saveState = true
                 }
                 restoreState = true
             }
         }
-        DrawItem(NavigationItems.Basket.title, painter = NavigationItems.Basket.painter) {}
+        DrawItem(NavigationItems.Basket.title, painter = NavigationItems.Basket.painter) {
+            onDetailsScreensClick()
+            navController.navigate(Route.BasketNotes){
+                launchSingleTop = true
+                popUpTo(Route.HomeScreen){
+                    saveState = true
+                }
+                restoreState = true
+            }
+        }
     }
 }
 @Composable

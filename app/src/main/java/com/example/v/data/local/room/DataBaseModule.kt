@@ -7,6 +7,7 @@ import androidx.room.RoomDatabase
 import androidx.sqlite.db.SupportSQLiteDatabase
 import com.example.v.data.local.repository.FolderRepository
 import com.example.v.data.local.repository.NoteRepository
+import com.example.v.data.model.TypeCategory
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn

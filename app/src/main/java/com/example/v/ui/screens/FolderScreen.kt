@@ -35,6 +35,7 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.TextField
 import androidx.compose.material3.TextFieldDefaults
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.runtime.mutableStateOf
@@ -42,7 +43,10 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.focus.FocusRequester
+import androidx.compose.ui.focus.focusRequester
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalSoftwareKeyboardController
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -58,6 +62,7 @@ import com.example.v.data.model.NavigationItems
 import com.example.v.data.model.Note
 import com.example.v.ui.components.CustomDialog
 import com.example.v.ui.components.FolderCard
+import com.example.v.ui.components.GetFolders
 import com.example.v.ui.components.NavigationTopAppBar
 import com.example.v.ui.components.NoteCard
 import com.example.v.ui.navigation.Route
@@ -71,16 +76,56 @@ fun FolderScreen(
 ) {
     var showDialog = remember { mutableStateOf(false) }
     val foldersViewModel: FoldersViewModel = hiltViewModel()
+    var searchString by remember { mutableStateOf("") }
     var selectedFolder = remember { mutableStateListOf<Folder>()}
+    var isSearch by remember { mutableStateOf(false) }
+    val focusRequester = remember { FocusRequester() }
+    val keyboardController = LocalSoftwareKeyboardController.current
     Scaffold(
         topBar = {
             if (selectedFolder.size == 0) {
-                NavigationTopAppBar(
-                    stringResource(R.string.archives_of_notes), NavigationItems.Menu, mutableListOf(
-                        NavigationItems.NewFolder,
-                        NavigationItems.Search
-                    ), null, listOf({ showDialog.value = true }, {}), onNavClick = onClick
-                )
+                if (!isSearch) {
+                    NavigationTopAppBar(
+                        {},
+                        stringResource(R.string.archives_of_notes),
+                        NavigationItems.Menu,
+                        mutableListOf(
+                            NavigationItems.NewFolder,
+                            NavigationItems.Search
+                        ),
+                        null,
+                        listOf({ showDialog.value = true }, {isSearch = true}),
+                        onNavClick = onClick
+                    )
+                }
+                else{
+                    NavigationTopAppBar(
+                        titleWidget = {
+                            LaunchedEffect(Unit) {
+                                focusRequester.requestFocus()
+                                keyboardController?.show()
+                            }
+                            OutlinedTextField(
+                                value = searchString,
+                                onValueChange = {
+                                    searchString = it
+                                    foldersViewModel.searchFolder(searchString)
+                                },
+                                modifier = Modifier.fillMaxWidth().focusRequester(focusRequester),
+                                colors = TextFieldDefaults.colors(
+                                    focusedIndicatorColor = Color.Transparent,
+                                    unfocusedIndicatorColor = Color.Transparent,
+                                    disabledIndicatorColor = Color.Transparent,
+                                    errorIndicatorColor = Color.Transparent
+                                ),
+                            )
+                        },
+                        navIcons = NavigationItems.Back,
+                        onNavClick = {
+                            isSearch = false
+                        }
+                    )
+                }
             }
             else{
                 NavigationTopAppBar(
@@ -103,27 +148,6 @@ fun FolderScreen(
             var nameNewCategory = remember { mutableStateOf("") }
             CustomDialog(showDialog,nameNewCategory,it,foldersViewModel)
         }
-        val pagingFolders = foldersViewModel.folders.collectAsLazyPagingItems()
-        LazyColumn(
-            modifier = Modifier
-                .padding(it)
-                .fillMaxSize()
-                .padding(horizontal = 7.dp)
-        ) {
-            items(
-                count = pagingFolders.itemCount,
-                key = pagingFolders.itemKey { Folders -> Folders.category.stringCategory }
-            ){
-                val folder = pagingFolders[it]
-                folder?.let {
-                    FolderCard(folder,{ selectedFolder.contains(it) },{ selectedFolder.add(it)}) {
-                        if (selectedFolder.size != 0) selectedFolder.add(it)
-                        else {
-                            navController.navigate(Route.HomeScreen(it.category.stringCategory,it.category.typeCategory))
-                        }
-                    }
-                }
-            }
-        }
+        GetFolders(foldersViewModel,navController,it,selectedFolder)
     }
 }

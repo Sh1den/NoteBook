@@ -12,10 +12,10 @@ import com.example.v.data.model.Table
 
 @Dao
 interface FoldersDao{
-    @Query("Select * from Folders Where isSystem = false")
-    fun getFolders(): PagingSource<Int, Folders>
+    @Query("Select * from Folders Where isSystem = false And category_id Like '%' || :stringSearch || '%'")
+    fun getFolders(stringSearch: String = ""): PagingSource<Int, Folders>
     @Insert(
-        onConflict = OnConflictStrategy.IGNORE
+        onConflict = OnConflictStrategy.ABORT
     )
     suspend fun insertFolders(folder: Folders)
     @Delete

@@ -19,8 +19,14 @@ data class Note(
 
 data class Category(
     var typeCategory: TypeCategory = TypeCategory.MAIN,
-    var stringCategory: String = "Main"
+    var stringCategory: String = "Main",
+    private var search: String = ""
 ){
+    fun toSearch(string: String){
+        search = string
+    }
+    fun getSearchString() = search
+
     fun toCategory(newCategory: String){
         stringCategory = newCategory
         typeCategory = TypeCategory.OTHER

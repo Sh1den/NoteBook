@@ -38,6 +38,7 @@ import com.example.v.data.model.Category
 import com.example.v.data.model.NavigationItems
 import com.example.v.data.model.Note
 import com.example.v.data.model.Table
+import com.example.v.data.model.TypeCategory
 import com.example.v.ui.components.CastTextField
 import com.example.v.ui.components.NavigationTopAppBar
 import com.example.v.ui.navigation.Route
@@ -65,22 +66,12 @@ fun AddNoteScreen(
                 navIcons = NavigationItems.Back,
                 actionIcons = mutableListOf(NavigationItems.Ok),
                 onNavClick = {
-                    navController.navigate(
-                        Route.HomeScreen(
-                            note.category.stringCategory,
-                            note.category.typeCategory
-                        )
-                    )
+                    NavigateNote(note.category,navController)
                 },
                 colorCont = MaterialTheme.colorScheme.background,
                 onActionsClicks = listOf({
                     editNoteViewModel.saveNote(title.text.toString(),description.text.toString())
-                    navController.navigate(
-                        Route.HomeScreen(
-                            note.category.stringCategory,
-                            note.category.typeCategory
-                        )
-                    )
+                    NavigateNote(note.category,navController)
                 })
             )
         }
@@ -121,3 +112,11 @@ fun AddNoteScreen(
     }
 }
 
+fun NavigateNote(
+    category: Category, navController: NavController){
+    when(category.typeCategory){
+        TypeCategory.MAIN -> navController.navigate(Route.HomeScreen)
+        TypeCategory.BASKET -> navController.navigate(Route.BasketNotes)
+        TypeCategory.OTHER -> navController.navigate(Route.FolderNotes(category.stringCategory))
+    }
+}
