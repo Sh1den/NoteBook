@@ -59,7 +59,10 @@ fun FolderCategoryScreen(
                 NavigationTopAppBar(
                     navIcons = NavigationItems.Back,
                     actionIcons = mutableListOf(NavigationItems.Basket),
-                    onActionsClicks = mutableListOf({}),
+                    onActionsClicks = mutableListOf({
+                        selectedNote.forEach { mainViewModel.toBasket(it) }
+                        selectedNote.clear()
+                    }),
                     onNavClick = {selectedNote.clear()}
                 )
             }
@@ -91,6 +94,8 @@ fun FolderCategoryScreen(
                                 },
                                 modifier = Modifier.fillMaxWidth().focusRequester(focusRequester),
                                 colors = TextFieldDefaults.colors(
+                                    focusedContainerColor = Color.Transparent,
+                                    unfocusedContainerColor = Color.Transparent,
                                     focusedIndicatorColor = Color.Transparent,
                                     unfocusedIndicatorColor = Color.Transparent,
                                     disabledIndicatorColor = Color.Transparent,

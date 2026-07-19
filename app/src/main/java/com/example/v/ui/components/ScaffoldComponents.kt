@@ -85,16 +85,28 @@ fun NavigationTopAppBar(
         navigationIcon = {
             Row() {
                 navIcons?.let {
-                    CastIconButton(navIcons.imageVector,null,navIcons.painter,onNavClick)
+                    CastIconButton(navIcons.imageVector,navIcons.painter,onNavClick)
                     Spacer(modifier = Modifier.size(10.dp)) }
             }
         },
         actions = {
             actionIcons?.let {
-                it.forEachIndexed() {ind,items ->   CastIconButton(items.imageVector, null,items.painter,onActionsClicks?.getOrNull(ind) ?: {})}
+                it.forEachIndexed() {ind,items ->   CastIconButton(items.imageVector, items.painter,onActionsClicks?.getOrNull(ind) ?: {})}
             }
             actionText?.let {
-                it.forEachIndexed() {ind,items ->   CastIconButton(null, items,null,onActionsClicks?.getOrNull(ind) ?: {})}
+                Row() {
+                    it.forEachIndexed { index, string ->
+                        Text(
+                            text = string,
+                            modifier = Modifier.clickable{
+                                onActionsClicks?.let {
+                                    it[index]()
+                                }
+                            }
+                        )
+                    }
+                }
+                Spacer(Modifier.size(10.dp))
             }
         }
     )
@@ -102,7 +114,6 @@ fun NavigationTopAppBar(
 @Composable
 fun CastIconButton(
     imVect: ImageVector? = null,
-    text: String? = null,
     painter: Int? = null,
     onClick: () -> Unit
 ){
@@ -116,7 +127,6 @@ fun CastIconButton(
             painter = painterResource(painter), contentDescription = null,
             tint = MaterialTheme.colorScheme.primary
         ) }
-        text?.let { Text(it) }
     }
 }
 @Composable

@@ -54,10 +54,11 @@ class MainViewModel @Inject constructor(
         sharedManager.setTheme(Theme(thTheme,typeTheme))
     }
 
-    fun deleteNotes(note: Note) = viewModelScope.launch(Dispatchers.IO) { noteRepository.deleteNote(note) }
+    fun deleteNotes(note: Note) = viewModelScope.launch{ noteRepository.deleteNote(note) }
 
     fun toBasket(note:Note){
-
+        note.category.toBasket()
+        viewModelScope.launch(Dispatchers.IO) { noteRepository.updateNote(note) }
     }
 
     fun SearchNote(title: String){

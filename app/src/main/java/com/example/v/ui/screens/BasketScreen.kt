@@ -43,9 +43,13 @@ fun BasketScreen(
             if (selectedNote.size != 0) {
                 NavigationTopAppBar(
                     navIcons = NavigationItems.Back,
-                    actionText = mutableListOf(stringResource(R.string.delete)),
-                    onActionsClicks = mutableListOf({
+                    actionText = mutableListOf(
 
+                        stringResource(R.string.delete)
+                    ),
+                    onActionsClicks = mutableListOf({
+                        selectedNote.forEach { mainViewModel.deleteNotes(it) }
+                        selectedNote.clear()
                     }, {
                         selectedNote.forEach {
                             mainViewModel.deleteNotes(it)
@@ -82,6 +86,8 @@ fun BasketScreen(
                                 },
                                 modifier = Modifier.fillMaxWidth().focusRequester(focusRequester),
                                 colors = TextFieldDefaults.colors(
+                                    focusedContainerColor = Color.Transparent,
+                                    unfocusedContainerColor = Color.Transparent,
                                     focusedIndicatorColor = Color.Transparent,
                                     unfocusedIndicatorColor = Color.Transparent,
                                     disabledIndicatorColor = Color.Transparent,
