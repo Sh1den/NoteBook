@@ -22,4 +22,6 @@
     <string name="name">Name</string>
     <string name="cancel">Cancel</string>
     <string name="save">Save</string>
+    <string name="restore">Restore</string>
+    <string name="rename">Rename</string>
 </resources>

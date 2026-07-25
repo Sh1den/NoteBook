@@ -3,6 +3,7 @@ package com.example.v.data.model
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.material.icons.filled.Check
+import androidx.compose.material.icons.filled.Close
 import androidx.compose.material.icons.filled.Menu
 import androidx.compose.material.icons.filled.MoreVert
 import androidx.compose.material.icons.filled.Search
@@ -23,8 +24,14 @@ sealed class NavigationItems(
     object More: NavigationItems(
         imageVector = Icons.Default.MoreVert
     )
+    object Cancel: NavigationItems(
+        imageVector = Icons.Default.Close
+    )
     object Back: NavigationItems(
         imageVector = Icons.Filled.ArrowBack
+    )
+    object Palette: NavigationItems(
+        painter = R.drawable.outline_palette_24
     )
     object Menu: NavigationItems(
         imageVector = Icons.Default.Menu

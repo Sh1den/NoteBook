@@ -8,12 +8,14 @@ import androidx.room.OnConflictStrategy
 import androidx.room.Query
 import androidx.room.Update
 import com.example.v.data.model.Folders
-import com.example.v.data.model.Table
 
 @Dao
 interface FoldersDao{
-    @Query("Select * from Folders Where isSystem = false And category_id Like '%' || :stringSearch || '%'")
+    @Query("Select * from Folders Where typeCategory = 'OTHER' And category Like '%' || :stringSearch || '%'")
     fun getFolders(stringSearch: String = ""): PagingSource<Int, Folders>
+
+    @Query("UPDATE Folders Set category = :newCategoryName Where id = :oldId")
+    suspend fun updateFolderName(oldId: Int,newCategoryName: String)
     @Insert(
         onConflict = OnConflictStrategy.ABORT
     )

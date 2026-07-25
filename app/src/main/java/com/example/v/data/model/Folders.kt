@@ -3,10 +3,10 @@ package com.example.v.data.model
 import androidx.room.Entity
 import androidx.room.PrimaryKey
 
-@Entity(
-    primaryKeys = ["category_id","isSystem"]
-)
+@Entity()
 data class Folders(
-    val category_id: String,
-    val isSystem: Boolean
+    @PrimaryKey(autoGenerate = true)
+    val id: Int = 0,
+    val category: String = "",
+    val typeCategory: TypeCategory = TypeCategory.OTHER
 )

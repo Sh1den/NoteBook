@@ -16,11 +16,10 @@ class SharedManager @Inject constructor(
     }
 
     private val sharedPreferences = context.getSharedPreferences("settings_param",MODE_PRIVATE)
-
     fun setTheme(theme: Theme) = sharedPreferences.edit().apply {
         putString(THEME, theme.strTheme)
         apply()
     }
-    fun getTheme() = sharedPreferences.getString(THEME, "") ?: ""
+    fun getTheme() = sharedPreferences.getString(THEME, "")
 
 }

@@ -25,8 +25,11 @@ import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.OutlinedTextFieldDefaults
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -34,17 +37,18 @@ import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.unit.IntSize
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.compose.ui.window.Dialog
-import androidx.navigation.NavController
 import com.example.v.R
 import com.example.v.data.model.Category
 import com.example.v.data.model.Folder
-import com.example.v.data.model.NavigationItems
-import com.example.v.data.model.Note
 import com.example.v.ui.viewmodels.FoldersViewModel
+import androidx.compose.runtime.setValue
+import androidx.compose.ui.focus.FocusRequester
+import androidx.compose.ui.focus.focusRequester
+import androidx.compose.ui.platform.LocalSoftwareKeyboardController
+import com.example.v.ui.theme.WarningColor
 
 @Composable
 fun CustomDialog(
@@ -53,6 +57,15 @@ fun CustomDialog(
     paddingValues: PaddingValues,
     foldersViewModel: FoldersViewModel
 ){
+    var nameValid by remember { mutableStateOf(true) }
+    val focusColor by animateColorAsState(
+        if (nameValid) MaterialTheme.colorScheme.tertiary
+        else WarningColor
+    )
+    val unfocusColor by animateColorAsState(
+        if (nameValid) Color.Gray
+        else Color.Red
+    )
     Dialog(
         onDismissRequest = { showDialog.value = false }
     ) {
@@ -86,7 +99,7 @@ fun CustomDialog(
                         fontSize = 19.sp,
                         color = MaterialTheme.colorScheme.primary
                     )
-                    CastOutlineTextField(nameNewCategory)
+                    CastOutlineTextField(nameNewCategory,focusColor,unfocusColor)
                     Spacer(Modifier.size(22.dp))
                     Row(
                         modifier = Modifier
@@ -98,8 +111,16 @@ fun CustomDialog(
                             showDialog.value = false
                         }
                         CastTextClickable(stringResource(R.string.save)) {
-                            foldersViewModel.insertFolder(Folder(Category().apply {this.toCategory(nameNewCategory.value)}))
-                            showDialog.value = false
+                            if(nameNewCategory.value.length == 0) nameValid = false
+                            else {
+                                nameValid = true
+                                foldersViewModel.insertFolder(Folder(category = Category().apply {
+                                    this.toCategory(
+                                        nameNewCategory.value
+                                    )
+                                }))
+                                showDialog.value = false
+                            }
                         }
 
                     }
@@ -111,7 +132,9 @@ fun CustomDialog(
 
 @Composable
 fun CastOutlineTextField(
-    nameNewCategory: MutableState<String>
+    nameNewCategory: MutableState<String>,
+    focusColor: Color,
+    unfocusColor: Color
 ){
     OutlinedTextField(
         singleLine = true,
@@ -132,8 +155,8 @@ fun CastOutlineTextField(
         colors = OutlinedTextFieldDefaults.colors(
             focusedTextColor = MaterialTheme.colorScheme.onBackground,
             unfocusedTextColor = MaterialTheme.colorScheme.onBackground,
-            focusedBorderColor = MaterialTheme.colorScheme.tertiary,
-            unfocusedBorderColor = Color.Gray,
+            focusedBorderColor = focusColor,
+            unfocusedBorderColor = unfocusColor,
             focusedLabelColor = Color.White,
             unfocusedLabelColor = Color.White
         )
@@ -153,14 +176,16 @@ fun CastTextClickable(
 }
 @Composable
 fun FolderCard(
-    folder: Folder?,
+    folder: Folder,
     isSelected: () -> Boolean,
+    isRename: () -> Boolean,
+    toRename: (text: String) -> Unit,
     combinedClickable: () -> Unit,
     onClick: () -> Unit
 ){
     folder?.let {
         val animateLongClick by animateColorAsState(
-            targetValue = when(isSelected()){
+            targetValue = when(isSelected() && !isRename()){
                 false -> MaterialTheme.colorScheme.surface
                 true -> Color(0xFF74C0FC)
             }
@@ -173,7 +198,7 @@ fun FolderCard(
                 .combinedClickable(onLongClick = {
                     combinedClickable()
                 }) {
-                    onClick()
+                    if (!isRename()) onClick()
                 },
             shape = RoundedCornerShape(7.dp),
             elevation = CardDefaults.cardElevation(7.dp),
@@ -193,11 +218,35 @@ fun FolderCard(
                     contentDescription = null,
                     colorFilter = ColorFilter.tint(MaterialTheme.colorScheme.onSurface.copy(alpha = 0.9f)))
                 Spacer(Modifier.size(17.dp))
-                Text(
-                    text = it.category.stringCategory,
-                    fontSize = 20.sp,
-                    color = MaterialTheme.colorScheme.onBackground
-                )
+                if (isRename() && isSelected()) {
+                    val keyboardController = LocalSoftwareKeyboardController.current
+                    val focusRequester = remember { FocusRequester() }
+                    var newName by remember { mutableStateOf("") }
+                    LaunchedEffect(Unit) {
+                        focusRequester.requestFocus()
+                        keyboardController?.show()
+                    }
+                    OutlinedTextField(
+                        value = newName,
+                        onValueChange = {
+                            newName = it
+                            toRename(newName)
+                        },
+                        singleLine = true,
+                        colors = OutlinedTextFieldDefaults.colors(
+                            focusedBorderColor = Color.Transparent,
+                            unfocusedBorderColor = Color.Transparent
+                        ),
+                        modifier = Modifier.focusRequester(focusRequester)
+                    )
+                }
+                else{
+                    Text(
+                        text = it.category.stringCategory,
+                        fontSize = 20.sp,
+                        color = MaterialTheme.colorScheme.onBackground
+                    )
+                }
             }
         }
     }

@@ -1,14 +1,9 @@
 package com.example.v.ui.navigation
 
-import android.util.Log
 import androidx.activity.compose.BackHandler
 import androidx.compose.animation.core.FastOutLinearInEasing
-import androidx.compose.animation.core.FastOutSlowInEasing
 import androidx.compose.animation.core.LinearOutSlowInEasing
-import androidx.compose.animation.core.spring
 import androidx.compose.animation.core.tween
-import androidx.compose.animation.fadeIn
-import androidx.compose.animation.fadeOut
 import androidx.compose.animation.slideInHorizontally
 import androidx.compose.animation.slideOutHorizontally
 import androidx.compose.foundation.background
@@ -28,7 +23,6 @@ import androidx.navigation.compose.composable
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.toRoute
 import com.example.v.data.model.Category
-import com.example.v.data.model.TypeCategory
 import com.example.v.ui.components.AppDrawerContent
 import com.example.v.ui.screens.AddNoteScreen
 import com.example.v.ui.screens.BasketScreen
@@ -175,7 +169,7 @@ fun NavAppGraph(
                     }
                 ) {
                     val route = it.toRoute<Route.FolderNotes>()
-                    val category = Category().apply { this.toCategory(route.stringCategory) }
+                    val category = Category().apply { this.toCategory(route.stringCategory,route.categoryId) }
                     mainViewModel.setCategory(category)
                     FolderCategoryScreen(navController,category,mainViewModel) {
                         navController.navigate(Route.FolderScreen)
@@ -189,8 +183,8 @@ fun NavAppGraph(
                     },
                     exitTransition = {
                         slideOutHorizontally(
-                            animationSpec = tween(400, easing = FastOutLinearInEasing)
-                        ) { -it / 4 }
+                            animationSpec = tween(400,easing = LinearOutSlowInEasing)
+                        ) { -it }
                     },
                     popEnterTransition =  {
                         slideInHorizontally(
@@ -205,7 +199,13 @@ fun NavAppGraph(
                 ) {
                     mainViewModel.setCategory(Category().apply { this.toBasket() })
                     BasketScreen(navController,mainViewModel) {
-                        navController.navigate(Route.HomeScreen)
+                        navController.navigate(Route.HomeScreen){
+                            launchSingleTop = true
+                            popUpTo(navController.graph.startDestinationId){
+                                saveState = true
+                            }
+                            restoreState = true
+                        }
                     }
                 }
             }

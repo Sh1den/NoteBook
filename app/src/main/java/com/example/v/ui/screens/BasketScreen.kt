@@ -1,5 +1,4 @@
 package com.example.v.ui.screens
-
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Scaffold
@@ -17,10 +16,8 @@ import androidx.compose.ui.focus.focusRequester
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalSoftwareKeyboardController
 import androidx.compose.ui.res.stringResource
-import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import androidx.navigation.NavController
 import com.example.v.R
-import com.example.v.data.model.Category
 import com.example.v.data.model.NavigationItems
 import com.example.v.data.model.Note
 import com.example.v.ui.components.GetNotes
@@ -34,7 +31,6 @@ fun BasketScreen(
     onClick: () -> Unit
 ){
     var selectedNote = remember { mutableStateListOf<Note>()}
-    var searchString by remember { mutableStateOf("") }
     var isSearch by remember { mutableStateOf(false) }
     val focusRequester = remember { FocusRequester() }
     val keyboardController = LocalSoftwareKeyboardController.current
@@ -44,11 +40,13 @@ fun BasketScreen(
                 NavigationTopAppBar(
                     navIcons = NavigationItems.Back,
                     actionText = mutableListOf(
-
+                        stringResource(R.string.restore),
                         stringResource(R.string.delete)
                     ),
                     onActionsClicks = mutableListOf({
-                        selectedNote.forEach { mainViewModel.deleteNotes(it) }
+                        selectedNote.forEach {
+                            mainViewModel.restoreToBasket(it)
+                        }
                         selectedNote.clear()
                     }, {
                         selectedNote.forEach {
@@ -60,6 +58,7 @@ fun BasketScreen(
                 )
             }
             else{
+                var searchString by remember { mutableStateOf("") }
                 if (!isSearch) {
                     NavigationTopAppBar(
                         titleBar = stringResource(R.string.basket_app),
@@ -97,6 +96,7 @@ fun BasketScreen(
                         },
                         navIcons = NavigationItems.Back,
                         onNavClick = {
+                            mainViewModel.SearchNote()
                             isSearch = false
                         }
                     )

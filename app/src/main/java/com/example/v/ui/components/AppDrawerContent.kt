@@ -1,9 +1,14 @@
 package com.example.v.ui.components
 
+import androidx.compose.foundation.Image
+import androidx.compose.foundation.background
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.safeDrawingPadding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.HorizontalDivider
@@ -14,22 +19,21 @@ import androidx.compose.material3.NavigationDrawerItem
 import androidx.compose.material3.NavigationDrawerItemDefaults
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
+import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import androidx.navigation.NavBackStackEntry
 import androidx.navigation.NavController
 import androidx.navigation.NavDestination
 import androidx.navigation.NavDestination.Companion.hasRoute
-import androidx.navigation.toRoute
 import com.example.v.R
 import com.example.v.data.model.NavigationItems
-import com.example.v.data.model.TypeCategory
 import com.example.v.ui.navigation.Route
 
 @Composable
@@ -41,22 +45,28 @@ fun AppDrawerContent(
     ModalDrawerSheet(
         drawerContainerColor = MaterialTheme.colorScheme.surface,
         modifier = Modifier
-            .width(200.dp)
+            .width(260.dp)
             .safeDrawingPadding()
     ) {
-        Text(
-            text = stringResource(R.string.menu),
-            fontSize = 32.sp,
-            modifier = Modifier
-                .padding(
-                    start = 15.dp,
-                    top = 7.dp,
-                    bottom = 5.dp
-                ),
-            fontFamily = FontFamily.Serif,
-            color = MaterialTheme.colorScheme.primary,
-            fontWeight = FontWeight.Bold
-        )
+        Row(
+            modifier = Modifier.fillMaxWidth().height(80.dp).background(Color(0xFFA989EF)),
+            verticalAlignment = Alignment.CenterVertically
+        ) {
+            Image(
+                painter = painterResource(R.drawable.image_note),
+                contentScale = ContentScale.Crop,
+                modifier = Modifier.size(width = 40.dp, height = 80.dp),
+                contentDescription = null
+            )
+            Spacer(Modifier.size(15.dp))
+            Text(
+                text = stringResource(R.string.menu),
+                fontSize = 32.sp,
+                color = MaterialTheme.colorScheme.primary,
+                fontWeight = FontWeight.Bold
+            )
+        }
+        Spacer(Modifier.size(10.dp))
         DrawItem(
             NavigationItems.Home.title,
             isSelected = thScreen?.hasRoute<Route.HomeScreen>(),
@@ -70,6 +80,7 @@ fun AppDrawerContent(
                 restoreState = true
             }
         }
+        Spacer(Modifier.size(5.dp))
         DrawItem(
             NavigationItems.Folder.title,
             isSelected = thScreen?.hasRoute<Route.FolderScreen>(),
@@ -77,7 +88,7 @@ fun AppDrawerContent(
         ) {
             navController.navigate(Route.FolderScreen){
                 launchSingleTop = true
-                popUpTo(Route.HomeScreen){
+                popUpTo(navController.graph.startDestinationId){
                     saveState = true
                 }
                 restoreState = true
@@ -95,17 +106,18 @@ fun AppDrawerContent(
             onDetailsScreensClick()
             navController.navigate(Route.SettingsScreen){
                 launchSingleTop = true
-                popUpTo(Route.HomeScreen){
+                popUpTo(navController.graph.startDestinationId){
                     saveState = true
                 }
                 restoreState = true
             }
         }
+        Spacer(Modifier.size(5.dp))
         DrawItem(NavigationItems.Basket.title, painter = NavigationItems.Basket.painter) {
             onDetailsScreensClick()
             navController.navigate(Route.BasketNotes){
                 launchSingleTop = true
-                popUpTo(Route.HomeScreen){
+                popUpTo(navController.graph.startDestinationId){
                     saveState = true
                 }
                 restoreState = true

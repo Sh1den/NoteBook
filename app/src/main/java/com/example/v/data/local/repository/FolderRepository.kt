@@ -22,7 +22,16 @@ class FolderRepository(
                 enablePlaceholders = false
             ),
             pagingSourceFactory = {foldersDao.getFolders(searchFolder)}
-        ).flow.map { pagingData -> pagingData.map { it.toDomain() } }
+        ).flow.map {
+            pagingData ->
+            pagingData.map {
+                it.toDomain()
+            }
+        }
+    }
+
+    suspend fun updateName(folder: Folder){
+        foldersDao.updateFolderName(folder.id,folder.category.stringCategory)
     }
     suspend fun insertFolder(folder: Folder){
         foldersDao.insertFolders(folder.toEntity())

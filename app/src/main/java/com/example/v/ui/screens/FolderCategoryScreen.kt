@@ -1,21 +1,11 @@
 package com.example.v.ui.screens
-
-import android.graphics.drawable.Icon
-import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.size
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.ArrowBack
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.ExperimentalMaterial3Api
-import androidx.compose.material3.Icon
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Scaffold
-import androidx.compose.material3.SegmentedButtonDefaults.Icon
-import androidx.compose.material3.Text
-import androidx.compose.material3.TextField
 import androidx.compose.material3.TextFieldDefaults
-import androidx.compose.material3.TopAppBar
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
@@ -28,15 +18,14 @@ import androidx.compose.ui.focus.FocusRequester
 import androidx.compose.ui.focus.focusRequester
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalSoftwareKeyboardController
-import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
-import com.example.v.R
 import com.example.v.data.model.Category
 import com.example.v.data.model.NavigationItems
 import com.example.v.data.model.Note
 import com.example.v.ui.components.CastFloatingActionButton
 import com.example.v.ui.components.GetNotes
+import com.example.v.ui.components.ModalBottomColors
 import com.example.v.ui.components.NavigationTopAppBar
 import com.example.v.ui.navigation.Route
 import com.example.v.ui.viewmodels.MainViewModel
@@ -49,20 +38,28 @@ fun FolderCategoryScreen(
     onClick: () -> Unit
 ){
     var selectedNote = remember { mutableStateListOf<Note>()}
-    var searchString by remember { mutableStateOf("") }
     var isSearch by remember { mutableStateOf(false) }
     val focusRequester = remember { FocusRequester() }
     val keyboardController = LocalSoftwareKeyboardController.current
+    var bottomIsOpen = remember { mutableStateOf(false) }
     Scaffold(
         topBar = {
             if (selectedNote.size != 0) {
+                val actionIcons = mutableListOf<NavigationItems>(NavigationItems.Basket)
+                val onActionClicks = mutableListOf({
+                    selectedNote.forEach { mainViewModel.toBasket(it) }
+                    selectedNote.clear()
+                })
+                if (selectedNote.size == 1){
+                    actionIcons.add(0, NavigationItems.Palette)
+                    onActionClicks.add(0,{
+                        bottomIsOpen.value = true
+                    })
+                }
                 NavigationTopAppBar(
                     navIcons = NavigationItems.Back,
-                    actionIcons = mutableListOf(NavigationItems.Basket),
-                    onActionsClicks = mutableListOf({
-                        selectedNote.forEach { mainViewModel.toBasket(it) }
-                        selectedNote.clear()
-                    }),
+                    actionIcons = actionIcons,
+                    onActionsClicks = onActionClicks,
                     onNavClick = {selectedNote.clear()}
                 )
             }
@@ -80,6 +77,7 @@ fun FolderCategoryScreen(
                     onNavClick = onClick
                 )}
                 else{
+                    var searchString by remember { mutableStateOf("") }
                     NavigationTopAppBar(
                         titleWidget = {
                             LaunchedEffect(Unit) {
@@ -105,7 +103,7 @@ fun FolderCategoryScreen(
                         },
                         navIcons = NavigationItems.Back,
                         onNavClick = {
-                            searchString = ""
+                            mainViewModel.SearchNote()
                             isSearch = false
                         }
                     )
@@ -114,13 +112,18 @@ fun FolderCategoryScreen(
 
         },
         floatingActionButton = {
-            CastFloatingActionButton(Modifier.size(60.dp)) {
+            CastFloatingActionButton(Modifier.size(60.dp), Modifier.size(30.dp),
+                RoundedCornerShape(15.dp)
+            ) {
                 navController.navigate(
-                    Route.NoteScreen(stringCategory = category.stringCategory, typeCategory = category.typeCategory)
+                    Route.NoteScreen(stringCategory = category.stringCategory, typeCategory = category.typeCategory, foreignKey = category.categoryId)
                 )
             }
         }
     ) {
         GetNotes(mainViewModel,navController,it,selectedNote)
+        if (bottomIsOpen.value){
+            ModalBottomColors(bottomIsOpen,mainViewModel,selectedNote,bottomIsOpen)
+        }
     }
 }

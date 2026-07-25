@@ -4,43 +4,40 @@ import androidx.paging.PagingSource
 import androidx.room.Dao
 import androidx.room.Delete
 import androidx.room.Insert
-import androidx.room.OnConflictStrategy
 import androidx.room.Query
-import androidx.room.Transaction
 import androidx.room.Update
-import com.example.v.data.model.Note
+import com.example.v.data.model.FolderWithNote
 import com.example.v.data.model.Table
-import kotlinx.coroutines.flow.Flow
 
 @Dao
 interface NoteDao {
 
     @Query("""
             Select * From notes
-            Where category = 'Basket' And (name_notes Like '%' || :searchString || '%') And isSystem
+            Where foreignCategory = 2 And (title Like '%' || :searchString || '%')
             """
     )
-    fun getBasket(searchString: String = ""): PagingSource<Int, Table>
+    fun getBasket(searchString: String = ""): PagingSource<Int, FolderWithNote>
 
     @Query("""
             Select * From notes
-            Where category = 'Main' And (name_notes Like '%' || :searchString || '%') And isSystem
+            Where foreignCategory = 1 And (title  Like '%' || :searchString || '%')
             """
     )
-    fun getMain(searchString: String = ""): PagingSource<Int, Table>
+    fun getMain(searchString: String = ""): PagingSource<Int, FolderWithNote>
 
     @Query("""
             Select * From notes
-            Where category = :category And (name_notes Like '%' || :searchString || '%') And Not(isSystem)
+            Where (title Like '%' || :searchString || '%') And foreignCategory = :id
             """
     )
-    fun getOther(category:String,searchString: String = ""): PagingSource<Int, Table>
+    fun getOther(searchString: String = "",id: Int): PagingSource<Int, FolderWithNote>
 
     @Query(" Select * from notes Where id = :id ")
-    suspend fun getById(id: Int): Table
+    suspend fun getById(id: Int): FolderWithNote
 
     @Insert(
-        onConflict = OnConflictStrategy.ABORT
+        //onConflict = OnConflictStrategy.ABORT
     )
     suspend fun insertNote(note: Table)
 

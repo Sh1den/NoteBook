@@ -1,5 +1,4 @@
 package com.example.v.ui.screens
-import androidx.appcompat.app.AppCompatDelegate
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
@@ -17,11 +16,9 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
-import com.example.v.LocalSharedStateTheme
 import com.example.v.R
 import com.example.v.data.model.NavigationItems
 import com.example.v.data.model.TypeSetting
-import com.example.v.data.model.getLang
 import com.example.v.ui.components.NavigationTopAppBar
 import com.example.v.ui.components.SettingEligment
 import com.example.v.ui.navigation.Route
@@ -36,7 +33,13 @@ fun SettingsScreen(
         containerColor = MaterialTheme.colorScheme.surface,
         topBar = {
             NavigationTopAppBar({},stringResource(R.string.setting), NavigationItems.Back,null){
-                navController.navigate(Route.HomeScreen)
+                navController.navigate(Route.HomeScreen){
+                    launchSingleTop = true
+                    popUpTo(navController.graph.startDestinationId){
+                        saveState = true
+                    }
+                    restoreState = true
+                }
             }
         }
     ) {

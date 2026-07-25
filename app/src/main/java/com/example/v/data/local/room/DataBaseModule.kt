@@ -1,7 +1,6 @@
 package com.example.v.data.local.room
 
 import android.content.Context
-import androidx.room.Database
 import androidx.room.Room
 import androidx.room.RoomDatabase
 import androidx.sqlite.db.SupportSQLiteDatabase
@@ -18,8 +17,10 @@ import javax.inject.Singleton
 class CallbackFolder: RoomDatabase.Callback(){
     override fun onCreate(db: SupportSQLiteDatabase) {
         super.onCreate(db)
-        db.execSQL("Insert Into Folders (category_id,isSystem) Values ('Main',true)")
-        db.execSQL("Insert Into Folders (category_id,isSystem) Values ('Basket',true)")
+        db.execSQL("Insert Into Folders (category,typeCategory) Values ('Main',?)",
+            arrayOf(TypeCategory.MAIN))
+        db.execSQL("Insert Into Folders (category,typeCategory) Values ('Basket',?)",
+            arrayOf(TypeCategory.BASKET))
     }
 }
 @Module
