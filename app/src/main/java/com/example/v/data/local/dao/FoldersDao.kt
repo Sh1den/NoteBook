@@ -1,13 +1,12 @@
-package com.example.v.data.local.room
+package com.example.v.data.local.dao
 
 import androidx.paging.PagingSource
 import androidx.room.Dao
 import androidx.room.Delete
 import androidx.room.Insert
-import androidx.room.OnConflictStrategy
 import androidx.room.Query
 import androidx.room.Update
-import com.example.v.data.model.Folders
+import com.example.v.data.local.entity.Folders
 
 @Dao
 interface FoldersDao{
@@ -16,9 +15,7 @@ interface FoldersDao{
 
     @Query("UPDATE Folders Set category = :newCategoryName Where id = :oldId")
     suspend fun updateFolderName(oldId: Int,newCategoryName: String)
-    @Insert(
-        onConflict = OnConflictStrategy.ABORT
-    )
+    @Insert()
     suspend fun insertFolders(folder: Folders)
     @Delete
     suspend fun  deleteFolders(folders: Folders)

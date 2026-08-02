@@ -17,7 +17,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import com.example.v.R
-import com.example.v.data.model.NavigationItems
+import com.example.v.ui.navigation.NavigationItems
 import com.example.v.data.model.TypeSetting
 import com.example.v.ui.components.NavigationTopAppBar
 import com.example.v.ui.components.SettingEligment
@@ -25,8 +25,7 @@ import com.example.v.ui.navigation.Route
 
 @Composable
 fun SettingsScreen(
-    navController: NavController,
-    onClick: () -> Unit
+    navController: NavController
 ){
     Scaffold(
         contentColor = MaterialTheme.colorScheme.onSurface,

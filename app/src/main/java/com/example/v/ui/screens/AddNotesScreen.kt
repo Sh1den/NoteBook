@@ -14,6 +14,9 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
@@ -21,12 +24,9 @@ import androidx.compose.ui.unit.sp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.NavController
 import com.example.v.R
-import com.example.v.data.model.Category
-import com.example.v.data.model.NavigationItems
-import com.example.v.data.model.TypeCategory
+import com.example.v.ui.navigation.NavigationItems
 import com.example.v.ui.components.CastTextField
 import com.example.v.ui.components.NavigationTopAppBar
-import com.example.v.ui.navigation.Route
 import com.example.v.ui.viewmodels.EditNoteViewModel
 
 @Composable
@@ -35,11 +35,12 @@ fun AddNoteScreen(
     editNoteViewModel: EditNoteViewModel
 ) {
     val note by editNoteViewModel.thNote.collectAsStateWithLifecycle()
+    var isInitialized by remember { mutableStateOf(true) }
     val title = rememberTextFieldState("")
     val description = rememberTextFieldState("")
     LaunchedEffect(note) {
-        title.setTextAndPlaceCursorAtEnd(note.title)
-        description.setTextAndPlaceCursorAtEnd(note.text)
+            title.setTextAndPlaceCursorAtEnd(note.title)
+            description.setTextAndPlaceCursorAtEnd(note.text)
     }
     Scaffold(
         topBar = {
@@ -47,24 +48,18 @@ fun AddNoteScreen(
                 navIcons = NavigationItems.Back,
                 actionIcons = mutableListOf(NavigationItems.Ok),
                 onNavClick = {
-                    NavigateNote(Category(note.category.typeCategory,note.category.stringCategory),navController)
+                    navController.popBackStack()
                 },
                 colorCont = MaterialTheme.colorScheme.background,
-                onActionsClicks = listOf({
-                    if (description.text.length + title.text.length != 0) {
+                onActionsClicksIcons = listOf {
+                    if (description.text.toString().trim().isNotEmpty() or title.text.toString().trim().isNotEmpty()) {
                         editNoteViewModel.saveNote(
                             title.text.toString(),
                             description.text.toString()
                         )
-                        NavigateNote(
-                            Category(
-                                note.category.typeCategory,
-                                note.category.stringCategory,
-                                note.category.categoryId
-                            ), navController
-                        )
+                        navController.popBackStack()
                     }
-                })
+                }
             )
         }
     ) {
@@ -83,7 +78,7 @@ fun AddNoteScreen(
             Spacer(Modifier.size(15.dp))
             Row() {
                 Text(
-                    text = editNoteViewModel.thTime,
+                    text = editNoteViewModel.thTime ?: "",
                     color = MaterialTheme.colorScheme.onBackground,
                     fontSize = 12.sp
                 )
@@ -101,14 +96,5 @@ fun AddNoteScreen(
                 TextFieldLineLimits.MultiLine()
             )
         }
-    }
-}
-
-fun NavigateNote(
-    category: Category, navController: NavController){
-    when(category.typeCategory){
-        TypeCategory.MAIN -> navController.navigate(Route.HomeScreen)
-        TypeCategory.BASKET -> navController.navigate(Route.BasketNotes)
-        TypeCategory.OTHER -> navController.navigate(Route.FolderNotes(category.stringCategory,category.categoryId))
     }
 }

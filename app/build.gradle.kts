@@ -4,6 +4,7 @@ plugins {
     alias(libs.plugins.kotlin.ksp)
     alias(libs.plugins.google.dagger.hilt)
     alias(libs.plugins.kotlin.serialization)
+    alias(libs.plugins.detekt)
 }
 
 android {
@@ -17,6 +18,7 @@ android {
     defaultConfig {
         applicationId = "com.example.v"
         minSdk = 26
+        //noinspection OldTargetApi
         targetSdk = 36
         versionCode = 1
         versionName = "1.0"
@@ -26,8 +28,8 @@ android {
 
     buildTypes {
         release {
-            isMinifyEnabled = false
-            isShrinkResources = false
+            isMinifyEnabled = true
+            isShrinkResources = true
             proguardFiles(
                 getDefaultProguardFile("proguard-android-optimize.txt"),
                 "proguard-rules.pro"

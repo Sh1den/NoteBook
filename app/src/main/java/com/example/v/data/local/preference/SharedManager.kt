@@ -1,7 +1,8 @@
-package com.example.v.data.local.shared_preferences
+package com.example.v.data.local.preference
 
 import android.content.Context
 import android.content.Context.MODE_PRIVATE
+import android.content.SharedPreferences
 import com.example.v.data.model.Theme
 import dagger.hilt.android.qualifiers.ApplicationContext
 import javax.inject.Inject
@@ -16,7 +17,7 @@ class SharedManager @Inject constructor(
     }
 
     private val sharedPreferences = context.getSharedPreferences("settings_param",MODE_PRIVATE)
-    fun setTheme(theme: Theme) = sharedPreferences.edit().apply {
+    fun setTheme(theme: Theme): SharedPreferences.Editor? = sharedPreferences.edit().apply {
         putString(THEME, theme.strTheme)
         apply()
     }

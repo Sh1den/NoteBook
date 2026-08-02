@@ -16,6 +16,7 @@ material3 = "1.4.0"
 androidx-appcompat-version = "1.7.1"
 room = "2.8.4"
 paging = "3.4.2"
+detekt = "1.23.8"
 
 [libraries]
 androidx-core-ktx = { group = "androidx.core", name = "core-ktx", version.ref = "coreKtx" }
@@ -55,4 +56,5 @@ kotlin-compose = { id = "org.jetbrains.kotlin.plugin.compose", version.ref = "ko
 kotlin-ksp = { id = "com.google.devtools.ksp", version.ref = "ksp" }
 google-dagger-hilt = { id = "com.google.dagger.hilt.android", version.ref = "hilt"}
 kotlin-serialization = { id = "org.jetbrains.kotlin.plugin.serialization", version.ref = "kotlin" }
+detekt = {id = "io.gitlab.arturbosch.detekt",version.ref = "detekt"}
 

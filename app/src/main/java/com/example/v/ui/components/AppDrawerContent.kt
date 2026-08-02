@@ -33,7 +33,7 @@ import androidx.navigation.NavController
 import androidx.navigation.NavDestination
 import androidx.navigation.NavDestination.Companion.hasRoute
 import com.example.v.R
-import com.example.v.data.model.NavigationItems
+import com.example.v.ui.navigation.NavigationItems
 import com.example.v.ui.navigation.Route
 
 @Composable
@@ -142,13 +142,11 @@ fun DrawItem(
             unselectedTextColor = MaterialTheme.colorScheme.onBackground
         ),
         label = {
-            Spacer(modifier = Modifier.height(10.dp))
             Text(text = title?.let { stringResource(it) } ?: "")
         },
         onClick = onClick,
         shape = RoundedCornerShape(15.dp),
         icon = {
-            Spacer(modifier = Modifier.height(10.dp))
             imVect?.let { Icon(
                 modifier = Modifier.padding(end = 5.dp),
                 imageVector = imVect, contentDescription = null,
@@ -156,8 +154,7 @@ fun DrawItem(
             ) }
             painter?.let { Icon(
                 modifier = Modifier.padding(end = 5.dp),
-                painter = painterResource(painter), contentDescription = null,
-                tint =  MaterialTheme.colorScheme.onSurface
+                painter = painterResource(painter), contentDescription = null
             ) }
         },
     )

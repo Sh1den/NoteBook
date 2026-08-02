@@ -21,7 +21,7 @@ import androidx.compose.ui.platform.LocalSoftwareKeyboardController
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 import com.example.v.data.model.Category
-import com.example.v.data.model.NavigationItems
+import com.example.v.ui.navigation.NavigationItems
 import com.example.v.data.model.Note
 import com.example.v.ui.components.CastFloatingActionButton
 import com.example.v.ui.components.GetNotes
@@ -37,14 +37,22 @@ fun FolderCategoryScreen(
     mainViewModel: MainViewModel,
     onClick: () -> Unit
 ){
-    var selectedNote = remember { mutableStateListOf<Note>()}
+    LaunchedEffect(Unit) {
+        mainViewModel.setCategory(category)
+    }
+    var searchString by remember { mutableStateOf("") }
+    val selectedNote = remember { mutableStateListOf<Note>()}
     var isSearch by remember { mutableStateOf(false) }
     val focusRequester = remember { FocusRequester() }
     val keyboardController = LocalSoftwareKeyboardController.current
-    var bottomIsOpen = remember { mutableStateOf(false) }
+    val bottomIsOpen = remember { mutableStateOf(false) }
+    LaunchedEffect(isSearch) {
+        focusRequester.requestFocus()
+        keyboardController?.show()
+    }
     Scaffold(
         topBar = {
-            if (selectedNote.size != 0) {
+            if (selectedNote.isNotEmpty()) {
                 val actionIcons = mutableListOf<NavigationItems>(NavigationItems.Basket)
                 val onActionClicks = mutableListOf({
                     selectedNote.forEach { mainViewModel.toBasket(it) }
@@ -52,14 +60,14 @@ fun FolderCategoryScreen(
                 })
                 if (selectedNote.size == 1){
                     actionIcons.add(0, NavigationItems.Palette)
-                    onActionClicks.add(0,{
+                    onActionClicks.add(0) {
                         bottomIsOpen.value = true
-                    })
+                    }
                 }
                 NavigationTopAppBar(
                     navIcons = NavigationItems.Back,
                     actionIcons = actionIcons,
-                    onActionsClicks = onActionClicks,
+                    onActionsClicksIcons = onActionClicks,
                     onNavClick = {selectedNote.clear()}
                 )
             }
@@ -71,24 +79,19 @@ fun FolderCategoryScreen(
                     actionIcons = mutableListOf(
                         NavigationItems.Search
                     ),
-                    onActionsClicks = mutableListOf({
+                    onActionsClicksIcons = mutableListOf({
                         isSearch = true
                     }),
                     onNavClick = onClick
                 )}
                 else{
-                    var searchString by remember { mutableStateOf("") }
                     NavigationTopAppBar(
                         titleWidget = {
-                            LaunchedEffect(Unit) {
-                                focusRequester.requestFocus()
-                                keyboardController?.show()
-                            }
                             OutlinedTextField(
                                 value = searchString,
                                 onValueChange = {
                                     searchString = it
-                                    mainViewModel.SearchNote(searchString)
+                                    mainViewModel.searchNote(searchString)
                                 },
                                 modifier = Modifier.fillMaxWidth().focusRequester(focusRequester),
                                 colors = TextFieldDefaults.colors(
@@ -103,7 +106,8 @@ fun FolderCategoryScreen(
                         },
                         navIcons = NavigationItems.Back,
                         onNavClick = {
-                            mainViewModel.SearchNote()
+                            searchString = ""
+                            mainViewModel.searchNote()
                             isSearch = false
                         }
                     )

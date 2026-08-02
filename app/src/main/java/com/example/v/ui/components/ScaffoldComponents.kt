@@ -50,7 +50,7 @@ import androidx.paging.compose.collectAsLazyPagingItems
 import androidx.paging.compose.itemKey
 import com.example.v.data.model.Category
 import com.example.v.data.model.Folder
-import com.example.v.data.model.NavigationItems
+import com.example.v.ui.navigation.NavigationItems
 import com.example.v.data.model.Note
 import com.example.v.ui.navigation.Route
 import com.example.v.ui.theme.paletteColors
@@ -65,7 +65,8 @@ fun NavigationTopAppBar(
     navIcons: NavigationItems? = null,
     actionIcons: MutableList<NavigationItems>? = null,
     actionText: MutableList<String>? = null,
-    onActionsClicks: List<(() -> Unit)>? = null,
+    onActionsClicksText: List<(() -> Unit)>? = null,
+    onActionsClicksIcons: List<(() -> Unit)>? = null,
     colorCont: Color? = null,
     onNavClick: () -> Unit = {}
 ){
@@ -90,15 +91,15 @@ fun NavigationTopAppBar(
         },
         actions = {
             actionIcons?.let {
-                it.forEachIndexed() {ind,items ->   CastIconButton(items.imageVector, items.painter,onActionsClicks?.getOrNull(ind) ?: {})}
+                it.forEachIndexed() {ind,items ->   CastIconButton(items.imageVector, items.painter,onActionsClicksIcons?.getOrNull(ind) ?: {})}
             }
-            actionText?.let {
+            actionText?.let { it ->
                 Row() {
                     it.forEachIndexed { index, string ->
                         Text(
                             text = string,
                             modifier = Modifier.clickable{
-                                onActionsClicks?.let {
+                                onActionsClicksText?.let {
                                     it[index]()
                                 }
                             }
@@ -130,14 +131,14 @@ fun CastIconButton(
 }
 @Composable
 fun CastFloatingActionButton(
-    modif: Modifier,
-    iconModif: Modifier,
+    modifier: Modifier,
+    iconModify: Modifier,
     shape: Shape,
     onClick: () -> Unit = {}
 )
 {
     FloatingActionButton(
-        modifier = modif,
+        modifier = modifier,
         onClick = onClick,
         shape = shape,
         containerColor = MaterialTheme.colorScheme.primary,
@@ -146,7 +147,7 @@ fun CastFloatingActionButton(
        Icon(
            imageVector = Icons.Default.Add,
            contentDescription = null,
-           modifier = iconModif
+           modifier = iconModify
        )
     }
 }
@@ -163,8 +164,7 @@ fun NoteCard(
         val animateLongClick by animateColorAsState(
             targetValue = when(isSelected()){
                 false -> {
-                    if (note.color == null) MaterialTheme.colorScheme.surface
-                    else note.color
+                    note.color ?: MaterialTheme.colorScheme.surface
                 }
                 true -> Color(0xFF74C0FC)
             }
@@ -191,7 +191,7 @@ fun NoteCard(
                     .padding(horizontal = 15.dp)
             ) {
                 Text(
-                    text = if(it.title.length == 0) it.text.take(10) else it.title,
+                    text = it.title.ifEmpty { it.text.take(10) },
                     modifier = Modifier.padding(vertical = 8.dp),
                     fontSize = 22.sp,
                     color = MaterialTheme.colorScheme.onBackground
@@ -214,7 +214,7 @@ fun GetNotes(
     paddingValues: PaddingValues,
     selectedNote: SnapshotStateList<Note>
 ){
-    val notesPagging = mainViewModel.tableRepository.collectAsLazyPagingItems()
+    val notesPaging = mainViewModel.tableRepository.collectAsLazyPagingItems()
     LazyColumn(
         modifier = Modifier
             .padding(paddingValues)
@@ -222,18 +222,20 @@ fun GetNotes(
             .padding(horizontal = 7.dp)
     ) {
         items(
-            count = notesPagging.itemCount,
-            key = notesPagging.itemKey { Note ->  Note.id}
-        ){
-            val note = notesPagging[it]
+            count = notesPaging.itemCount,
+            key = notesPaging.itemKey { it.id}
+        ){ it ->
+            val note = notesPaging[it]
             note?.let {
                 NoteCard(note,navController,{ selectedNote.contains(it) },
                     {
                         if (!selectedNote.contains(it)) selectedNote.add(it)
                     }
                 ) {
-                    if (selectedNote.size != 0 && !selectedNote.contains(it)) selectedNote.add(it)
-                    else if (selectedNote.contains(it))  selectedNote.remove(it)
+                    if(selectedNote.isNotEmpty()){
+                        if(selectedNote.contains(it)) selectedNote.remove(it)
+                        else selectedNote.add(it)
+                    }
                     else {
                         navController.navigate(Route.NoteScreen(it.id,it.category.categoryId,it.category.stringCategory))
                     }
@@ -262,7 +264,7 @@ fun GetFolders(
         items(
             count = pagingFolders.itemCount,
             key = pagingFolders.itemKey {it.id }
-        ){
+        ){ it ->
             val folder = pagingFolders[it]
             folder?.let {
                 thFolder ->
@@ -270,10 +272,12 @@ fun GetFolders(
                     thFolder,
                     { selectedFolder.contains(thFolder) },
                     {isRename.value},
-                    { newFolder.value = Folder(id = thFolder.id, category = Category().apply{this.toCategory(it,thFolder.id)})},
+                    { newFolder.value = Folder(id = thFolder.id, category = Category.getCategory(it,thFolder.id))},
                     { if(!selectedFolder.contains(thFolder)) selectedFolder.add(thFolder) }) {
-                    if (selectedFolder.size != 0 && !selectedFolder.contains(thFolder)) selectedFolder.add(thFolder)
-                    else if(selectedFolder.contains(thFolder))selectedFolder.remove(thFolder)
+                    if(selectedFolder.isNotEmpty()){
+                        if(selectedFolder.contains(thFolder)) selectedFolder.remove(thFolder)
+                        else selectedFolder.add(thFolder)
+                    }
                     else {
                         navController.navigate(Route.FolderNotes(thFolder.category.stringCategory,thFolder.category.categoryId))
                     }
@@ -282,6 +286,7 @@ fun GetFolders(
         }
     }
 }
+
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun ModalBottomColors(
@@ -289,7 +294,7 @@ fun ModalBottomColors(
     mainViewModel: MainViewModel,
     selectedNote: SnapshotStateList<Note>,
     isBottomOpen: MutableState<Boolean>
-){
+) {
     ModalBottomSheet(
         onDismissRequest = {
             bottomIsOpen.value = false
@@ -316,15 +321,17 @@ fun ModalBottomColors(
                 contentPadding = PaddingValues(19.dp),
                 modifier = Modifier.fillMaxWidth()
             ) {
-                items(paletteColors){
+                items(paletteColors) { color ->
                     Card(
                         colors = CardDefaults.cardColors(
-                            containerColor = it
+                            containerColor = color
                         ),
                         modifier = Modifier
                             .size(37.dp)
                             .clickable {
-                                mainViewModel.colorChange(selectedNote[0].copy(color = it))
+                                selectedNote.firstOrNull()?.let { note ->
+                                    mainViewModel.colorChange(note.copy(color = color))
+                                }
                                 selectedNote.clear()
                                 bottomIsOpen.value = false
                             },

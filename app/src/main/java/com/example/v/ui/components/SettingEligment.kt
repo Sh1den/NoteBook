@@ -73,9 +73,9 @@ fun SettingEligment(
                 Icon(painter = painterResource(painter), contentDescription = null)
                 Spacer(Modifier.size(15.dp))
                 Column() {
-                    Text("${primaryText}")
+                    Text(primaryText)
                     Text(
-                        text = "${secondaryText}",
+                        text = secondaryText,
                         fontSize = 12.sp,
                         color = Color.Gray
                     )

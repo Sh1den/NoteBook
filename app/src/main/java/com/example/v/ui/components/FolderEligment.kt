@@ -7,7 +7,6 @@ import androidx.compose.foundation.combinedClickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxHeight
@@ -16,7 +15,6 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
@@ -26,7 +24,6 @@ import androidx.compose.material3.OutlinedTextFieldDefaults
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -41,9 +38,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.compose.ui.window.Dialog
 import com.example.v.R
-import com.example.v.data.model.Category
 import com.example.v.data.model.Folder
-import com.example.v.ui.viewmodels.FoldersViewModel
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.focus.FocusRequester
 import androidx.compose.ui.focus.focusRequester
@@ -52,10 +47,10 @@ import com.example.v.ui.theme.WarningColor
 
 @Composable
 fun CustomDialog(
-    showDialog: MutableState<Boolean>,
-    nameNewCategory: MutableState<String>,
-    paddingValues: PaddingValues,
-    foldersViewModel: FoldersViewModel
+    onValueChange: (String) -> Unit,
+    onDismissRequest: () -> Unit,
+    nameNewCategory: String,
+    onSaveClick: () -> Unit
 ){
     var nameValid by remember { mutableStateOf(true) }
     val focusColor by animateColorAsState(
@@ -67,17 +62,15 @@ fun CustomDialog(
         else Color.Red
     )
     Dialog(
-        onDismissRequest = { showDialog.value = false }
+        onDismissRequest = { onDismissRequest() }
     ) {
         Box(
-            modifier = Modifier.padding(paddingValues),
             contentAlignment = Alignment.TopStart
         ) {
             Card(
                 modifier = Modifier
                     .fillMaxWidth()
-                    .height(180.dp)
-                    .width(100.dp),
+                    .height(180.dp),
                 colors = CardDefaults.cardColors(
                     containerColor = MaterialTheme.colorScheme.background
                 ),
@@ -99,7 +92,10 @@ fun CustomDialog(
                         fontSize = 19.sp,
                         color = MaterialTheme.colorScheme.primary
                     )
-                    CastOutlineTextField(nameNewCategory,focusColor,unfocusColor)
+                    CastOutlineTextField(nameNewCategory,focusColor,unfocusColor){
+                        onValueChange(it)
+                        nameValid = true
+                    }
                     Spacer(Modifier.size(22.dp))
                     Row(
                         modifier = Modifier
@@ -108,18 +104,15 @@ fun CustomDialog(
                         horizontalArrangement = Arrangement.Absolute.SpaceBetween
                     ) {
                         CastTextClickable(stringResource(R.string.cancel)){
-                            showDialog.value = false
+                            onDismissRequest()
                         }
                         CastTextClickable(stringResource(R.string.save)) {
-                            if(nameNewCategory.value.length == 0) nameValid = false
-                            else {
+                            if(nameNewCategory.isNotBlank()){
                                 nameValid = true
-                                foldersViewModel.insertFolder(Folder(category = Category().apply {
-                                    this.toCategory(
-                                        nameNewCategory.value
-                                    )
-                                }))
-                                showDialog.value = false
+                                onSaveClick()
+                            }
+                            else{
+                                nameValid = false
                             }
                         }
 
@@ -132,9 +125,10 @@ fun CustomDialog(
 
 @Composable
 fun CastOutlineTextField(
-    nameNewCategory: MutableState<String>,
+    nameNewCategory: String,
     focusColor: Color,
-    unfocusColor: Color
+    unfocusColor: Color,
+    onValueChange :  (String) -> Unit
 ){
     OutlinedTextField(
         singleLine = true,
@@ -144,10 +138,8 @@ fun CastOutlineTextField(
                 color = MaterialTheme.colorScheme.tertiary
             )
         },
-        onValueChange = {
-            nameNewCategory.value = it
-        },
-        value = nameNewCategory.value,
+        onValueChange = onValueChange,
+        value = nameNewCategory,
         modifier = Modifier
             .padding(horizontal = 5.dp)
             .fillMaxWidth(),
@@ -156,9 +148,7 @@ fun CastOutlineTextField(
             focusedTextColor = MaterialTheme.colorScheme.onBackground,
             unfocusedTextColor = MaterialTheme.colorScheme.onBackground,
             focusedBorderColor = focusColor,
-            unfocusedBorderColor = unfocusColor,
-            focusedLabelColor = Color.White,
-            unfocusedLabelColor = Color.White
+            unfocusedBorderColor = unfocusColor
         )
     )
 }
@@ -174,6 +164,7 @@ fun CastTextClickable(
         color = MaterialTheme.colorScheme.primary
     )
 }
+
 @Composable
 fun FolderCard(
     folder: Folder,
@@ -182,71 +173,69 @@ fun FolderCard(
     toRename: (text: String) -> Unit,
     combinedClickable: () -> Unit,
     onClick: () -> Unit
-){
-    folder?.let {
-        val animateLongClick by animateColorAsState(
-            targetValue = when(isSelected() && !isRename()){
-                false -> MaterialTheme.colorScheme.surface
-                true -> Color(0xFF74C0FC)
-            }
+) {
+    val animateLongClick by animateColorAsState(
+        targetValue = when (isSelected() && !isRename()) {
+            false -> MaterialTheme.colorScheme.surface
+            true -> Color(0xFF74C0FC)
+        }
+    )
+    Card(
+        modifier = Modifier
+            .fillMaxWidth()
+            .height(90.dp)
+            .padding(vertical = 5.dp)
+            .combinedClickable(onLongClick = {
+                combinedClickable()
+            }) {
+                if (!isRename()) onClick()
+            },
+        shape = RoundedCornerShape(7.dp),
+        elevation = CardDefaults.cardElevation(7.dp),
+        colors = CardDefaults.cardColors(
+            containerColor = animateLongClick
         )
-        Card(
-            modifier = Modifier
-                .fillMaxWidth()
-                .height(90.dp)
-                .padding(vertical = 5.dp)
-                .combinedClickable(onLongClick = {
-                    combinedClickable()
-                }) {
-                    if (!isRename()) onClick()
-                },
-            shape = RoundedCornerShape(7.dp),
-            elevation = CardDefaults.cardElevation(7.dp),
-            colors = CardDefaults.cardColors(
-                containerColor = animateLongClick
-            )
+    ) {
+        Row(
+            modifier = Modifier.fillMaxHeight(),
+            verticalAlignment = Alignment.CenterVertically
         ) {
-            Row(
-                modifier = Modifier.fillMaxHeight(),
-                verticalAlignment = Alignment.CenterVertically
-            ) {
-                Spacer(Modifier.size(7.dp))
-                Image(
-                    painter = painterResource(R.drawable.outline_folder_24),
-                    modifier = Modifier.size(width = 45.dp, height = 55.dp),
-                    contentScale = ContentScale.Crop,
-                    contentDescription = null,
-                    colorFilter = ColorFilter.tint(MaterialTheme.colorScheme.onSurface.copy(alpha = 0.9f)))
-                Spacer(Modifier.size(17.dp))
-                if (isRename() && isSelected()) {
-                    val keyboardController = LocalSoftwareKeyboardController.current
-                    val focusRequester = remember { FocusRequester() }
-                    var newName by remember { mutableStateOf("") }
-                    LaunchedEffect(Unit) {
-                        focusRequester.requestFocus()
-                        keyboardController?.show()
-                    }
-                    OutlinedTextField(
-                        value = newName,
-                        onValueChange = {
-                            newName = it
-                            toRename(newName)
-                        },
-                        singleLine = true,
-                        colors = OutlinedTextFieldDefaults.colors(
-                            focusedBorderColor = Color.Transparent,
-                            unfocusedBorderColor = Color.Transparent
-                        ),
-                        modifier = Modifier.focusRequester(focusRequester)
-                    )
+            Spacer(Modifier.size(7.dp))
+            Image(
+                painter = painterResource(R.drawable.outline_folder_24),
+                modifier = Modifier.size(width = 45.dp, height = 55.dp),
+                contentScale = ContentScale.Crop,
+                contentDescription = null,
+                colorFilter = ColorFilter.tint(MaterialTheme.colorScheme.onSurface.copy(alpha = 0.9f))
+            )
+            Spacer(Modifier.size(17.dp))
+            if (isRename() && isSelected()) {
+                val keyboardController = LocalSoftwareKeyboardController.current
+                val focusRequester = remember { FocusRequester() }
+                var newName by remember { mutableStateOf(folder.category.stringCategory) }
+                LaunchedEffect(Unit) {
+                    focusRequester.requestFocus()
+                    keyboardController?.show()
                 }
-                else{
-                    Text(
-                        text = it.category.stringCategory,
-                        fontSize = 20.sp,
-                        color = MaterialTheme.colorScheme.onBackground
-                    )
-                }
+                OutlinedTextField(
+                    value = newName,
+                    onValueChange = {
+                        newName = it
+                        toRename(newName)
+                    },
+                    singleLine = true,
+                    colors = OutlinedTextFieldDefaults.colors(
+                        focusedBorderColor = Color.Transparent,
+                        unfocusedBorderColor = Color.Transparent
+                    ),
+                    modifier = Modifier.focusRequester(focusRequester)
+                )
+            } else {
+                Text(
+                    text = folder.category.stringCategory,
+                    fontSize = 20.sp,
+                    color = MaterialTheme.colorScheme.onBackground
+                )
             }
         }
     }

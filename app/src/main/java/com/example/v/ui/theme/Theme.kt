@@ -30,7 +30,6 @@ private val LightColorScheme = lightColorScheme(
 fun VTheme(
     darkTheme: Boolean = isSystemInDarkTheme(),
     settingsTheme: Theme,
-    dynamicColor: Boolean = true,
     content: @Composable () -> Unit
 ) {
    val colorScheme by lazy {

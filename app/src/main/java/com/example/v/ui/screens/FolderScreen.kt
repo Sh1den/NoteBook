@@ -20,8 +20,9 @@ import androidx.compose.ui.res.stringResource
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import androidx.navigation.NavController
 import com.example.v.R
+import com.example.v.data.model.Category
 import com.example.v.data.model.Folder
-import com.example.v.data.model.NavigationItems
+import com.example.v.ui.navigation.NavigationItems
 import com.example.v.ui.components.CustomDialog
 import com.example.v.ui.components.GetFolders
 import com.example.v.ui.components.NavigationTopAppBar
@@ -33,39 +34,39 @@ fun FolderScreen(
     navController: NavController,
     onClick: () -> Unit
 ) {
-    var showDialog = remember { mutableStateOf(false) }
+    val showDialog = remember { mutableStateOf(false) }
+    var searchString by remember { mutableStateOf("") }
     val foldersViewModel: FoldersViewModel = hiltViewModel()
-    var selectedFolder = remember { mutableStateListOf<Folder>()}
+    val selectedFolder = remember { mutableStateListOf<Folder>()}
     val focusRequester = remember { FocusRequester() }
     val currentUpdateFolder = remember { mutableStateOf(Folder()) }
-    var isRename = remember { mutableStateOf(false) }
+    val isRename = remember { mutableStateOf(false) }
+    var isSearch by remember { mutableStateOf(false) }
     val keyboardController = LocalSoftwareKeyboardController.current
+    LaunchedEffect(isSearch) {
+        focusRequester.requestFocus()
+        keyboardController?.show()
+    }
     Scaffold(
         topBar = {
-            if (selectedFolder.size == 0) {
-                var isSearch by remember { mutableStateOf(false) }
+            if (selectedFolder.isEmpty()) {
                 if (!isSearch) {
                     NavigationTopAppBar(
-                        {},
-                        stringResource(R.string.archives_of_notes),
-                        NavigationItems.Menu,
-                        mutableListOf(
+                        titleWidget =  {},
+                        titleBar =  stringResource(R.string.archives_of_notes),
+                         navIcons =  NavigationItems.Menu,
+                        actionIcons =  mutableListOf(
                             NavigationItems.NewFolder,
                             NavigationItems.Search
                         ),
-                        null,
-                        listOf({ showDialog.value = true }, {isSearch = true}),
+                        actionText =  null,
+                        onActionsClicksIcons =  listOf({ showDialog.value = true }, {isSearch = true}),
                         onNavClick = onClick
                     )
                 }
                 else{
-                    var searchString by remember { mutableStateOf("") }
                     NavigationTopAppBar(
                         titleWidget = {
-                            LaunchedEffect(Unit) {
-                                focusRequester.requestFocus()
-                                keyboardController?.show()
-                            }
                             OutlinedTextField(
                                 value = searchString,
                                 onValueChange = {
@@ -85,6 +86,7 @@ fun FolderScreen(
                         },
                         navIcons = NavigationItems.Back,
                         onNavClick = {
+                            searchString = ""
                             foldersViewModel.searchFolder()
                             isSearch = false
                         }
@@ -96,7 +98,7 @@ fun FolderScreen(
                     NavigationTopAppBar(
                         navIcons = NavigationItems.Cancel,
                         actionIcons = mutableListOf(NavigationItems.Ok),
-                        onActionsClicks = mutableListOf({
+                        onActionsClicksIcons = mutableListOf({
                             foldersViewModel.update(currentUpdateFolder.value)
                             selectedFolder.clear()
                             isRename.value = false
@@ -118,12 +120,12 @@ fun FolderScreen(
                     )
                     if (selectedFolder.size == 1) {
                         actionText.add(0,stringResource(R.string.rename))
-                        onActionClicks.add(0,{ isRename.value = true })
+                        onActionClicks.add(0) { isRename.value = true }
                     }
                     NavigationTopAppBar(
                         navIcons = NavigationItems.Back,
                         actionText = actionText,
-                        onActionsClicks = onActionClicks,
+                        onActionsClicksText = onActionClicks,
                         onNavClick = { selectedFolder.clear() }
                     )
                 }
@@ -131,8 +133,11 @@ fun FolderScreen(
         }
     ) {
         if (showDialog.value) {
-            var nameNewCategory = remember { mutableStateOf("") }
-            CustomDialog(showDialog,nameNewCategory,it,foldersViewModel)
+            val nameNewCategory = remember { mutableStateOf("") }
+            CustomDialog({nameNewCategory.value = it},{showDialog.value = false},nameNewCategory.value){
+                foldersViewModel.insertFolder(Folder(category = Category.getCategory(newCategory = nameNewCategory.value)))
+                showDialog.value = false
+            }
         }
         GetFolders(foldersViewModel,navController,it,selectedFolder, isRename,currentUpdateFolder)
     }

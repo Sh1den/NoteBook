@@ -18,7 +18,8 @@ import androidx.compose.ui.platform.LocalSoftwareKeyboardController
 import androidx.compose.ui.res.stringResource
 import androidx.navigation.NavController
 import com.example.v.R
-import com.example.v.data.model.NavigationItems
+import com.example.v.data.model.Category
+import com.example.v.ui.navigation.NavigationItems
 import com.example.v.data.model.Note
 import com.example.v.ui.components.GetNotes
 import com.example.v.ui.components.NavigationTopAppBar
@@ -30,20 +31,28 @@ fun BasketScreen(
     mainViewModel: MainViewModel,
     onClick: () -> Unit
 ){
-    var selectedNote = remember { mutableStateListOf<Note>()}
+    LaunchedEffect(Unit) {
+        mainViewModel.setCategory(Category.getBasketCategory())
+    }
+    var searchString by remember { mutableStateOf("") }
+    val selectedNote = remember { mutableStateListOf<Note>()}
     var isSearch by remember { mutableStateOf(false) }
     val focusRequester = remember { FocusRequester() }
     val keyboardController = LocalSoftwareKeyboardController.current
+    LaunchedEffect(isSearch) {
+        focusRequester.requestFocus()
+        keyboardController?.show()
+    }
     Scaffold(
         topBar = {
-            if (selectedNote.size != 0) {
+            if (selectedNote.isNotEmpty()) {
                 NavigationTopAppBar(
                     navIcons = NavigationItems.Back,
                     actionText = mutableListOf(
                         stringResource(R.string.restore),
                         stringResource(R.string.delete)
                     ),
-                    onActionsClicks = mutableListOf({
+                    onActionsClicksText = mutableListOf({
                         selectedNote.forEach {
                             mainViewModel.restoreToBasket(it)
                         }
@@ -58,7 +67,6 @@ fun BasketScreen(
                 )
             }
             else{
-                var searchString by remember { mutableStateOf("") }
                 if (!isSearch) {
                     NavigationTopAppBar(
                         titleBar = stringResource(R.string.basket_app),
@@ -66,22 +74,18 @@ fun BasketScreen(
                         actionIcons = mutableListOf(
                             NavigationItems.Search
                         ),
-                        onActionsClicks = mutableListOf({isSearch = true}),
+                        onActionsClicksIcons = mutableListOf({isSearch = true}),
                         onNavClick = onClick
                     )
                 }
                 else{
                     NavigationTopAppBar(
                         titleWidget = {
-                            LaunchedEffect(Unit) {
-                                focusRequester.requestFocus()
-                                keyboardController?.show()
-                            }
                             OutlinedTextField(
                                 value = searchString,
                                 onValueChange = {
                                     searchString = it
-                                    mainViewModel.SearchNote(searchString)
+                                    mainViewModel.searchNote(searchString)
                                 },
                                 modifier = Modifier.fillMaxWidth().focusRequester(focusRequester),
                                 colors = TextFieldDefaults.colors(
@@ -96,7 +100,8 @@ fun BasketScreen(
                         },
                         navIcons = NavigationItems.Back,
                         onNavClick = {
-                            mainViewModel.SearchNote()
+                            searchString = ""
+                            mainViewModel.searchNote()
                             isSearch = false
                         }
                     )

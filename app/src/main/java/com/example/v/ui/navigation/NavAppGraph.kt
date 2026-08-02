@@ -39,7 +39,7 @@ fun NavAppGraph(
     navController: NavHostController
 ) {
     val mainViewModel: MainViewModel = hiltViewModel()
-    var scope = rememberCoroutineScope()
+    val scope = rememberCoroutineScope()
     val backStackEntry by navController.currentBackStackEntryAsState()
     val thScreen = backStackEntry?.destination
     val isTopLevel = thScreen?.isTopLevelRoute() ?: false
@@ -68,21 +68,20 @@ fun NavAppGraph(
                     exitTransition = {
                         slideOutHorizontally(
                             animationSpec = tween(400, easing = FastOutLinearInEasing)
-                        ) { -it / 4 }
+                        ) { -it}
                     },
                     popEnterTransition =  {
                         slideInHorizontally(
                             animationSpec = tween(400, easing = LinearOutSlowInEasing)
-                        ) { it }
+                        ) { -it }
                     },
                     popExitTransition =  {
                         slideOutHorizontally(
                             animationSpec = tween(400, easing = FastOutLinearInEasing)
-                        ) { -it}
+                        ) { it}
                     }
                 ) {
-                    SettingsScreen(navController = navController) {
-                    }
+                    SettingsScreen(navController = navController)
                 }
                 composable<Route.HomeScreen>(
                     enterTransition = {
@@ -96,7 +95,6 @@ fun NavAppGraph(
                         ) { -it }
                     }
                 ) {
-                    mainViewModel.setCategory(Category())
                     MainScreen(navController, mainViewModel) {
                         scope.launch {
                             drawerState.open()
@@ -130,17 +128,17 @@ fun NavAppGraph(
                     exitTransition = {
                         slideOutHorizontally(
                             animationSpec = tween(400, easing = FastOutLinearInEasing)
-                        ) { -it / 4 }
+                        ) { -it}
                     },
                     popEnterTransition =  {
                         slideInHorizontally(
                             animationSpec = tween(400, easing = LinearOutSlowInEasing)
-                        ) { it }
+                        ) { -it }
                     },
                     popExitTransition = {
                         slideOutHorizontally(
                             animationSpec = tween(400, easing = FastOutLinearInEasing)
-                        ) { -it }
+                        ) { it }
                     }
                 ) {
                     val editNoteViewModel: EditNoteViewModel = hiltViewModel()
@@ -155,24 +153,23 @@ fun NavAppGraph(
                     exitTransition = {
                         slideOutHorizontally(
                             animationSpec = tween(400, easing = FastOutLinearInEasing)
-                        ) { -it / 4 }
+                        ) { -it }
                     },
                     popEnterTransition =  {
                         slideInHorizontally(
                             animationSpec = tween(400, easing = LinearOutSlowInEasing)
-                        ) { it }
+                        ) { -it }
                     },
                     popExitTransition = {
                         slideOutHorizontally(
                             animationSpec = tween(400, easing = FastOutLinearInEasing)
-                        ) { -it }
+                        ) { it }
                     }
                 ) {
                     val route = it.toRoute<Route.FolderNotes>()
-                    val category = Category().apply { this.toCategory(route.stringCategory,route.categoryId) }
-                    mainViewModel.setCategory(category)
+                    val category = Category.getCategory(route.stringCategory,route.categoryId)
                     FolderCategoryScreen(navController,category,mainViewModel) {
-                        navController.navigate(Route.FolderScreen)
+                        navController.popBackStack()
                     }
                 }
                 composable<Route.BasketNotes>(
@@ -189,15 +186,14 @@ fun NavAppGraph(
                     popEnterTransition =  {
                         slideInHorizontally(
                             animationSpec = tween(400, easing = LinearOutSlowInEasing)
-                        ) { it }
+                        ) { -it }
                     },
                     popExitTransition = {
                         slideOutHorizontally(
                             animationSpec = tween(400, easing = FastOutLinearInEasing)
-                        ) { -it }
+                        ) { it }
                     }
                 ) {
-                    mainViewModel.setCategory(Category().apply { this.toBasket() })
                     BasketScreen(navController,mainViewModel) {
                         navController.navigate(Route.HomeScreen){
                             launchSingleTop = true

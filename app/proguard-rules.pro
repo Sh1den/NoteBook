@@ -19,3 +19,18 @@
 # If you keep the line number information, uncomment this to
 # hide the original source file name.
 #-renamesourcefileattribute SourceFile
+
+-keepattributes *Annotation*,Signature,InnerClasses,EnclosingMethod
+
+#Hilt
+-keepclassmembers  class * {
+ @javax.inject.Inject *;
+ @dagger.Provides *;
+ @dagger.hilt.EntryPoint *;
+}
+
+#Room
+-keep class * extends androidx.room.RoomDatabase
+-keep class *_Impl {
+    *;
+}

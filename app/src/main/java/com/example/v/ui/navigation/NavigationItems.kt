@@ -1,4 +1,4 @@
-package com.example.v.data.model
+package com.example.v.ui.navigation
 
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowBack

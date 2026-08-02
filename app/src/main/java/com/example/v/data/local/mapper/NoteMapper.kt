@@ -2,9 +2,9 @@ package com.example.v.data.local.mapper
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.toArgb
 import com.example.v.data.model.Category
-import com.example.v.data.model.FolderWithNote
+import com.example.v.data.local.relation.FolderWithNote
 import com.example.v.data.model.Note
-import com.example.v.data.model.Table
+import com.example.v.data.local.entity.Table
 
 fun FolderWithNote.toDomain(): Note{
     return Note(
@@ -24,7 +24,7 @@ fun Note.toEntity(): Table{
         text = this.text,
         time = this.time,
         foreignCategory = this.category.categoryId,
-        previousForeignCategory = this.previousForeignCategory,
+        previousForeignCategory = if (this.previousForeignCategory == 0) this.category.categoryId else this.previousForeignCategory,
         color = this.color?.toArgb()
     )
 }

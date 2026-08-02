@@ -1,34 +1,37 @@
 package com.example.v.data.model
 
+import androidx.annotation.Keep
+
+@Keep
 data class Theme(
-    var strTheme: String? = null,
-    var colorTheme: ColorTheme = ColorTheme.None
+    val strTheme: String? = null,
+    val colorTheme: ColorTheme = parseColorTheme(strTheme)
 ){
-    init {
-       strTheme?.let{
-            it ->
-           colorTheme = when(it){
-               "light" -> ColorTheme.Light
-               "dark" -> ColorTheme.Dark
-               else -> ColorTheme.None
-           }
+    companion object {
+        fun parseColorTheme(strTheme: String?): ColorTheme {
+            return when (strTheme) {
+                "light" -> ColorTheme.Light
+                "dark" -> ColorTheme.Dark
+                else -> ColorTheme.None
+            }
         }
     }
     fun getTheme(language: String): String{
-        when(language) {
-            "ru" -> return when (colorTheme) {
+        return when(language) {
+            "ru" -> when (colorTheme) {
                 ColorTheme.Dark -> "Темная"
                 ColorTheme.Light -> "Светлая"
                 ColorTheme.None -> "По умолчанию"
             }
-            "eu" -> return when(colorTheme){
+
+            else -> when(colorTheme){
                 ColorTheme.Dark -> "Dark"
                 ColorTheme.Light -> "Light"
                 ColorTheme.None -> "Default"
             }
         }
-        return ""
     }
+    @Keep
     enum class ColorTheme{
         Dark,
         Light,

@@ -1,11 +1,12 @@
-package com.example.v.data.local.room
+package com.example.v.di
 
 import android.content.Context
 import androidx.room.Room
 import androidx.room.RoomDatabase
 import androidx.sqlite.db.SupportSQLiteDatabase
-import com.example.v.data.local.repository.FolderRepository
-import com.example.v.data.local.repository.NoteRepository
+import com.example.v.data.local.database.DataBase
+import com.example.v.data.local.dao.FoldersDao
+import com.example.v.data.local.dao.NoteDao
 import com.example.v.data.model.TypeCategory
 import dagger.Module
 import dagger.Provides
@@ -18,9 +19,9 @@ class CallbackFolder: RoomDatabase.Callback(){
     override fun onCreate(db: SupportSQLiteDatabase) {
         super.onCreate(db)
         db.execSQL("Insert Into Folders (category,typeCategory) Values ('Main',?)",
-            arrayOf(TypeCategory.MAIN))
+            arrayOf(TypeCategory.MAIN.name))
         db.execSQL("Insert Into Folders (category,typeCategory) Values ('Basket',?)",
-            arrayOf(TypeCategory.BASKET))
+            arrayOf(TypeCategory.BASKET.name))
     }
 }
 @Module
@@ -45,17 +46,7 @@ object DataBaseModule {
     }
     @Singleton
     @Provides
-    fun getFoldersDao(dataBase: DataBase): FoldersDao{
+    fun getFoldersDao(dataBase: DataBase): FoldersDao {
         return dataBase.foldersDao()
-    }
-    @Singleton
-    @Provides
-    fun getNoteRepository(noteDao: NoteDao): NoteRepository {
-        return NoteRepository(noteDao)
-    }
-    @Singleton
-    @Provides
-    fun getFoldersRepository(foldersDao: FoldersDao): FolderRepository{
-        return FolderRepository(foldersDao)
     }
 }
