@@ -75,8 +75,8 @@ fun AddNoteScreen(
                 .padding(it)
                 .fillMaxSize().
                     padding(horizontal = 20.dp, vertical = 10.dp)
-                .verticalScroll(scrollState)
                 .imePadding()
+                .verticalScroll(scrollState)
         ) {
 
             CastTextField(
