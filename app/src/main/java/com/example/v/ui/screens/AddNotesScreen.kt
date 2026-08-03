@@ -1,13 +1,19 @@
 package com.example.v.ui.screens
+import androidx.compose.foundation.gestures.Orientation
+import androidx.compose.foundation.gestures.rememberScrollableState
+import androidx.compose.foundation.gestures.scrollable
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.imePadding
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.text.input.TextFieldLineLimits
 import androidx.compose.foundation.text.input.rememberTextFieldState
 import androidx.compose.foundation.text.input.setTextAndPlaceCursorAtEnd
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
@@ -38,6 +44,7 @@ fun AddNoteScreen(
     var isInitialized by remember { mutableStateOf(true) }
     val title = rememberTextFieldState("")
     val description = rememberTextFieldState("")
+    val scrollState = rememberScrollState()
     LaunchedEffect(note) {
             title.setTextAndPlaceCursorAtEnd(note.title)
             description.setTextAndPlaceCursorAtEnd(note.text)
@@ -66,8 +73,10 @@ fun AddNoteScreen(
         Column(
             modifier = Modifier
                 .padding(it)
-                .fillMaxSize()
-                .padding(20.dp)
+                .fillMaxSize().
+                    padding(horizontal = 20.dp, vertical = 10.dp)
+                .verticalScroll(scrollState)
+                .imePadding()
         ) {
 
             CastTextField(

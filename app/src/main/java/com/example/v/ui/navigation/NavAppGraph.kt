@@ -38,7 +38,6 @@ import kotlinx.coroutines.launch
 fun NavAppGraph(
     navController: NavHostController
 ) {
-    val mainViewModel: MainViewModel = hiltViewModel()
     val scope = rememberCoroutineScope()
     val backStackEntry by navController.currentBackStackEntryAsState()
     val thScreen = backStackEntry?.destination
@@ -95,7 +94,7 @@ fun NavAppGraph(
                         ) { -it }
                     }
                 ) {
-                    MainScreen(navController, mainViewModel) {
+                    MainScreen(navController) {
                         scope.launch {
                             drawerState.open()
                         }
@@ -168,7 +167,7 @@ fun NavAppGraph(
                 ) {
                     val route = it.toRoute<Route.FolderNotes>()
                     val category = Category.getCategory(route.stringCategory,route.categoryId)
-                    FolderCategoryScreen(navController,category,mainViewModel) {
+                    FolderCategoryScreen(navController,category) {
                         navController.popBackStack()
                     }
                 }
@@ -194,7 +193,7 @@ fun NavAppGraph(
                         ) { it }
                     }
                 ) {
-                    BasketScreen(navController,mainViewModel) {
+                    BasketScreen(navController) {
                         navController.navigate(Route.HomeScreen){
                             launchSingleTop = true
                             popUpTo(navController.graph.startDestinationId){

@@ -19,6 +19,7 @@ import androidx.compose.ui.focus.focusRequester
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalSoftwareKeyboardController
 import androidx.compose.ui.unit.dp
+import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import androidx.navigation.NavController
 import com.example.v.data.model.Category
 import com.example.v.ui.navigation.NavigationItems
@@ -34,9 +35,9 @@ import com.example.v.ui.viewmodels.MainViewModel
 fun FolderCategoryScreen(
     navController: NavController,
     category: Category,
-    mainViewModel: MainViewModel,
     onClick: () -> Unit
 ){
+    val mainViewModel: MainViewModel = hiltViewModel()
     LaunchedEffect(Unit) {
         mainViewModel.setCategory(category)
     }

@@ -16,6 +16,7 @@ import androidx.compose.ui.focus.focusRequester
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalSoftwareKeyboardController
 import androidx.compose.ui.res.stringResource
+import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import androidx.navigation.NavController
 import com.example.v.R
 import com.example.v.data.model.Category
@@ -28,9 +29,9 @@ import com.example.v.ui.viewmodels.MainViewModel
 @Composable
 fun BasketScreen(
     navController: NavController,
-    mainViewModel: MainViewModel,
     onClick: () -> Unit
 ){
+    val mainViewModel: MainViewModel = hiltViewModel()
     LaunchedEffect(Unit) {
         mainViewModel.setCategory(Category.getBasketCategory())
     }
