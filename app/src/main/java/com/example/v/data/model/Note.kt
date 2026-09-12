@@ -9,7 +9,6 @@ data class Note(
     val title: String = "",
     val text: String = "",
     val time: String = "",
-    val previousForeignCategory: Int = 0,
-    val category: Category = Category(),
+    val categoryId: Int = 0,
     val color: Color? = null
 )

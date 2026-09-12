@@ -14,15 +14,9 @@ import androidx.room.PrimaryKey
             entity = Folders::class,
             parentColumns = ["id"],
             childColumns = ["foreignCategory"],
-            onDelete = ForeignKey.Companion.CASCADE,
-            onUpdate = ForeignKey.Companion.CASCADE
+            onDelete = ForeignKey.CASCADE,
+            onUpdate = ForeignKey.CASCADE
         ),
-        ForeignKey(
-            entity = Folders::class,
-            parentColumns = ["id"],
-            childColumns = ["previousForeignCategory"],
-            onDelete = ForeignKey.Companion.CASCADE
-        )
     ]
 )
 data class Table(
@@ -30,11 +24,11 @@ data class Table(
     val id: Int = 0,
     @ColumnInfo(
         name = "title",
-        collate = ColumnInfo.Companion.NOCASE)
+        collate = ColumnInfo.NOCASE)
     val nameNotes: String = "",
     val text: String = "",
     val time: String = "",
     val foreignCategory: Int = 0,
-    val previousForeignCategory: Int = 0,
-    val color: Int? = null
+    val color: Int? = null,
+    val isDelete: Boolean = false
 )

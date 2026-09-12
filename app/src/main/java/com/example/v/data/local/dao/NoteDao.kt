@@ -14,32 +14,17 @@ import com.example.v.data.local.entity.Table
 interface NoteDao {
 
     @Transaction
-    @Query("""
-            Select * From notes
-            Where foreignCategory = (Select id FROM Folders WHERE typeCategory = 'BASKET' LIMIT 1) 
-            And ((title Like :searchString || '%' And title != '') Or (text Like :searchString || '%' And title = ''))
-            """
-    )
-    fun getBasket(searchString: String = ""): PagingSource<Int, FolderWithNote>
+    @Query("Select * from notes Where foreignCategory == 0")
+    fun getMain(): PagingSource<Int, FolderWithNote>
 
     @Transaction
-    @Query("""
-            Select * From notes
-            Where foreignCategory = (Select id FROM Folders WHERE typeCategory = 'MAIN' LIMIT 1)
-            And ((title Like :searchString || '%' And title != '') Or (text Like :searchString || '%' And title = ''))
-            """
-    )
-    fun getMain(searchString: String = ""): PagingSource<Int, FolderWithNote>
+    @Query("Select * from notes Where isDelete = 1")
+    fun getBasket(): PagingSource<Int, FolderWithNote>
 
     @Transaction
-    @Query("""
-            Select * From notes
-            Where ((title Like :searchString || '%' And title != '') Or (text Like :searchString || '%' And title = ''))  And foreignCategory = :id
-            """
-    )
-    fun getOther(searchString: String = "",id: Int): PagingSource<Int, FolderWithNote>
+    @Query("Select * from notes Where foreignCategory != 0")
+    fun getOther()
     @Transaction
-
     @Query(" Select * from notes Where id = :id ")
     suspend fun getById(id: Int): FolderWithNote
 
