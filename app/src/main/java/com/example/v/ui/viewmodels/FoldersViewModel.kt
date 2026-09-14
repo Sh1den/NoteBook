@@ -23,18 +23,18 @@ class FoldersViewModel @Inject constructor(
         searchString -> folderRepository.getFolders(searchString)
     }.cachedIn(viewModelScope)
 
-    fun update(folder:Folder){
-        viewModelScope.launch{
+    fun update(folder:Folder) {
+        viewModelScope.launch {
             folderRepository.updateName(folder)
         }
     }
-    fun insertFolder(folder: Folder){
-       viewModelScope.launch{ folderRepository.insertFolder(folder) }
+    fun insertFolder(folder: Folder) {
+       viewModelScope.launch { folderRepository.insertFolder(folder) }
     }
-    fun deleteFolder(folder: Folder){
+    fun deleteFolder(folder: Folder) {
         viewModelScope.launch{ folderRepository.deleteFolder(folder) }
     }
-    fun searchFolder(stringSearch: String = ""){
+    fun searchFolder(stringSearch: String = "") {
         _searchQuery.value = stringSearch
     }
 }

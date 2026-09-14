@@ -40,7 +40,7 @@ fun MainScreen(
 ) {
     val mainViewModel: MainViewModel = hiltViewModel()
     LaunchedEffect(Unit) {
-        mainViewModel.setCategory(Category.getMainCategory())
+        mainViewModel.setType(Category.Main)
     }
     var searchString by remember { mutableStateOf("") }
     val selectedNote = remember { mutableStateListOf<Note>()}

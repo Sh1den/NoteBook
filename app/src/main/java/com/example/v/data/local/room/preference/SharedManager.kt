@@ -1,4 +1,4 @@
-package com.example.v.data.local.preference
+package com.example.v.data.local.room.preference
 
 import android.content.Context
 import android.content.Context.MODE_PRIVATE

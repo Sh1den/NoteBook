@@ -22,7 +22,7 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.toRoute
-import com.example.v.data.model.Category
+import com.example.v.data.model.Folder
 import com.example.v.ui.components.AppDrawerContent
 import com.example.v.ui.screens.AddNoteScreen
 import com.example.v.ui.screens.BasketScreen
@@ -31,7 +31,6 @@ import com.example.v.ui.screens.FolderScreen
 import com.example.v.ui.screens.MainScreen
 import com.example.v.ui.screens.SettingsScreen
 import com.example.v.ui.viewmodels.EditNoteViewModel
-import com.example.v.ui.viewmodels.MainViewModel
 import kotlinx.coroutines.launch
 
 @Composable
@@ -140,8 +139,8 @@ fun NavAppGraph(
                         ) { it }
                     }
                 ) {
-                    val editNoteViewModel: EditNoteViewModel = hiltViewModel()
-                    AddNoteScreen(navController,editNoteViewModel)
+                    //val editNoteViewModel: EditNoteViewModel = hiltViewModel()
+                    AddNoteScreen(navController = navController)
                 }
                 composable<Route.FolderNotes>(
                     enterTransition = {
@@ -166,8 +165,8 @@ fun NavAppGraph(
                     }
                 ) {
                     val route = it.toRoute<Route.FolderNotes>()
-                    val category = Category.getCategory(route.stringCategory,route.categoryId)
-                    FolderCategoryScreen(navController,category) {
+                    val thFolder = Folder(route.id,route.stringCategory)
+                    FolderCategoryScreen(navController,thFolder) {
                         navController.popBackStack()
                     }
                 }

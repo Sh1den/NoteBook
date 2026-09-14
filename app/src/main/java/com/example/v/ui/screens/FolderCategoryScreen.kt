@@ -22,6 +22,7 @@ import androidx.compose.ui.unit.dp
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import androidx.navigation.NavController
 import com.example.v.data.model.Category
+import com.example.v.data.model.Folder
 import com.example.v.ui.navigation.NavigationItems
 import com.example.v.data.model.Note
 import com.example.v.ui.components.CastFloatingActionButton
@@ -34,12 +35,12 @@ import com.example.v.ui.viewmodels.MainViewModel
 @Composable
 fun FolderCategoryScreen(
     navController: NavController,
-    category: Category,
+    thFolder: Folder,
     onClick: () -> Unit
 ){
     val mainViewModel: MainViewModel = hiltViewModel()
     LaunchedEffect(Unit) {
-        mainViewModel.setCategory(category)
+        mainViewModel.setType(Category.Others,thFolder.id)
     }
     var searchString by remember { mutableStateOf("") }
     val selectedNote = remember { mutableStateListOf<Note>()}
@@ -75,7 +76,7 @@ fun FolderCategoryScreen(
             else{
                 if(!isSearch){
                 NavigationTopAppBar(
-                    titleBar = category.stringCategory,
+                    titleBar = thFolder.name,
                     navIcons = NavigationItems.Back,
                     actionIcons = mutableListOf(
                         NavigationItems.Search
@@ -121,7 +122,7 @@ fun FolderCategoryScreen(
                 RoundedCornerShape(15.dp)
             ) {
                 navController.navigate(
-                    Route.NoteScreen(stringCategory = category.stringCategory, typeCategory = category.typeCategory, foreignKey = category.categoryId)
+                    Route.NoteScreen(foreignKey = thFolder.id)
                 )
             }
         }

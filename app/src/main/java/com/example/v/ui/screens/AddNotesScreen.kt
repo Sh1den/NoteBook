@@ -1,4 +1,5 @@
 package com.example.v.ui.screens
+import android.util.Log
 import androidx.compose.foundation.gestures.Orientation
 import androidx.compose.foundation.gestures.rememberScrollableState
 import androidx.compose.foundation.gestures.scrollable
@@ -27,6 +28,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.NavController
 import com.example.v.R
@@ -38,10 +40,9 @@ import com.example.v.ui.viewmodels.EditNoteViewModel
 @Composable
 fun AddNoteScreen(
     navController: NavController,
-    editNoteViewModel: EditNoteViewModel
+    editNoteViewModel: EditNoteViewModel = hiltViewModel()
 ) {
     val note by editNoteViewModel.thNote.collectAsStateWithLifecycle()
-    var isInitialized by remember { mutableStateOf(true) }
     val title = rememberTextFieldState("")
     val description = rememberTextFieldState("")
     val scrollState = rememberScrollState()
@@ -60,6 +61,7 @@ fun AddNoteScreen(
                 colorCont = MaterialTheme.colorScheme.background,
                 onActionsClicksIcons = listOf {
                     if (description.text.toString().trim().isNotEmpty() or title.text.toString().trim().isNotEmpty()) {
+                        //Log.d("PENIS",note.toString())
                         editNoteViewModel.saveNote(
                             title.text.toString(),
                             description.text.toString()

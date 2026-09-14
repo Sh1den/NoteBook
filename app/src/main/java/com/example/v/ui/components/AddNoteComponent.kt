@@ -18,7 +18,7 @@ fun CastTextField(
     state: TextFieldState,
     secondText: String,
     lineLimits: TextFieldLineLimits,
-){
+) {
     BasicTextField(
         state,
         modifier = Modifier.fillMaxWidth(),

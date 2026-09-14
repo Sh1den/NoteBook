@@ -1,5 +1,6 @@
 package com.example.v.ui.components
 
+import android.util.Log
 import androidx.compose.animation.animateColorAsState
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.combinedClickable
@@ -221,6 +222,7 @@ fun GetNotes(
             .fillMaxSize()
             .padding(horizontal = 7.dp)
     ) {
+        Log.d("SDNISDSID",notesPaging.itemCount.toString())
         items(
             count = notesPaging.itemCount,
             key = notesPaging.itemKey { it.id}
@@ -237,7 +239,7 @@ fun GetNotes(
                         else selectedNote.add(it)
                     }
                     else {
-                        navController.navigate(Route.NoteScreen(it.id,it.category.categoryId,it.category.stringCategory))
+                        navController.navigate(Route.NoteScreen(it.id,it.categoryId))
                     }
                 }
             }
@@ -272,14 +274,14 @@ fun GetFolders(
                     thFolder,
                     { selectedFolder.contains(thFolder) },
                     {isRename.value},
-                    { newFolder.value = Folder(id = thFolder.id, category = Category.getCategory(it,thFolder.id))},
+                    { newFolder.value = Folder(id = thFolder.id, name =  it)},
                     { if(!selectedFolder.contains(thFolder)) selectedFolder.add(thFolder) }) {
                     if(selectedFolder.isNotEmpty()){
                         if(selectedFolder.contains(thFolder)) selectedFolder.remove(thFolder)
                         else selectedFolder.add(thFolder)
                     }
                     else {
-                        navController.navigate(Route.FolderNotes(thFolder.category.stringCategory,thFolder.category.categoryId))
+                        navController.navigate(Route.FolderNotes(thFolder.name,thFolder.id))
                     }
                 }
             }

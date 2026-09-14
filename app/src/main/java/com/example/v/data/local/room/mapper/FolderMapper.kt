@@ -1,10 +1,10 @@
-package com.example.v.data.local.mapper
+package com.example.v.data.local.room.mapper
 
 import com.example.v.data.model.Folder
-import com.example.v.data.local.entity.Folders
+import com.example.v.data.local.room.entity.Folders
 
 fun Folders.toDomain(): Folder {
-    return Folder(this.id,this.category)
+    return Folder(this.id,this.folderName)
 }
 
 fun Folder.toEntity(): Folders{

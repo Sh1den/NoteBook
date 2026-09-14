@@ -1,10 +1,10 @@
-package com.example.v.data.local.relation
+package com.example.v.data.local.room.relation
 
 import androidx.annotation.Keep
 import androidx.room.Embedded
 import androidx.room.Relation
-import com.example.v.data.local.entity.Folders
-import com.example.v.data.local.entity.Table
+import com.example.v.data.local.room.entity.Folders
+import com.example.v.data.local.room.entity.Table
 
 @Keep
 data class FolderWithNote(
@@ -13,5 +13,5 @@ data class FolderWithNote(
         parentColumn = "foreignCategory",
         entityColumn = "id"
     )
-    val folders: Folders
+    val folders: Folders?
 )

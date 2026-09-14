@@ -1,4 +1,4 @@
-package com.example.v.data.local.entity
+package com.example.v.data.local.room.entity
 
 import androidx.annotation.Keep
 import androidx.room.ColumnInfo
@@ -28,7 +28,7 @@ data class Table(
     val nameNotes: String = "",
     val text: String = "",
     val time: String = "",
-    val foreignCategory: Int = 0,
+    val foreignCategory: Int? = null,
     val color: Int? = null,
     val isDelete: Boolean = false
 )

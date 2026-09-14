@@ -5,5 +5,5 @@ import androidx.annotation.Keep
 @Keep
 data class Folder(
     val id: Int = 0,
-    val name: String
+    val name: String = ""
 )

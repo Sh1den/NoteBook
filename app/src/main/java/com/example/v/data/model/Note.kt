@@ -9,6 +9,7 @@ data class Note(
     val title: String = "",
     val text: String = "",
     val time: String = "",
-    val categoryId: Int = 0,
+    val categoryId: Int? = null,
+    val isBasket: Boolean = false,
     val color: Color? = null
 )

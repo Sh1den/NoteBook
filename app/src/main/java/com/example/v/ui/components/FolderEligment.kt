@@ -156,7 +156,7 @@ fun CastOutlineTextField(
 fun CastTextClickable(
     text: String,
     onClick: () -> Unit
-){
+) {
     Text(
         text = text,
         modifier = Modifier.clickable(onClick = onClick),
@@ -212,7 +212,7 @@ fun FolderCard(
             if (isRename() && isSelected()) {
                 val keyboardController = LocalSoftwareKeyboardController.current
                 val focusRequester = remember { FocusRequester() }
-                var newName by remember { mutableStateOf(folder.category.stringCategory) }
+                var newName by remember { mutableStateOf(folder.name) }
                 LaunchedEffect(Unit) {
                     focusRequester.requestFocus()
                     keyboardController?.show()
@@ -232,7 +232,7 @@ fun FolderCard(
                 )
             } else {
                 Text(
-                    text = folder.category.stringCategory,
+                    text = folder.name,
                     fontSize = 20.sp,
                     color = MaterialTheme.colorScheme.onBackground
                 )

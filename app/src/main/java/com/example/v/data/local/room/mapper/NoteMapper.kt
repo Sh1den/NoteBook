@@ -1,9 +1,9 @@
-package com.example.v.data.local.mapper
+package com.example.v.data.local.room.mapper
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.toArgb
-import com.example.v.data.local.relation.FolderWithNote
+import com.example.v.data.local.room.relation.FolderWithNote
 import com.example.v.data.model.Note
-import com.example.v.data.local.entity.Table
+import com.example.v.data.local.room.entity.Table
 
 fun FolderWithNote.toDomain(): Note{
     return Note(
@@ -11,7 +11,8 @@ fun FolderWithNote.toDomain(): Note{
         title = this.table.nameNotes,
         text = this.table.text,
         time = this.table.time,
-        categoryId = this.folders.id,
+        categoryId = this.folders?.id,
+        isBasket = this.table.isDelete,
         color = if(this.table.color == null) null else Color(this.table.color)
     )
 }
@@ -22,6 +23,7 @@ fun Note.toEntity(): Table{
         text = this.text,
         time = this.time,
         foreignCategory = this.categoryId,
+        isDelete = this.isBasket,
         color = this.color?.toArgb()
     )
 }

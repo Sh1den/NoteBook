@@ -1,12 +1,13 @@
 package com.example.v.ui.viewmodels
+import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import androidx.paging.cachedIn
 import com.example.v.data.repository.NoteRepository
-import com.example.v.data.local.preference.SharedManager
+import com.example.v.data.local.room.preference.SharedManager
 import com.example.v.data.model.Category
 import com.example.v.data.model.Note
-import com.example.v.data.model.SearchCategory
+import com.example.v.data.model.ScreenType
 import com.example.v.data.model.Theme
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.ExperimentalCoroutinesApi
@@ -24,11 +25,11 @@ class MainViewModel @Inject constructor(
 ): ViewModel()  {
 
     private val _searchCategory = MutableStateFlow(
-        SearchCategory(Category())
+        ScreenType()
     )
     @OptIn(ExperimentalCoroutinesApi::class)
-    val tableRepository = _searchCategory.flatMapLatest {
-        searchCategory -> noteRepository.getNotesByCategory(searchCategory)
+    val tableRepository = _searchCategory.flatMapLatest { searchCategory ->
+        noteRepository.getNotesByCategory(searchCategory)
     }.cachedIn(viewModelScope)
     private val _theme = MutableStateFlow(Theme(sharedManager.getTheme()))
     val theme: StateFlow<Theme> = _theme
@@ -40,15 +41,24 @@ class MainViewModel @Inject constructor(
 
     fun deleteNotes(note: Note) = viewModelScope.launch{ noteRepository.deleteNote(note) }
 
-    fun toBasket(note:Note) = viewModelScope.launch{ noteRepository.toBasket(note)}
-    fun restoreToBasket(note: Note) = viewModelScope.launch{ noteRepository.restoreToBasket(note) }
+    fun toBasket(note:Note) {
+        viewModelScope.launch {
+            noteRepository.updateNote(note.copy(isBasket = true))
+        }
+    }
+    fun restoreToBasket(note: Note){
+        viewModelScope.launch{
+            noteRepository.updateNote(note.copy(isBasket = false))
+        }
+    }
 
     fun colorChange(note: Note) = viewModelScope.launch { noteRepository.updateNote(note) }
     fun searchNote(title: String = ""){
         _searchCategory.value = _searchCategory.value.copy().apply { this.toSearch(title) }
     }
-    fun setCategory(newCategory: Category){
-        _searchCategory.value = SearchCategory(newCategory)
+    fun setType(newCategory: Category,folderId: Int? = null){
+        Log.d("ADASDADD", _searchCategory.value.toString())
+        _searchCategory.value = ScreenType(newCategory,folderId)
     }
 
 }

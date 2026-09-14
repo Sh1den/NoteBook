@@ -1,25 +1,23 @@
-package com.example.v.data.local.dao
+package com.example.v.data.local.room.dao
 
 import androidx.paging.PagingSource
 import androidx.room.Dao
 import androidx.room.Delete
 import androidx.room.Insert
 import androidx.room.Query
-import androidx.room.Transaction
 import androidx.room.Update
-import com.example.v.data.local.entity.Folders
+import com.example.v.data.local.room.entity.Folders
 
 @Dao
 interface FoldersDao{
 
-    @Query("Select * from Folders Where id != 0 And category Like '%' || :stringSearch || '%'")
+    @Query("Select * from Folders Where id != 0 And folderName Like '%' || :stringSearch || '%'")
     fun getFolders(stringSearch: String = ""): PagingSource<Int, Folders>
 
 
-
-    @Query("UPDATE Folders Set category = :newCategoryName Where id = :oldId")
+    @Query("UPDATE Folders Set folderName = :newCategoryName Where id = :oldId")
     suspend fun updateFolderName(oldId: Int,newCategoryName: String)
-    @Insert()
+    @Insert
     suspend fun insertFolders(folder: Folders)
     @Delete
     suspend fun  deleteFolders(folders: Folders)

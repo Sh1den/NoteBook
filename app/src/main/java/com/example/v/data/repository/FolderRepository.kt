@@ -1,12 +1,13 @@
 package com.example.v.data.repository
 
+import android.util.Log
 import androidx.paging.Pager
 import androidx.paging.PagingConfig
 import androidx.paging.PagingData
 import androidx.paging.map
-import com.example.v.data.local.mapper.toDomain
-import com.example.v.data.local.mapper.toEntity
-import com.example.v.data.local.dao.FoldersDao
+import com.example.v.data.local.room.mapper.toDomain
+import com.example.v.data.local.room.mapper.toEntity
+import com.example.v.data.local.room.dao.FoldersDao
 import com.example.v.data.model.Folder
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
@@ -41,13 +42,11 @@ class FolderRepository @Inject constructor(
     }
 
     suspend fun updateName(folder: Folder){
-        foldersDao.updateFolderName(folder.id,folder.category.stringCategory)
+        Log.d("SDDSADAD",folder.toString())
+        foldersDao.updateFolderName(folder.id,folder.name)
     }
     suspend fun insertFolder(folder: Folder){
         foldersDao.insertFolders(folder.toEntity())
-    }
-    suspend fun updateFolder(folder: Folder){
-        foldersDao.updateFolders(folder.toEntity())
     }
     suspend fun deleteFolder(folder: Folder){
         foldersDao.deleteFolders(folder.toEntity())

@@ -33,7 +33,7 @@ fun BasketScreen(
 ){
     val mainViewModel: MainViewModel = hiltViewModel()
     LaunchedEffect(Unit) {
-        mainViewModel.setCategory(Category.getBasketCategory())
+        mainViewModel.setType(Category.Basket)
     }
     var searchString by remember { mutableStateOf("") }
     val selectedNote = remember { mutableStateListOf<Note>()}

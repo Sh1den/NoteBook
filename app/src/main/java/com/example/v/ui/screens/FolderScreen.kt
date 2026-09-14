@@ -1,4 +1,5 @@
 package com.example.v.ui.screens
+import android.util.Log
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.OutlinedTextField
@@ -99,6 +100,7 @@ fun FolderScreen(
                         navIcons = NavigationItems.Cancel,
                         actionIcons = mutableListOf(NavigationItems.Ok),
                         onActionsClicksIcons = mutableListOf({
+                            Log.d("PESA",currentUpdateFolder.value.toString())
                             foldersViewModel.update(currentUpdateFolder.value)
                             selectedFolder.clear()
                             isRename.value = false
@@ -135,7 +137,7 @@ fun FolderScreen(
         if (showDialog.value) {
             val nameNewCategory = remember { mutableStateOf("") }
             CustomDialog({nameNewCategory.value = it},{showDialog.value = false},nameNewCategory.value){
-                foldersViewModel.insertFolder(Folder(category = Category.getCategory(newCategory = nameNewCategory.value)))
+                foldersViewModel.insertFolder(Folder(name = nameNewCategory.value))
                 showDialog.value = false
             }
         }

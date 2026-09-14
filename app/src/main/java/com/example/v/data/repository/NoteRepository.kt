@@ -1,16 +1,16 @@
 package com.example.v.data.repository
 
+import android.util.Log
 import androidx.paging.Pager
 import androidx.paging.PagingConfig
 import androidx.paging.PagingData
 import androidx.paging.map
-import com.example.v.data.local.mapper.toDomain
-import com.example.v.data.local.mapper.toEntity
-import com.example.v.data.local.dao.NoteDao
+import com.example.v.data.local.room.mapper.toDomain
+import com.example.v.data.local.room.mapper.toEntity
+import com.example.v.data.local.room.dao.NoteDao
 import com.example.v.data.model.Category
 import com.example.v.data.model.Note
-import com.example.v.data.model.SearchCategory
-import com.example.v.data.model.TypeCategory
+import com.example.v.data.model.ScreenType
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
 import javax.inject.Inject
@@ -32,18 +32,20 @@ class NoteRepository @Inject constructor(
                 .replace("_","\\_")
         }
     }
-    fun getNotesByCategory(searchCategory: SearchCategory): Flow<PagingData<Note>> {
+    fun getNotesByCategory(searchCategory: ScreenType): Flow<PagingData<Note>> {
+        Log.d("ASDADA",searchCategory.name.toString())
         return Pager(
             config = DEFAULT_PAGER_CONFIG,
             pagingSourceFactory = {
-                when(searchCategory.category.typeCategory){
-                    TypeCategory.BASKET -> noteDao.getBasket(searchString = searchCategory.getSearchString().parseLike())
-                    TypeCategory.MAIN -> noteDao.getMain(searchString = searchCategory.getSearchString().parseLike())
-                    TypeCategory.OTHER -> noteDao.getOther(searchString = searchCategory.getSearchString().parseLike(),searchCategory.category.categoryId)
+                when(searchCategory.name) {
+                    Category.Main -> noteDao.getMain(searchCategory.getSearchString())
+                    Category.Basket -> noteDao.getBasket(searchCategory.getSearchString())
+                    Category.Others -> noteDao.getOther(searchCategory.idFolder ?: 0,searchCategory.getSearchString())
                 }
             }
         ).flow.map { pagingData ->
             pagingData.map {
+                Log.d("ASDADA",it.toString())
                 it.toDomain()
             }
         }
@@ -51,24 +53,17 @@ class NoteRepository @Inject constructor(
     suspend fun getNoteById(id: Int): Note{
         return noteDao.getById(id).toDomain()
     }
-    suspend fun toBasket(
-        note: Note
-    ) {
-        val newNote = note.copy(category = Category.getBasketCategory())
-        noteDao.updateNote(newNote.toEntity())
-    }
 
-    suspend fun restoreToBasket(note: Note){
-        val newNote = note.copy(category = note.category.copy(categoryId = note.previousForeignCategory), previousForeignCategory = 0)
-        noteDao.updateNote(newNote.toEntity())
-    }
     suspend fun insertNote(note: Note){
+        Log.d("SDNISDSID",note.toEntity().toString())
         noteDao.insertNote(note.toEntity())
     }
     suspend fun updateNote(note: Note){
+        Log.d("SDNISDSID",note.toString())
         noteDao.updateNote(note.toEntity())
     }
     suspend fun deleteNote(note: Note){
+        Log.d("SDNISDSID",note.toString())
         noteDao.deleteNote(note.toEntity())
     }
 }

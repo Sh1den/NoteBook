@@ -1,4 +1,4 @@
-package com.example.v.data.local.entity
+package com.example.v.data.local.room.entity
 
 import androidx.annotation.Keep
 import androidx.room.Entity
@@ -9,5 +9,5 @@ import androidx.room.PrimaryKey
 data class Folders(
     @PrimaryKey(autoGenerate = true)
     val id: Int = 0,
-    val category: String = ""
+    val folderName: String = ""
 )

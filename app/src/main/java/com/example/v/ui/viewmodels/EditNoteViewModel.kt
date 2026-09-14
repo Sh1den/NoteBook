@@ -19,15 +19,14 @@ import javax.inject.Inject
 
 @HiltViewModel
 class EditNoteViewModel @Inject constructor(
-    private val savedStateHandle: SavedStateHandle,
+    savedStateHandle: SavedStateHandle,
     private val noteRepository: NoteRepository
 ) : ViewModel() {
     private val route = savedStateHandle.toRoute<Route.NoteScreen>()
     val isChange = route.id != null
-    private val _thNote = MutableStateFlow(Note(category = Category.getCategory(
-        route.stringCategory,
-        route.foreignKey
-    )))
+    private val _thNote = MutableStateFlow(Note(
+        categoryId = route.foreignKey
+    ))
     val thNote = _thNote.asStateFlow()
     val thTime: String? =
         DateTimeFormatter.ofPattern("d MMMM, H:mm", Locale.getDefault()).format(LocalDateTime.now())
@@ -35,14 +34,14 @@ class EditNoteViewModel @Inject constructor(
     init {
         if (isChange) {
             viewModelScope.launch{
-                _thNote.value = noteRepository.getNoteById(route.id ?: 1)
+                _thNote.value = noteRepository.getNoteById(route.id ?: 0)
             }
         }
 
     }
 
     fun saveNote(title: String, text: String) {
-        val newNote: Note = _thNote.value.copy(title = title, text = text, time = thTime ?: "")
+        val newNote = _thNote.value.copy(title = title, text = text, time = thTime ?: "")
         if (isChange) update(newNote)
         else insert(newNote)
     }
