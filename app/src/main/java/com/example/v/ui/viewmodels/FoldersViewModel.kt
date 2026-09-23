@@ -13,10 +13,13 @@ import javax.inject.Inject
 
 @HiltViewModel
 class FoldersViewModel @Inject constructor(
-    private val folderRepository: FolderRepository
+    private val folderRepository: FolderRepository,
+    injector: Injector
 ): ViewModel() {
 
     private val _searchQuery = MutableStateFlow<String>("")
+
+    val gridType = injector.countColumn
 
     @OptIn(ExperimentalCoroutinesApi::class)
     val folders = _searchQuery.flatMapLatest {

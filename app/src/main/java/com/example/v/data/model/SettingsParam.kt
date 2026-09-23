@@ -1,51 +1,38 @@
 package com.example.v.data.model
+import androidx.compose.runtime.Composable
+import androidx.compose.ui.res.stringResource
+import com.example.v.R
+import org.intellij.lang.annotations.Language
 
-import androidx.annotation.Keep
 
-@Keep
-data class Theme(
-    val strTheme: String? = null,
-    val colorTheme: ColorTheme = parseColorTheme(strTheme)
+@Composable
+fun getSecondLanguage(language: String) = when(language){
+        stringResource(R.string.language_tabs_eu) -> stringResource(R.string.language_en)
+        else -> stringResource(R.string.language_rus)
+    }
+enum class ColorTheme(
+    val idTheme: Int
 ){
-    companion object {
-        fun parseColorTheme(strTheme: String?): ColorTheme {
-            return when (strTheme) {
-                "light" -> ColorTheme.Light
-                "dark" -> ColorTheme.Dark
-                else -> ColorTheme.None
-            }
-        }
-    }
-    fun getTheme(language: String): String{
-        return when(language) {
-            "ru" -> when (colorTheme) {
-                ColorTheme.Dark -> "Темная"
-                ColorTheme.Light -> "Светлая"
-                ColorTheme.None -> "По умолчанию"
-            }
+    Dark(R.string.dark_theme),
+    Light(R.string.light_theme),
+    Default(R.string.default_theme);
 
-            else -> when(colorTheme){
-                ColorTheme.Dark -> "Dark"
-                ColorTheme.Light -> "Light"
-                ColorTheme.None -> "Default"
-            }
+    companion object {
+        fun getTheme(id: Int): ColorTheme{
+            return ColorTheme.entries.find { it.idTheme == id } ?: Default
         }
     }
-    @Keep
-    enum class ColorTheme{
-        Dark,
-        Light,
-        None
-    }
 }
-fun getLang(lang: String): String{
-    when(lang){
-        "eu" -> return "English"
-        "ru" -> return "Русский"
+enum class GridColumn(
+    val type: Int,
+    val countColumn: Int
+){
+    ContinuesColumn(R.string.list,1),
+    TwoColumn(R.string.two_column,2),
+    ThreeColumn(R.string.three_column,3);
+    companion object{
+        fun getGridColumn(typeView: Int): GridColumn{
+            return GridColumn.entries.find { it.countColumn == typeView } ?: ContinuesColumn
+        }
     }
-    return "default"
-}
-enum class TypeSetting{
-    Theme,
-    Language
 }

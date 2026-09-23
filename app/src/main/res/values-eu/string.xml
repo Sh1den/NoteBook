@@ -1,9 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
+    <string name="language_tabs_eu">eu</string>
+    <string name="language_tabs_rus">ru</string>
     <string name="menu">Menu</string>
     <string name="app_name">NoteBook</string>
     <string name="basket_app">Basket</string>
-    <string name="packege">Archives</string>
+    <string name="packege">Archives notes</string>
     <string name="new_packege">New folder</string>
     <string name="setting">Setting</string>
     <string name="Home">All notes</string>
@@ -11,6 +13,7 @@
     <string name="language_app">Application language</string>
     <string name="dark_theme">Dark</string>
     <string name="light_theme">Light</string>
+    <string name="default_theme">By Default</string>
     <string name="language_rus">Russian</string>
     <string name="language_en">English</string>
     <string name="general">General</string>
@@ -24,4 +27,10 @@
     <string name="save">Save</string>
     <string name="restore">Restore</string>
     <string name="rename">Rename</string>
+    <string name="display">Display</string>
+    <string name="view">View</string>
+    <string name="list">List</string>
+    <string name="two_column">In three columns</string>
+    <string name="three_column">In three columns</string>
+    <string name="notes_counter">count notes: %1$d</string>
 </resources>

@@ -6,7 +6,8 @@ import androidx.compose.material3.darkColorScheme
 import androidx.compose.material3.lightColorScheme
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.graphics.Color
-import com.example.v.data.model.Theme
+import com.example.v.data.model.ColorTheme
+
 
 private val DarkColorScheme = darkColorScheme(
     background = DarkBackground,
@@ -18,7 +19,7 @@ private val DarkColorScheme = darkColorScheme(
 )
 
 private val LightColorScheme = lightColorScheme(
-    background = Color.White,
+    background = LightBackground,
     primary = LightPrimary,
     surface = DarkOnSurface,
     onSurface = LightOnSurface,
@@ -29,14 +30,14 @@ private val LightColorScheme = lightColorScheme(
 @Composable
 fun VTheme(
     darkTheme: Boolean = isSystemInDarkTheme(),
-    settingsTheme: Theme,
+    colorTheme: ColorTheme,
     content: @Composable () -> Unit
 ) {
    val colorScheme by lazy {
-       when(settingsTheme.colorTheme){
-           Theme.ColorTheme.None -> if (darkTheme) DarkColorScheme else LightColorScheme
-           Theme.ColorTheme.Light -> LightColorScheme
-           Theme.ColorTheme.Dark -> DarkColorScheme
+       when(colorTheme){
+           ColorTheme.Default -> if (darkTheme) DarkColorScheme else LightColorScheme
+           ColorTheme.Light -> LightColorScheme
+           ColorTheme.Dark -> DarkColorScheme
        }
    }
     MaterialTheme(

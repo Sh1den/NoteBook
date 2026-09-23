@@ -129,7 +129,7 @@ fun FolderCategoryScreen(
     ) {
         GetNotes(mainViewModel,navController,it,selectedNote)
         if (bottomIsOpen.value){
-            ModalBottomColors(bottomIsOpen,mainViewModel,selectedNote,bottomIsOpen)
+            ModalBottomColors(bottomIsOpen,mainViewModel,selectedNote)
         }
     }
 }

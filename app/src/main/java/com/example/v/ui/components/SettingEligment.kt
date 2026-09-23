@@ -1,8 +1,11 @@
 package com.example.v.ui.components
 
 
+import android.util.Log
+import androidx.annotation.StringRes
 import androidx.appcompat.app.AppCompatDelegate
 import androidx.compose.animation.AnimatedVisibility
+import androidx.compose.animation.AnimatedVisibilityScope
 import androidx.compose.animation.core.FastOutSlowInEasing
 import androidx.compose.animation.core.tween
 import androidx.compose.animation.expandVertically
@@ -11,12 +14,18 @@ import androidx.compose.animation.fadeOut
 import androidx.compose.animation.shrinkVertically
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.ColumnScope
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.ButtonDefaults
+import androidx.compose.material3.Card
+import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
@@ -32,30 +41,56 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.RectangleShape
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.core.os.LocaleListCompat
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import com.example.v.LocalSharedStateTheme
 import com.example.v.MainActivity
-import com.example.v.data.model.Theme
-import com.example.v.data.model.TypeSetting
-import com.example.v.data.model.getLang
-import com.example.v.ui.viewmodels.MainViewModel
+import com.example.v.R
+import com.example.v.data.model.ColorTheme
+import com.example.v.data.model.GridColumn
+import com.example.v.data.model.getSecondLanguage
+import com.example.v.ui.viewmodels.SettingViewModel
+
 
 @Composable
-fun SettingEligment(
+fun SettingCard(
+    titleId: Int,
+    modifier: Modifier = Modifier,
+    content: @Composable (ColumnScope.() -> Unit)
+){
+    Column {
+        Text(
+            text = stringResource(titleId),
+            fontSize = 12.sp,
+            color = Color.Gray,
+            modifier = Modifier.padding(start = 10.dp)
+        )
+
+        Card(
+            modifier = modifier.width(370.dp),
+            shape = RoundedCornerShape(12.dp),
+            colors = CardDefaults.cardColors(
+                containerColor = MaterialTheme.colorScheme.tertiary
+            ),
+            content = content
+        )
+    }
+}
+@Composable
+fun SettingAlignment(
     painter: Int,
     primaryText: String,
-    type: TypeSetting
+    secondText: String,
+    content: @Composable (AnimatedVisibilityScope.() -> Unit)
 ){
-    val secondaryText = when(type){
-        TypeSetting.Theme -> LocalSharedStateTheme.current.getTheme(AppCompatDelegate.getApplicationLocales()[0]?.language ?: "ru")
-        TypeSetting.Language -> getLang(AppCompatDelegate.getApplicationLocales()[0]?.language ?: "ru")
-    }
     var optionOpen by remember { mutableStateOf(false) }
         TextButton(
-            modifier = Modifier.fillMaxWidth().height(70.dp),
+            modifier = Modifier
+                .fillMaxWidth()
+                .height(70.dp),
             shape = RectangleShape,
             colors = ButtonDefaults.buttonColors(
                 containerColor = MaterialTheme.colorScheme.tertiary,
@@ -72,10 +107,10 @@ fun SettingEligment(
             ) {
                 Icon(painter = painterResource(painter), contentDescription = null)
                 Spacer(Modifier.size(15.dp))
-                Column() {
+                Column {
                     Text(primaryText)
                     Text(
-                        text = secondaryText,
+                        text = secondText,
                         fontSize = 12.sp,
                         color = Color.Gray
                     )
@@ -85,55 +120,52 @@ fun SettingEligment(
     AnimatedVisibility(
         visible = optionOpen,
         enter = fadeIn(tween(500,100))+expandVertically(tween(600,100, easing = FastOutSlowInEasing)),
-        exit = fadeOut(tween(500,100))+shrinkVertically(tween(600,100, easing = FastOutSlowInEasing))
+        exit = fadeOut(tween(500,100))+shrinkVertically(tween(600,100, easing = FastOutSlowInEasing)),
+        content = content
+    )
+}
+
+@Composable
+fun GridBottom(
+    currentGrid: GridColumn,
+    settingViewModel: SettingViewModel
+){
+    TextButton(
+        modifier = Modifier.fillMaxWidth(),
+        onClick = {
+            settingViewModel.setGridLayout(currentGrid)
+        }
     ) {
-        when(type){
-            TypeSetting.Theme -> SettingTheme()
-            TypeSetting.Language -> SettingLanguage()
-        }
+        Text(stringResource(currentGrid.type))
     }
 }
 @Composable
-fun SettingTheme(){
-    val activity = LocalContext.current
-    val mainViewModel: MainViewModel = hiltViewModel(activity as MainActivity)
-    Column() {
-        TextButton(
-            modifier = Modifier.fillMaxWidth(),
-            onClick = {
-                mainViewModel.setTheme("dark", Theme.ColorTheme.Dark)
-            }
-        ) {
-            Text("Темная")
+fun LanguageButton(
+    languageName: String,
+    languageTabs: String
+) {
+    TextButton(
+        modifier = Modifier.fillMaxWidth(),
+        onClick = {
+            val localeListCompat = LocaleListCompat.forLanguageTags(languageTabs)
+            AppCompatDelegate.setApplicationLocales(localeListCompat)
         }
-        TextButton(
-            modifier = Modifier.fillMaxWidth(),
-            onClick = {
-                mainViewModel.setTheme("light", Theme.ColorTheme.Light)
-            }) {
-            Text("Светлая")
-        }
+    ) {
+        Text(languageName)
     }
 }
+
 @Composable
-fun SettingLanguage(){
-    Column() {
-        TextButton(
-            modifier = Modifier.fillMaxWidth(),
-            onClick = {
-                val localeListCompat = LocaleListCompat.forLanguageTags("ru")
-                AppCompatDelegate.setApplicationLocales(localeListCompat)
-            }
-        ) {
-            Text("Русский")
+fun ThemeBottom(
+    currentTheme: ColorTheme,
+    settingViewModel: SettingViewModel
+){
+    TextButton(
+        modifier = Modifier.fillMaxWidth(),
+        onClick = {
+            settingViewModel.setTheme(currentTheme)
         }
-        TextButton(
-            modifier = Modifier.fillMaxWidth(),
-            onClick = {
-                val localeListCompat = LocaleListCompat.forLanguageTags("eu")
-                AppCompatDelegate.setApplicationLocales(localeListCompat)
-            }) {
-            Text("Английский")
-        }
+    ) {
+        Text(stringResource(currentTheme.idTheme))
     }
 }

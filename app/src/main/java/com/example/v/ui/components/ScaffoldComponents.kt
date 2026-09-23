@@ -2,25 +2,32 @@ package com.example.v.ui.components
 
 import android.util.Log
 import androidx.compose.animation.animateColorAsState
+import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.combinedClickable
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.ui.graphics.Color
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.defaultMinSize
 import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.wrapContentHeight
 import androidx.compose.foundation.layout.wrapContentSize
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.foundation.lazy.grid.items
+import androidx.compose.foundation.lazy.staggeredgrid.LazyVerticalStaggeredGrid
+import androidx.compose.foundation.lazy.staggeredgrid.StaggeredGridCells
+import androidx.compose.foundation.selection.selectable
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
@@ -37,13 +44,18 @@ import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.MutableState
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.snapshots.SnapshotStateList
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Shape
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.text.PlatformTextStyle
+import androidx.compose.ui.text.TextStyle
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
@@ -73,7 +85,7 @@ fun NavigationTopAppBar(
 ){
     TopAppBar(
         colors = TopAppBarDefaults.topAppBarColors(
-            containerColor = colorCont ?: Color.Unspecified,
+            containerColor = MaterialTheme.colorScheme.background,
             navigationIconContentColor = MaterialTheme.colorScheme.onBackground
         ),
         title = {
@@ -160,49 +172,56 @@ fun NoteCard(
     isSelected: () -> Boolean,
     combinedClickable: () -> Unit,
     onClick: () -> Unit
-){
+) {
     note?.let {
+        val name = it.title.ifEmpty { it.text.take(10) }
         val animateLongClick by animateColorAsState(
-            targetValue = when(isSelected()){
+            targetValue = when (isSelected()) {
                 false -> {
-                    note.color ?: MaterialTheme.colorScheme.surface
+                    note.color ?: Color.White
                 }
+
                 true -> Color(0xFF74C0FC)
             }
         )
         Card(
             modifier = Modifier
-                .fillMaxWidth()
-                .height(90.dp)
-                .padding(vertical = 5.dp)
-                .combinedClickable(onLongClick = {
-                    combinedClickable()
-                }) {
-                    onClick()
-                },
-            shape = RoundedCornerShape(7.dp),
-            elevation = CardDefaults.cardElevation(7.dp),
+                .fillMaxWidth(),
             colors = CardDefaults.cardColors(
                 containerColor = animateLongClick
-            )
+            ),
+            shape = RoundedCornerShape(15.dp),
+            elevation = CardDefaults.cardElevation(3.dp)
         ) {
-            Column(
+            Box(
                 modifier = Modifier
-                    .fillMaxHeight()
-                    .padding(horizontal = 15.dp)
+                    .fillMaxSize()
+                    .combinedClickable(
+                        onLongClick = {
+                            combinedClickable()
+                        }) {
+                        onClick()
+                    }
             ) {
-                Text(
-                    text = it.title.ifEmpty { it.text.take(10) },
-                    modifier = Modifier.padding(vertical = 8.dp),
-                    fontSize = 22.sp,
-                    color = MaterialTheme.colorScheme.onBackground
-                )
-                Spacer(Modifier.size(5.dp))
-                Text(
-                    text = it.time,
-                    fontSize = 11.sp,
-                    color = MaterialTheme.colorScheme.onTertiary
-                )
+                Column(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .defaultMinSize(minHeight = 80.dp)
+                        .padding(start = 20.dp, top = 12.dp, end = 20.dp, bottom = 12.dp),
+                    verticalArrangement = Arrangement.spacedBy(3.dp)
+                ) {
+                    Text(
+                        text = name,
+                        fontSize = 22.sp,
+                        color = MaterialTheme.colorScheme.onBackground
+                    )
+                    Spacer(modifier = Modifier.size(7.dp))
+                    Text(
+                        text = it.time,
+                        fontSize = 12.sp,
+                        color = MaterialTheme.colorScheme.onTertiary
+                    )
+                }
             }
         }
     }
@@ -216,13 +235,16 @@ fun GetNotes(
     selectedNote: SnapshotStateList<Note>
 ){
     val notesPaging = mainViewModel.tableRepository.collectAsLazyPagingItems()
-    LazyColumn(
+    val gridType by mainViewModel.gridType.collectAsState()
+    LazyVerticalStaggeredGrid(
+        columns = StaggeredGridCells.Fixed(gridType.countColumn),
         modifier = Modifier
             .padding(paddingValues)
-            .fillMaxSize()
-            .padding(horizontal = 7.dp)
+            .fillMaxSize(),
+        horizontalArrangement = Arrangement.spacedBy(8.dp),
+        verticalItemSpacing = 8.dp,
+        contentPadding = PaddingValues( horizontal = 10.dp)
     ) {
-        Log.d("SDNISDSID",notesPaging.itemCount.toString())
         items(
             count = notesPaging.itemCount,
             key = notesPaging.itemKey { it.id}
@@ -239,7 +261,7 @@ fun GetNotes(
                         else selectedNote.add(it)
                     }
                     else {
-                        navController.navigate(Route.NoteScreen(it.id,it.categoryId))
+                        if (mainViewModel.isEditNotes()) navController.navigate(Route.NoteScreen(it.id,it.categoryId))
                     }
                 }
             }
@@ -257,11 +279,15 @@ fun GetFolders(
     newFolder: MutableState<Folder>
 ){
     val pagingFolders = foldersViewModel.folders.collectAsLazyPagingItems()
-    LazyColumn(
+    val gridType by foldersViewModel.gridType.collectAsState()
+    LazyVerticalStaggeredGrid(
+        columns = StaggeredGridCells.Fixed(gridType.countColumn),
         modifier = Modifier
             .padding(paddingValues)
-            .fillMaxSize()
-            .padding(horizontal = 7.dp)
+            .fillMaxSize(),
+        horizontalArrangement = Arrangement.spacedBy(7.dp),
+        verticalItemSpacing = 7.dp,
+        contentPadding = PaddingValues( horizontal = 10.dp)
     ) {
         items(
             count = pagingFolders.itemCount,
@@ -274,7 +300,7 @@ fun GetFolders(
                     thFolder,
                     { selectedFolder.contains(thFolder) },
                     {isRename.value},
-                    { newFolder.value = Folder(id = thFolder.id, name =  it)},
+                    { newFolder.value = Folder(id = thFolder.id, name =  it, countNotes = thFolder.countNotes)},
                     { if(!selectedFolder.contains(thFolder)) selectedFolder.add(thFolder) }) {
                     if(selectedFolder.isNotEmpty()){
                         if(selectedFolder.contains(thFolder)) selectedFolder.remove(thFolder)
@@ -294,14 +320,12 @@ fun GetFolders(
 fun ModalBottomColors(
     bottomIsOpen: MutableState<Boolean>,
     mainViewModel: MainViewModel,
-    selectedNote: SnapshotStateList<Note>,
-    isBottomOpen: MutableState<Boolean>
+    selectedNote: SnapshotStateList<Note>
 ) {
     ModalBottomSheet(
         onDismissRequest = {
             bottomIsOpen.value = false
         },
-        dragHandle = null,
         modifier = Modifier.wrapContentSize(),
         shape = RoundedCornerShape(17.dp)
     ) {

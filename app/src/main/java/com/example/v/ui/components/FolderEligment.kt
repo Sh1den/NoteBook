@@ -9,6 +9,7 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.defaultMinSize
 import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -18,6 +19,7 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
+import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.OutlinedTextFieldDefaults
@@ -40,9 +42,11 @@ import androidx.compose.ui.window.Dialog
 import com.example.v.R
 import com.example.v.data.model.Folder
 import androidx.compose.runtime.setValue
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.focus.FocusRequester
 import androidx.compose.ui.focus.focusRequester
 import androidx.compose.ui.platform.LocalSoftwareKeyboardController
+import androidx.compose.ui.text.font.FontWeight
 import com.example.v.ui.theme.WarningColor
 
 @Composable
@@ -176,67 +180,74 @@ fun FolderCard(
 ) {
     val animateLongClick by animateColorAsState(
         targetValue = when (isSelected() && !isRename()) {
-            false -> MaterialTheme.colorScheme.surface
+            false -> Color.White
             true -> Color(0xFF74C0FC)
         }
     )
     Card(
-        modifier = Modifier
-            .fillMaxWidth()
-            .height(90.dp)
-            .padding(vertical = 5.dp)
-            .combinedClickable(onLongClick = {
-                combinedClickable()
-            }) {
-                if (!isRename()) onClick()
-            },
         shape = RoundedCornerShape(7.dp),
-        elevation = CardDefaults.cardElevation(7.dp),
+        elevation = CardDefaults.cardElevation(3.dp),
         colors = CardDefaults.cardColors(
             containerColor = animateLongClick
         )
     ) {
-        Row(
-            modifier = Modifier.fillMaxHeight(),
-            verticalAlignment = Alignment.CenterVertically
-        ) {
-            Spacer(Modifier.size(7.dp))
-            Image(
-                painter = painterResource(R.drawable.outline_folder_24),
-                modifier = Modifier.size(width = 45.dp, height = 55.dp),
-                contentScale = ContentScale.Crop,
-                contentDescription = null,
-                colorFilter = ColorFilter.tint(MaterialTheme.colorScheme.onSurface.copy(alpha = 0.9f))
-            )
-            Spacer(Modifier.size(17.dp))
-            if (isRename() && isSelected()) {
-                val keyboardController = LocalSoftwareKeyboardController.current
-                val focusRequester = remember { FocusRequester() }
-                var newName by remember { mutableStateOf(folder.name) }
-                LaunchedEffect(Unit) {
-                    focusRequester.requestFocus()
-                    keyboardController?.show()
+        Box(
+            modifier = Modifier
+                .fillMaxSize()
+                .combinedClickable(onLongClick = {
+                    combinedClickable()
+                }) {
+                    if (!isRename()) onClick()
                 }
-                OutlinedTextField(
-                    value = newName,
-                    onValueChange = {
-                        newName = it
-                        toRename(newName)
-                    },
-                    singleLine = true,
-                    colors = OutlinedTextFieldDefaults.colors(
-                        focusedBorderColor = Color.Transparent,
-                        unfocusedBorderColor = Color.Transparent
-                    ),
-                    modifier = Modifier.focusRequester(focusRequester)
+        ){
+            Row(
+                modifier = Modifier.fillMaxWidth().defaultMinSize(minHeight = 60.dp).padding(start = 12.dp, top = 3.dp, end = 5.dp, bottom = 3.dp),
+                verticalAlignment = Alignment.CenterVertically,
+            ) {
+                Image(
+                    painter = painterResource(R.drawable.open_folder_),
+                    modifier = Modifier.size(40.dp),
+                    contentDescription = null
                 )
-            } else {
-                Text(
-                    text = folder.name,
-                    fontSize = 20.sp,
-                    color = MaterialTheme.colorScheme.onBackground
-                )
+                Spacer(modifier = Modifier.size(12.dp))
+                if (isRename() && isSelected()) {
+                    val keyboardController = LocalSoftwareKeyboardController.current
+                    val focusRequester = remember { FocusRequester() }
+                    var newName by remember { mutableStateOf(folder.name) }
+                    LaunchedEffect(Unit) {
+                        focusRequester.requestFocus()
+                        keyboardController?.show()
+                    }
+                    OutlinedTextField(
+                        value = newName,
+                        onValueChange = {
+                            newName = it
+                            toRename(newName)
+                        },
+                        colors = OutlinedTextFieldDefaults.colors(
+                            focusedBorderColor = Color.Transparent,
+                            unfocusedBorderColor = Color.Transparent
+                        ),
+                        modifier = Modifier.focusRequester(focusRequester)
+                    )
+                } else {
+                    Column() {
+                        Text(
+                            text = folder.name,
+                            fontSize = 20.sp,
+                            fontWeight = FontWeight.Bold,
+                            color = MaterialTheme.colorScheme.onBackground,
+                            maxLines = 2
+                        )
+                        Spacer(modifier = Modifier.size(5.dp))
+                        Text(
+                            text = stringResource(R.string.notes_counter,folder.countNotes),
+                            fontSize = 12.sp
+                        )
+                    }
+                }
             }
         }
+
     }
 }

@@ -1,9 +1,6 @@
 package com.example.v.data.model
 
 import androidx.annotation.Keep
-import androidx.compose.runtime.Composable
-import androidx.compose.ui.res.stringResource
-import com.example.v.R
 
 
 enum class Category {

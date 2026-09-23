@@ -7,13 +7,18 @@ import androidx.room.Insert
 import androidx.room.Query
 import androidx.room.Update
 import com.example.v.data.local.room.entity.Folders
+import com.example.v.data.local.room.relation.CountNotesWithFolders
 
 @Dao
 interface FoldersDao{
 
-    @Query("Select * from Folders Where id != 0 And folderName Like '%' || :stringSearch || '%'")
-    fun getFolders(stringSearch: String = ""): PagingSource<Int, Folders>
-
+    @Query("""
+        Select Folders.id,folderName,Count(Folders.id) as countNotes  from Folders
+        Left Join notes On Folders.id = notes.foreignCategory
+        Where (Folders.id != 0 And folderName Like '%' || :stringSearch || '%')
+        Group by Folders.id
+        """)
+    fun getFolders(stringSearch: String = ""): PagingSource<Int, CountNotesWithFolders>
 
     @Query("UPDATE Folders Set folderName = :newCategoryName Where id = :oldId")
     suspend fun updateFolderName(oldId: Int,newCategoryName: String)
@@ -21,6 +26,4 @@ interface FoldersDao{
     suspend fun insertFolders(folder: Folders)
     @Delete
     suspend fun  deleteFolders(folders: Folders)
-    @Update
-    suspend fun  updateFolders(folders: Folders)
 }

@@ -1,5 +1,6 @@
 package com.example.v.ui.screens
 
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -22,6 +23,7 @@ import androidx.compose.ui.platform.LocalSoftwareKeyboardController
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.NavController
 import com.example.v.R
 import com.example.v.data.model.Category
@@ -33,6 +35,8 @@ import com.example.v.ui.components.ModalBottomColors
 import com.example.v.ui.components.NavigationTopAppBar
 import com.example.v.ui.navigation.Route
 import com.example.v.ui.viewmodels.MainViewModel
+import com.example.v.ui.viewmodels.SettingViewModel
+
 @Composable
 fun MainScreen(
     navController: NavController,
@@ -53,7 +57,7 @@ fun MainScreen(
         keyboardController?.show()
     }
     Scaffold(
-        contentColor = MaterialTheme.colorScheme.background,
+        containerColor = MaterialTheme.colorScheme.background,
         topBar = {
             if (selectedNote.isNotEmpty()){
                 val actionIcons = mutableListOf<NavigationItems>(NavigationItems.Basket)
@@ -82,7 +86,9 @@ fun MainScreen(
                         actionIcons = mutableListOf(
                             NavigationItems.Search
                         ),
-                        onActionsClicksIcons = mutableListOf({ isSearch = true }),
+                        onActionsClicksIcons = mutableListOf(
+                            { isSearch = true }
+                        ),
                         onNavClick = onClick
                     )
                 }
@@ -129,7 +135,7 @@ fun MainScreen(
     ) {
         GetNotes(mainViewModel,navController,it,selectedNote)
         if (bottomIsOpen.value){
-            ModalBottomColors(bottomIsOpen,mainViewModel,selectedNote,bottomIsOpen)
+            ModalBottomColors(bottomIsOpen,mainViewModel,selectedNote)
         }
     }
 }

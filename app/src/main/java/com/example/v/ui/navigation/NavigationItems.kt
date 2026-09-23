@@ -21,9 +21,6 @@ sealed class NavigationItems(
     object Search: NavigationItems(
         imageVector = Icons.Default.Search
     )
-    object More: NavigationItems(
-        imageVector = Icons.Default.MoreVert
-    )
     object Cancel: NavigationItems(
         imageVector = Icons.Default.Close
     )

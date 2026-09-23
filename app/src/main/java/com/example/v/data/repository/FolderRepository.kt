@@ -42,7 +42,6 @@ class FolderRepository @Inject constructor(
     }
 
     suspend fun updateName(folder: Folder){
-        Log.d("SDDSADAD",folder.toString())
         foldersDao.updateFolderName(folder.id,folder.name)
     }
     suspend fun insertFolder(folder: Folder){
