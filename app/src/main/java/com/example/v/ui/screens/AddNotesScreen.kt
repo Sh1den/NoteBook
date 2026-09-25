@@ -61,7 +61,6 @@ fun AddNoteScreen(
                 colorCont = MaterialTheme.colorScheme.background,
                 onActionsClicksIcons = listOf {
                     if (description.text.toString().trim().isNotEmpty() or title.text.toString().trim().isNotEmpty()) {
-                        //Log.d("PENIS",note.toString())
                         editNoteViewModel.saveNote(
                             title.text.toString(),
                             description.text.toString()

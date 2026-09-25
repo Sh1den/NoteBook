@@ -91,7 +91,10 @@ fun NavigationTopAppBar(
         title = {
 
             titleBar?.let {
-                Text(it)
+                Text(
+                    text = it,
+                    style = MaterialTheme.typography.headlineLarge
+                )
             }
             titleWidget()
         },
@@ -134,7 +137,8 @@ fun CastIconButton(
         onClick = onClick
     ) {
         imVect?.let { Icon(
-            imageVector = imVect, contentDescription = null
+            imageVector = imVect, contentDescription = null,
+            tint = MaterialTheme.colorScheme.onBackground
         ) }
         painter?.let { Icon(
             painter = painterResource(painter), contentDescription = null,
@@ -178,7 +182,7 @@ fun NoteCard(
         val animateLongClick by animateColorAsState(
             targetValue = when (isSelected()) {
                 false -> {
-                    note.color ?: Color.White
+                    note.color ?: MaterialTheme.colorScheme.tertiary
                 }
 
                 true -> Color(0xFF74C0FC)
@@ -191,7 +195,7 @@ fun NoteCard(
                 containerColor = animateLongClick
             ),
             shape = RoundedCornerShape(15.dp),
-            elevation = CardDefaults.cardElevation(3.dp)
+            elevation = CardDefaults.cardElevation(2.dp)
         ) {
             Box(
                 modifier = Modifier
@@ -212,13 +216,13 @@ fun NoteCard(
                 ) {
                     Text(
                         text = name,
-                        fontSize = 22.sp,
+                        style = MaterialTheme.typography.titleLarge,
                         color = MaterialTheme.colorScheme.onBackground
                     )
                     Spacer(modifier = Modifier.size(7.dp))
                     Text(
                         text = it.time,
-                        fontSize = 12.sp,
+                        style = MaterialTheme.typography.labelLarge,
                         color = MaterialTheme.colorScheme.onTertiary
                     )
                 }
@@ -239,11 +243,10 @@ fun GetNotes(
     LazyVerticalStaggeredGrid(
         columns = StaggeredGridCells.Fixed(gridType.countColumn),
         modifier = Modifier
-            .padding(paddingValues)
             .fillMaxSize(),
-        horizontalArrangement = Arrangement.spacedBy(8.dp),
-        verticalItemSpacing = 8.dp,
-        contentPadding = PaddingValues( horizontal = 10.dp)
+        horizontalArrangement = Arrangement.spacedBy(10.dp),
+        verticalItemSpacing = 10.dp,
+        contentPadding = PaddingValues(start = 10.dp, end = 10.dp, top = paddingValues.calculateTopPadding(), bottom = paddingValues.calculateBottomPadding())
     ) {
         items(
             count = notesPaging.itemCount,

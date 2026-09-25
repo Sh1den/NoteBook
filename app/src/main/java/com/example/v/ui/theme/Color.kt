@@ -8,7 +8,8 @@ val LightPrimary = Color(0xFF6750A4)
 val LightSurface = Color(0xFFFFFBFE)
 val LightOnSurface = Color(0xFF1F1F1F)
 val WarningColor = Color(0xFFD71A1A)
-val LightOnTertiary = Color(0xFFECECEC)
+val LightOnTertiary = Color(0xFFFAF8F8)
+
 
 val DarkBackground = Color(0xFF171616)
 val DarkSecondary = Color(0xFF656565)

@@ -61,9 +61,7 @@ fun AppDrawerContent(
             Spacer(Modifier.size(15.dp))
             Text(
                 text = stringResource(R.string.menu),
-                fontSize = 32.sp,
-                color = MaterialTheme.colorScheme.primary,
-                fontWeight = FontWeight.Bold
+                style = MaterialTheme.typography.displaySmall
             )
         }
         Spacer(Modifier.size(10.dp))

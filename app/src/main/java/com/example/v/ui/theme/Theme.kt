@@ -42,7 +42,7 @@ fun VTheme(
    }
     MaterialTheme(
         colorScheme = colorScheme,
-        typography = Typography,
+        typography = quickSandTypography,
         content = content
     )
 }

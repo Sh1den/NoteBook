@@ -75,7 +75,8 @@ fun SettingCard(
             colors = CardDefaults.cardColors(
                 containerColor = MaterialTheme.colorScheme.tertiary
             ),
-            content = content
+            content = content,
+            elevation = CardDefaults.cardElevation(2.dp)
         )
     }
 }

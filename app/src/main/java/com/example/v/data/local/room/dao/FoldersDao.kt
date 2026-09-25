@@ -13,7 +13,7 @@ import com.example.v.data.local.room.relation.CountNotesWithFolders
 interface FoldersDao{
 
     @Query("""
-        Select Folders.id,folderName,Count(Folders.id) as countNotes  from Folders
+        Select Folders.id,folderName,Count(notes.id) as countNotes  from Folders
         Left Join notes On Folders.id = notes.foreignCategory
         Where (Folders.id != 0 And folderName Like '%' || :stringSearch || '%')
         Group by Folders.id

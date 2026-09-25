@@ -47,6 +47,7 @@ import androidx.compose.ui.focus.FocusRequester
 import androidx.compose.ui.focus.focusRequester
 import androidx.compose.ui.platform.LocalSoftwareKeyboardController
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextOverflow
 import com.example.v.ui.theme.WarningColor
 
 @Composable
@@ -180,13 +181,13 @@ fun FolderCard(
 ) {
     val animateLongClick by animateColorAsState(
         targetValue = when (isSelected() && !isRename()) {
-            false -> Color.White
+            false -> MaterialTheme.colorScheme.tertiary
             true -> Color(0xFF74C0FC)
         }
     )
     Card(
         shape = RoundedCornerShape(7.dp),
-        elevation = CardDefaults.cardElevation(3.dp),
+        elevation = CardDefaults.cardElevation(2.dp),
         colors = CardDefaults.cardColors(
             containerColor = animateLongClick
         )
@@ -201,7 +202,7 @@ fun FolderCard(
                 }
         ){
             Row(
-                modifier = Modifier.fillMaxWidth().defaultMinSize(minHeight = 60.dp).padding(start = 12.dp, top = 3.dp, end = 5.dp, bottom = 3.dp),
+                modifier = Modifier.fillMaxWidth().defaultMinSize(minHeight = 60.dp).padding(start = 12.dp, top = 7.dp, end = 3.dp, bottom = 7.dp),
                 verticalAlignment = Alignment.CenterVertically,
             ) {
                 Image(
@@ -234,15 +235,14 @@ fun FolderCard(
                     Column() {
                         Text(
                             text = folder.name,
-                            fontSize = 20.sp,
-                            fontWeight = FontWeight.Bold,
+                            style = MaterialTheme.typography.bodyMedium,
                             color = MaterialTheme.colorScheme.onBackground,
-                            maxLines = 2
+                            maxLines = 1,
+                            overflow = TextOverflow.Ellipsis
                         )
-                        Spacer(modifier = Modifier.size(5.dp))
                         Text(
                             text = stringResource(R.string.notes_counter,folder.countNotes),
-                            fontSize = 12.sp
+                            style = MaterialTheme.typography.labelSmall
                         )
                     }
                 }
