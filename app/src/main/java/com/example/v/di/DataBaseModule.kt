@@ -2,9 +2,9 @@ package com.example.v.di
 
 import android.content.Context
 import androidx.room.Room
-import com.example.v.data.local.room.database.DataBase
 import com.example.v.data.local.room.dao.FoldersDao
 import com.example.v.data.local.room.dao.NoteDao
+import com.example.v.data.local.room.database.DataBase
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn

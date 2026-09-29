@@ -1,4 +1,5 @@
 package com.example.v.ui.screens
+
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -23,14 +24,15 @@ import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import androidx.navigation.NavController
 import com.example.v.data.model.Category
 import com.example.v.data.model.Folder
-import com.example.v.ui.navigation.NavigationItems
 import com.example.v.data.model.Note
 import com.example.v.ui.components.CastFloatingActionButton
 import com.example.v.ui.components.GetNotes
-import com.example.v.ui.components.ModalBottomColors
 import com.example.v.ui.components.NavigationTopAppBar
+import com.example.v.ui.navigation.NavigationItems
 import com.example.v.ui.navigation.Route
+import com.example.v.ui.theme.typetheme.MaterialCurrentTheme
 import com.example.v.ui.viewmodels.MainViewModel
+
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun FolderCategoryScreen(
@@ -40,10 +42,10 @@ fun FolderCategoryScreen(
 ){
     val mainViewModel: MainViewModel = hiltViewModel()
     LaunchedEffect(Unit) {
-        mainViewModel.setType(Category.Others,thFolder.id)
+        mainViewModel.setType(Category.Others, thFolder.id)
     }
     var searchString by remember { mutableStateOf("") }
-    val selectedNote = remember { mutableStateListOf<Note>()}
+    val selectedNote = remember { mutableStateListOf<Note>() }
     var isSearch by remember { mutableStateOf(false) }
     val focusRequester = remember { FocusRequester() }
     val keyboardController = LocalSoftwareKeyboardController.current
@@ -53,9 +55,10 @@ fun FolderCategoryScreen(
         keyboardController?.show()
     }
     Scaffold(
+        containerColor = MaterialCurrentTheme.colorSchema.background,
         topBar = {
             if (selectedNote.isNotEmpty()) {
-                val actionIcons = mutableListOf<NavigationItems>(NavigationItems.Basket)
+                val actionIcons: MutableList<NavigationItems> = mutableListOf(NavigationItems.Basket)
                 val onActionClicks = mutableListOf({
                     selectedNote.forEach { mainViewModel.toBasket(it) }
                     selectedNote.clear()
@@ -70,23 +73,22 @@ fun FolderCategoryScreen(
                     navIcons = NavigationItems.Back,
                     actionIcons = actionIcons,
                     onActionsClicksIcons = onActionClicks,
-                    onNavClick = {selectedNote.clear()}
+                    onNavClick = { selectedNote.clear() }
                 )
-            }
-            else{
-                if(!isSearch){
-                NavigationTopAppBar(
-                    titleBar = thFolder.name,
-                    navIcons = NavigationItems.Back,
-                    actionIcons = mutableListOf(
-                        NavigationItems.Search
-                    ),
-                    onActionsClicksIcons = mutableListOf({
-                        isSearch = true
-                    }),
-                    onNavClick = onClick
-                )}
-                else{
+            } else {
+                if (!isSearch) {
+                    NavigationTopAppBar(
+                        titleBar = thFolder.name,
+                        navIcons = NavigationItems.Back,
+                        actionIcons = mutableListOf(
+                            NavigationItems.Search
+                        ),
+                        onActionsClicksIcons = mutableListOf({
+                            isSearch = true
+                        }),
+                        onNavClick = onClick
+                    )
+                } else {
                     NavigationTopAppBar(
                         titleWidget = {
                             OutlinedTextField(
@@ -97,6 +99,8 @@ fun FolderCategoryScreen(
                                 },
                                 modifier = Modifier.fillMaxWidth().focusRequester(focusRequester),
                                 colors = TextFieldDefaults.colors(
+                                    focusedTextColor = MaterialCurrentTheme.colorSchema.onBackground,
+                                    unfocusedTextColor = MaterialCurrentTheme.colorSchema.onBackground,
                                     focusedContainerColor = Color.Transparent,
                                     unfocusedContainerColor = Color.Transparent,
                                     focusedIndicatorColor = Color.Transparent,
@@ -118,7 +122,9 @@ fun FolderCategoryScreen(
 
         },
         floatingActionButton = {
-            CastFloatingActionButton(Modifier.size(60.dp), Modifier.size(30.dp),
+            CastFloatingActionButton(
+                Modifier.size(60.dp),
+                Modifier.size(30.dp),
                 RoundedCornerShape(15.dp)
             ) {
                 navController.navigate(
@@ -127,9 +133,6 @@ fun FolderCategoryScreen(
             }
         }
     ) {
-        GetNotes(mainViewModel,navController,it,selectedNote)
-        if (bottomIsOpen.value){
-            ModalBottomColors(bottomIsOpen,mainViewModel,selectedNote)
-        }
+        GetNotes(mainViewModel, navController, it, selectedNote)
     }
 }

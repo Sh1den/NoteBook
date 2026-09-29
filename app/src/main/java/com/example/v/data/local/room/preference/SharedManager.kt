@@ -14,6 +14,8 @@ class SharedManager @Inject constructor(
 ) {
     companion object {
         private const val THEME = "theme"
+
+        private const val TOPOGRAPHY = "topography"
         private const val COLUMN_COUNT = "column"
     }
 
@@ -29,4 +31,5 @@ class SharedManager @Inject constructor(
     fun getGrid() = sharedPreferences.getInt(COLUMN_COUNT,1)
     fun getTheme() = sharedPreferences.getInt(THEME, R.string.default_theme)
 
+    //fun getTopography() = sharedPreferences.getString(TOPOGRAPHY,)
 }

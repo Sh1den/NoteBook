@@ -12,7 +12,10 @@ class Injector @Inject constructor(
    private val sharedManager: SharedManager
 ) {
     private val _countColumn = MutableStateFlow(GridColumn.getGridColumn(sharedManager.getGrid()))
-    var countColumn = _countColumn.asStateFlow()
+
+    val countColumn = _countColumn.asStateFlow()
+
+    val theme = sharedManager.getTheme()
 
     fun setGrid(newGrid: GridColumn){
         _countColumn.value = newGrid

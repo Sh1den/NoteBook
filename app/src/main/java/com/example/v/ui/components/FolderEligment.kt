@@ -10,7 +10,6 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.defaultMinSize
-import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
@@ -19,8 +18,6 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
-import androidx.compose.material3.Icon
-import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.OutlinedTextFieldDefaults
 import androidx.compose.material3.Text
@@ -29,26 +26,23 @@ import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.focus.FocusRequester
+import androidx.compose.ui.focus.focusRequester
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.graphics.ColorFilter
-import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.platform.LocalSoftwareKeyboardController
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.compose.ui.window.Dialog
 import com.example.v.R
 import com.example.v.data.model.Folder
-import androidx.compose.runtime.setValue
-import androidx.compose.ui.draw.clip
-import androidx.compose.ui.focus.FocusRequester
-import androidx.compose.ui.focus.focusRequester
-import androidx.compose.ui.platform.LocalSoftwareKeyboardController
-import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.text.style.TextOverflow
-import com.example.v.ui.theme.WarningColor
+import com.example.v.ui.theme.typetheme.MaterialCurrentTheme
+import com.example.v.ui.theme.typetheme.WarningColor
 
 @Composable
 fun CustomDialog(
@@ -59,12 +53,12 @@ fun CustomDialog(
 ){
     var nameValid by remember { mutableStateOf(true) }
     val focusColor by animateColorAsState(
-        if (nameValid) MaterialTheme.colorScheme.tertiary
+        if (nameValid) MaterialCurrentTheme.colorSchema.primary
         else WarningColor
     )
     val unfocusColor by animateColorAsState(
-        if (nameValid) Color.Gray
-        else Color.Red
+        if (nameValid) MaterialCurrentTheme.colorSchema.labelComponent
+        else WarningColor
     )
     Dialog(
         onDismissRequest = { onDismissRequest() }
@@ -77,7 +71,7 @@ fun CustomDialog(
                     .fillMaxWidth()
                     .height(180.dp),
                 colors = CardDefaults.cardColors(
-                    containerColor = MaterialTheme.colorScheme.background
+                    containerColor = MaterialCurrentTheme.colorSchema.component
                 ),
                 shape = RoundedCornerShape(28.dp)
             ) {
@@ -95,9 +89,9 @@ fun CustomDialog(
                             vertical = 5.dp
                         ),
                         fontSize = 19.sp,
-                        color = MaterialTheme.colorScheme.primary
+                        color = MaterialCurrentTheme.colorSchema.primary
                     )
-                    CastOutlineTextField(nameNewCategory,focusColor,unfocusColor){
+                    CastOutlineTextField(nameNewCategory, focusColor, unfocusColor) {
                         onValueChange(it)
                         nameValid = true
                     }
@@ -108,15 +102,14 @@ fun CustomDialog(
                             .padding(horizontal = 10.dp),
                         horizontalArrangement = Arrangement.Absolute.SpaceBetween
                     ) {
-                        CastTextClickable(stringResource(R.string.cancel)){
+                        CastTextClickable(stringResource(R.string.cancel)) {
                             onDismissRequest()
                         }
                         CastTextClickable(stringResource(R.string.save)) {
-                            if(nameNewCategory.isNotBlank()){
+                            if (nameNewCategory.isNotBlank()) {
                                 nameValid = true
                                 onSaveClick()
-                            }
-                            else{
+                            } else {
                                 nameValid = false
                             }
                         }
@@ -133,14 +126,14 @@ fun CastOutlineTextField(
     nameNewCategory: String,
     focusColor: Color,
     unfocusColor: Color,
-    onValueChange :  (String) -> Unit
+    onValueChange: (String) -> Unit
 ){
     OutlinedTextField(
         singleLine = true,
         label = {
             Text(
                 text = stringResource(R.string.name),
-                color = MaterialTheme.colorScheme.tertiary
+                color = MaterialCurrentTheme.colorSchema.labelComponent
             )
         },
         onValueChange = onValueChange,
@@ -150,13 +143,14 @@ fun CastOutlineTextField(
             .fillMaxWidth(),
         shape = RoundedCornerShape(18.dp),
         colors = OutlinedTextFieldDefaults.colors(
-            focusedTextColor = MaterialTheme.colorScheme.onBackground,
-            unfocusedTextColor = MaterialTheme.colorScheme.onBackground,
+            focusedTextColor = MaterialCurrentTheme.colorSchema.onComponent,
+            unfocusedTextColor = MaterialCurrentTheme.colorSchema.onComponent,
             focusedBorderColor = focusColor,
             unfocusedBorderColor = unfocusColor
         )
     )
 }
+
 @Composable
 fun CastTextClickable(
     text: String,
@@ -166,7 +160,7 @@ fun CastTextClickable(
         text = text,
         modifier = Modifier.clickable(onClick = onClick),
         fontSize = 16.sp,
-        color = MaterialTheme.colorScheme.primary
+        color = MaterialCurrentTheme.colorSchema.primary
     )
 }
 
@@ -181,8 +175,8 @@ fun FolderCard(
 ) {
     val animateLongClick by animateColorAsState(
         targetValue = when (isSelected() && !isRename()) {
-            false -> MaterialTheme.colorScheme.tertiary
-            true -> Color(0xFF74C0FC)
+            false -> MaterialCurrentTheme.colorSchema.component
+            true -> MaterialCurrentTheme.colorSchema.selectNavigationComponent
         }
     )
     Card(
@@ -202,7 +196,10 @@ fun FolderCard(
                 }
         ){
             Row(
-                modifier = Modifier.fillMaxWidth().defaultMinSize(minHeight = 60.dp).padding(start = 12.dp, top = 7.dp, end = 3.dp, bottom = 7.dp),
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .defaultMinSize(minHeight = 60.dp)
+                    .padding(start = 12.dp, top = 7.dp, end = 3.dp, bottom = 7.dp),
                 verticalAlignment = Alignment.CenterVertically,
             ) {
                 Image(
@@ -226,28 +223,30 @@ fun FolderCard(
                             toRename(newName)
                         },
                         colors = OutlinedTextFieldDefaults.colors(
+                            focusedTextColor = MaterialCurrentTheme.colorSchema.onComponent,
+                            unfocusedTextColor = MaterialCurrentTheme.colorSchema.onComponent,
                             focusedBorderColor = Color.Transparent,
                             unfocusedBorderColor = Color.Transparent
                         ),
                         modifier = Modifier.focusRequester(focusRequester)
                     )
                 } else {
-                    Column() {
+                    Column {
                         Text(
                             text = folder.name,
-                            style = MaterialTheme.typography.bodyMedium,
-                            color = MaterialTheme.colorScheme.onBackground,
+                            style = MaterialCurrentTheme.topography.bodyText,
+                            color = MaterialCurrentTheme.colorSchema.onComponent,
                             maxLines = 1,
                             overflow = TextOverflow.Ellipsis
                         )
                         Text(
-                            text = stringResource(R.string.notes_counter,folder.countNotes),
-                            style = MaterialTheme.typography.labelSmall
+                            text = stringResource(R.string.notes_counter, folder.countNotes),
+                            style = MaterialCurrentTheme.topography.labelSmallTextStyle,
+                            color = MaterialCurrentTheme.colorSchema.labelComponent
                         )
                     }
                 }
             }
         }
-
     }
 }

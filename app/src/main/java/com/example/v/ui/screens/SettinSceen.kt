@@ -15,7 +15,6 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import androidx.navigation.NavController
-import com.example.v.LocalSharedStateTheme
 import com.example.v.MainActivity
 import com.example.v.R
 import com.example.v.data.model.ColorTheme
@@ -29,6 +28,7 @@ import com.example.v.ui.components.SettingAlignment
 import com.example.v.ui.components.SettingCard
 import com.example.v.ui.components.ThemeBottom
 import com.example.v.ui.navigation.Route
+import com.example.v.ui.theme.typetheme.MaterialCurrentTheme
 import com.example.v.ui.viewmodels.SettingViewModel
 
 @Composable
@@ -36,8 +36,8 @@ fun SettingsScreen(
     navController: NavController
 ){
     Scaffold(
-        contentColor = MaterialTheme.colorScheme.onSurface,
-        containerColor = MaterialTheme.colorScheme.background,
+        contentColor = MaterialCurrentTheme.colorSchema.onBackground,
+        containerColor = MaterialCurrentTheme.colorSchema.background,
         topBar = {
             NavigationTopAppBar({},stringResource(R.string.setting), NavigationItems.Back,null){
                 navController.navigate(Route.HomeScreen){
@@ -51,20 +51,23 @@ fun SettingsScreen(
         }
     ) {
         Column(
-            modifier = Modifier.padding(it).padding(start = 15.dp),
+            modifier = Modifier.padding(it).padding(horizontal = 15.dp),
             verticalArrangement = Arrangement.spacedBy(20.dp)
         ) {
             val activity = LocalContext.current
             val settingViewModel: SettingViewModel = hiltViewModel(activity as MainActivity)
             SettingCard(R.string.general) {
                 SettingAlignment(R.drawable.outline_contrast_24,stringResource(R.string.thema_app),
-                    stringResource(LocalSharedStateTheme.current.idTheme)){
+                    stringResource(MaterialCurrentTheme.currentTheme.idTheme)){
                     Column {
                         ThemeBottom(ColorTheme.Light,settingViewModel)
                         ThemeBottom(ColorTheme.Dark,settingViewModel)
                     }
                 }
-                HorizontalDivider(color = MaterialTheme.colorScheme.onTertiary)
+                HorizontalDivider(
+                    modifier = Modifier.padding(horizontal = 15.dp),
+                    color = MaterialCurrentTheme.colorSchema.labelComponent.copy(alpha = 0.3f)
+                )
                 SettingAlignment(R.drawable.outline_language_24,stringResource(R.string.language_app),
                     getSecondLanguage(AppCompatDelegate.getApplicationLocales()[0]?.language ?: stringResource(R.string.language_tabs_rus))
                 ) {

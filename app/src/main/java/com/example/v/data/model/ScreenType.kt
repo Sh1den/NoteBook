@@ -20,3 +20,18 @@ data class ScreenType(
     }
     fun getSearchString() = search
 }
+
+interface Hyi{
+    fun chlen(): Int
+    fun pisa(): String
+}
+
+class Penis: Hyi {
+    override fun chlen(): Int {
+        return 1
+    }
+
+    override fun pisa(): String {
+        return "123"
+    }
+}

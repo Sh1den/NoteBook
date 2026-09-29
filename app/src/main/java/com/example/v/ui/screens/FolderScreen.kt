@@ -27,6 +27,7 @@ import com.example.v.ui.navigation.NavigationItems
 import com.example.v.ui.components.CustomDialog
 import com.example.v.ui.components.GetFolders
 import com.example.v.ui.components.NavigationTopAppBar
+import com.example.v.ui.theme.typetheme.MaterialCurrentTheme
 import com.example.v.ui.viewmodels.FoldersViewModel
 
 @Composable
@@ -49,6 +50,7 @@ fun FolderScreen(
         keyboardController?.show()
     }
     Scaffold(
+        containerColor = MaterialCurrentTheme.colorSchema.background,
         topBar = {
             if (selectedFolder.isEmpty()) {
                 if (!isSearch) {

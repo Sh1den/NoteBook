@@ -30,6 +30,7 @@ import com.example.v.ui.screens.FolderCategoryScreen
 import com.example.v.ui.screens.FolderScreen
 import com.example.v.ui.screens.MainScreen
 import com.example.v.ui.screens.SettingsScreen
+import com.example.v.ui.theme.typetheme.MaterialCurrentTheme
 import com.example.v.ui.viewmodels.EditNoteViewModel
 import kotlinx.coroutines.launch
 
@@ -51,7 +52,7 @@ fun NavAppGraph(
             }
         }
     ) {
-        Box(modifier = Modifier.background(MaterialTheme.colorScheme.background)) {
+        Box(modifier = Modifier.background(MaterialCurrentTheme.colorSchema.background)) {
             NavHost(
                 navController = navController,
                 startDestination = Route.HomeScreen

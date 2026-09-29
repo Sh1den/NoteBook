@@ -66,7 +66,8 @@ import com.example.v.data.model.Folder
 import com.example.v.ui.navigation.NavigationItems
 import com.example.v.data.model.Note
 import com.example.v.ui.navigation.Route
-import com.example.v.ui.theme.paletteColors
+import com.example.v.ui.theme.typetheme.MaterialCurrentTheme
+import com.example.v.ui.theme.typetheme.paletteColors
 import com.example.v.ui.viewmodels.FoldersViewModel
 import com.example.v.ui.viewmodels.MainViewModel
 
@@ -85,15 +86,16 @@ fun NavigationTopAppBar(
 ){
     TopAppBar(
         colors = TopAppBarDefaults.topAppBarColors(
-            containerColor = MaterialTheme.colorScheme.background,
-            navigationIconContentColor = MaterialTheme.colorScheme.onBackground
+            containerColor = Color.Transparent,
+            navigationIconContentColor = MaterialCurrentTheme.colorSchema.onBackground
         ),
         title = {
 
             titleBar?.let {
                 Text(
                     text = it,
-                    style = MaterialTheme.typography.headlineLarge
+                    style = MaterialCurrentTheme.topography.headlineText,
+                    color = MaterialCurrentTheme.colorSchema.onBackground
                 )
             }
             titleWidget()
@@ -138,11 +140,11 @@ fun CastIconButton(
     ) {
         imVect?.let { Icon(
             imageVector = imVect, contentDescription = null,
-            tint = MaterialTheme.colorScheme.onBackground
+            tint = MaterialCurrentTheme.colorSchema.onBackground
         ) }
         painter?.let { Icon(
             painter = painterResource(painter), contentDescription = null,
-            tint = MaterialTheme.colorScheme.onBackground
+            tint = MaterialCurrentTheme.colorSchema.onBackground
         ) }
     }
 }
@@ -158,8 +160,8 @@ fun CastFloatingActionButton(
         modifier = modifier,
         onClick = onClick,
         shape = shape,
-        containerColor = MaterialTheme.colorScheme.primary,
-        contentColor = MaterialTheme.colorScheme.background
+        containerColor = MaterialCurrentTheme.colorSchema.primary,
+        contentColor = MaterialCurrentTheme.colorSchema.onPrimary
     ) {
        Icon(
            imageVector = Icons.Default.Add,
@@ -182,10 +184,10 @@ fun NoteCard(
         val animateLongClick by animateColorAsState(
             targetValue = when (isSelected()) {
                 false -> {
-                    note.color ?: MaterialTheme.colorScheme.tertiary
+                    note.color ?: MaterialCurrentTheme.colorSchema.component
                 }
 
-                true -> Color(0xFF74C0FC)
+                true -> MaterialCurrentTheme.colorSchema.selectNavigationComponent
             }
         )
         Card(
@@ -216,14 +218,14 @@ fun NoteCard(
                 ) {
                     Text(
                         text = name,
-                        style = MaterialTheme.typography.titleLarge,
-                        color = MaterialTheme.colorScheme.onBackground
+                        style = MaterialCurrentTheme.topography.titleText,
+                        color = MaterialCurrentTheme.colorSchema.onComponent
                     )
                     Spacer(modifier = Modifier.size(7.dp))
                     Text(
                         text = it.time,
-                        style = MaterialTheme.typography.labelLarge,
-                        color = MaterialTheme.colorScheme.onTertiary
+                        style = MaterialCurrentTheme.topography.labelLargeText,
+                        color = MaterialCurrentTheme.colorSchema.labelComponent
                     )
                 }
             }
@@ -318,7 +320,7 @@ fun GetFolders(
     }
 }
 
-@OptIn(ExperimentalMaterial3Api::class)
+/*@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun ModalBottomColors(
     bottomIsOpen: MutableState<Boolean>,
@@ -371,4 +373,4 @@ fun ModalBottomColors(
             }
         }
     }
-}
+}*/

@@ -12,6 +12,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.SolidColor
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.unit.sp
+import com.example.v.ui.theme.typetheme.MaterialCurrentTheme
 
 @Composable
 fun CastTextField(
@@ -26,7 +27,7 @@ fun CastTextField(
             if (state.text.isEmpty()) {
                 Text(
                     text = secondText,
-                    color = MaterialTheme.colorScheme.onTertiary,
+                    color = MaterialCurrentTheme.colorSchema.labelComponent,
                     fontSize = 23.sp
                 )
             }
@@ -34,9 +35,9 @@ fun CastTextField(
         },
         textStyle = TextStyle(
             fontSize = 23.sp,
-            color = MaterialTheme.colorScheme.onBackground
+            color = MaterialCurrentTheme.colorSchema.onBackground
         ),
         lineLimits = lineLimits,
-        cursorBrush = SolidColor(Color(0xFF74C0FC))
+        cursorBrush = SolidColor(MaterialCurrentTheme.colorSchema.primary)
     )
 }

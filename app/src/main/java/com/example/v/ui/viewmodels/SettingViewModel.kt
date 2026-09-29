@@ -16,15 +16,13 @@ class SettingViewModel @Inject constructor(
     private val injector: Injector
 ): ViewModel(){
 
-    private val _theme = MutableStateFlow(ColorTheme.getTheme(injector.getSharedManager().getTheme()))
-    val theme: StateFlow<ColorTheme> = _theme
-
     val gridType = injector.countColumn
 
-    fun setTheme(newColorTheme: ColorTheme){
-        injector.getSharedManager().setTheme(newColorTheme.idTheme)
-        _theme.update { newColorTheme }
+    fun getTheme(): ColorTheme {
+        return ColorTheme.getTheme(injector.theme)
     }
+
+    fun saveTheme(newColorTheme: ColorTheme) =  injector.getSharedManager().setTheme(newColorTheme.idTheme)
 
     fun setGridLayout(newGrid: GridColumn){
         injector.setGrid(newGrid)

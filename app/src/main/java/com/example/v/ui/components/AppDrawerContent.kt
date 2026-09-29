@@ -35,6 +35,7 @@ import androidx.navigation.NavDestination.Companion.hasRoute
 import com.example.v.R
 import com.example.v.ui.navigation.NavigationItems
 import com.example.v.ui.navigation.Route
+import com.example.v.ui.theme.typetheme.MaterialCurrentTheme
 
 @Composable
 fun AppDrawerContent(
@@ -43,7 +44,7 @@ fun AppDrawerContent(
     onDetailsScreensClick: () -> Unit
 ){
     ModalDrawerSheet(
-        drawerContainerColor = MaterialTheme.colorScheme.surface,
+        drawerContainerColor = MaterialCurrentTheme.colorSchema.background,
         modifier = Modifier
             .width(260.dp)
             .safeDrawingPadding()
@@ -61,7 +62,7 @@ fun AppDrawerContent(
             Spacer(Modifier.size(15.dp))
             Text(
                 text = stringResource(R.string.menu),
-                style = MaterialTheme.typography.displaySmall
+                style = MaterialCurrentTheme.topography.displayText
             )
         }
         Spacer(Modifier.size(10.dp))
@@ -134,10 +135,11 @@ fun DrawItem(
     NavigationDrawerItem(
         selected = isSelected ?: false,
         colors = NavigationDrawerItemDefaults.colors(
-            selectedIconColor = MaterialTheme.colorScheme.onBackground,
-            selectedTextColor = MaterialTheme.colorScheme.onBackground,
-            unselectedIconColor = MaterialTheme.colorScheme.onBackground,
-            unselectedTextColor = MaterialTheme.colorScheme.onBackground
+            selectedContainerColor = MaterialCurrentTheme.colorSchema.selectNavigationComponent,
+            selectedIconColor = MaterialCurrentTheme.colorSchema.onBackground,
+            selectedTextColor = MaterialCurrentTheme.colorSchema.onBackground,
+            unselectedIconColor = MaterialCurrentTheme.colorSchema.onBackground,
+            unselectedTextColor = MaterialCurrentTheme.colorSchema.onBackground
         ),
         label = {
             Text(text = title?.let { stringResource(it) } ?: "")
@@ -148,7 +150,7 @@ fun DrawItem(
             imVect?.let { Icon(
                 modifier = Modifier.padding(end = 5.dp),
                 imageVector = imVect, contentDescription = null,
-                tint = MaterialTheme.colorScheme.onSurface
+                tint = MaterialCurrentTheme.colorSchema.onBackground
             ) }
             painter?.let { Icon(
                 modifier = Modifier.padding(end = 5.dp),
