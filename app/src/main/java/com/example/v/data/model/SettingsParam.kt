@@ -1,8 +1,12 @@
 package com.example.v.data.model
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.font.FontFamily
 import com.example.v.R
-import org.intellij.lang.annotations.Language
+import com.example.v.ui.theme.typetheme.FiraSansFonts
+import com.example.v.ui.theme.typetheme.MontserratFonts
+import com.example.v.ui.theme.typetheme.TitleFonts
+import com.example.v.ui.theme.typetheme.UbuntuFonts
 
 
 @Composable
@@ -10,6 +14,7 @@ fun getSecondLanguage(language: String) = when(language){
         stringResource(R.string.language_tabs_eu) -> stringResource(R.string.language_en)
         else -> stringResource(R.string.language_rus)
     }
+
 enum class ColorTheme(
     val idTheme: Int
 ){
@@ -36,3 +41,41 @@ enum class GridColumn(
         }
     }
 }
+
+
+enum class TextStyleSpTheme(
+    val value: Int,
+    val currentSp: Int
+) {
+    Small(value = R.string.small_font,0),
+    Medium(value = R.string.medium_font,1),
+    Large(value = R.string.large_font,2);
+
+    companion object {
+        fun toTextSpTheme(valueType: Int): TextStyleSpTheme{
+            return entries.find { it.value == valueType } ?: TextStyleSpTheme.Small
+        }
+    }
+}
+
+enum class TextStyleFontFamilyTheme(
+    val value: Int,
+    val fontFamily: FontFamily
+){
+    Default(R.string.default_font, FontFamily.Default),
+    PlayfairDisplay(R.string.playfair_font, TitleFonts),
+    Montserrat(R.string.montserrat_font, MontserratFonts),
+    Ubuntu(R.string.ubuntu_font, UbuntuFonts),
+    FiraSans(R.string.firasans_font, FiraSansFonts);
+
+    companion object {
+        fun toTextStyleFontFamilyTheme(valueType: Int): TextStyleFontFamilyTheme {
+            return entries.find { it.value == valueType } ?: Default
+        }
+    }
+}
+
+data class  SettingTopography(
+    val textStyleSpTheme: TextStyleSpTheme = TextStyleSpTheme.Small,
+    val textStyleFontFamilyTheme: TextStyleFontFamilyTheme = TextStyleFontFamilyTheme.Default
+)

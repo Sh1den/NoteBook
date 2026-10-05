@@ -21,7 +21,6 @@ import androidx.compose.ui.res.stringResource
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import androidx.navigation.NavController
 import com.example.v.R
-import com.example.v.data.model.Category
 import com.example.v.data.model.Folder
 import com.example.v.ui.navigation.NavigationItems
 import com.example.v.ui.components.CustomDialog

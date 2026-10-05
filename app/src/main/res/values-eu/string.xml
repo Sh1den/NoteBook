@@ -13,7 +13,7 @@
     <string name="language_app">Application language</string>
     <string name="dark_theme">Dark</string>
     <string name="light_theme">Light</string>
-    <string name="default_theme">By Default</string>
+    <string name="default_theme">Systemic</string>
     <string name="language_rus">Russian</string>
     <string name="language_en">English</string>
     <string name="general">General</string>
@@ -30,7 +30,17 @@
     <string name="display">Display</string>
     <string name="view">View</string>
     <string name="list">List</string>
-    <string name="two_column">In three columns</string>
+    <string name="two_column">In two columns</string>
     <string name="three_column">In three columns</string>
     <string name="notes_counter">notes: %1$d</string>
+    <string name="font_size">Font size</string>
+    <string name="small_font">Small</string>
+    <string name="medium_font">Medium</string>
+    <string name="large_font">Large</string>
+    <string name="font_type">Font type</string>
+    <string name="default_font">Default</string>
+    <string name="playfair_font">Playfair Display</string>
+    <string name="montserrat_font">Montserrat</string>
+    <string name="ubuntu_font">Ubuntu</string>
+    <string name="firasans_font">Fira sans</string>
 </resources>

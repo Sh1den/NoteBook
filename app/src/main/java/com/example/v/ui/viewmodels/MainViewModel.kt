@@ -8,6 +8,7 @@ import com.example.v.data.local.room.preference.SharedManager
 import com.example.v.data.model.Category
 import com.example.v.data.model.Note
 import com.example.v.data.model.ScreenType
+import com.example.v.data.repository.SharedRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -18,10 +19,11 @@ import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
+
 @HiltViewModel
 class MainViewModel @Inject constructor(
     private val noteRepository: NoteRepository,
-    injector: Injector
+    sharedRepository: SharedRepository
 ): ViewModel()  {
 
     private val _searchCategory = MutableStateFlow(
@@ -32,7 +34,7 @@ class MainViewModel @Inject constructor(
         noteRepository.getNotesByCategory(searchCategory)
     }.cachedIn(viewModelScope)
 
-    val gridType = injector.countColumn
+    val gridType = sharedRepository.countColumn
     fun deleteNotes(note: Note) = viewModelScope.launch{ noteRepository.deleteNote(note) }
 
     fun toBasket(note:Note) {

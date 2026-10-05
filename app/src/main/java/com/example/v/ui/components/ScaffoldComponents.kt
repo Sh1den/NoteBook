@@ -1,8 +1,6 @@
 package com.example.v.ui.components
 
-import android.util.Log
 import androidx.compose.animation.animateColorAsState
-import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.combinedClickable
 import androidx.compose.foundation.layout.Arrangement
@@ -13,21 +11,12 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.defaultMinSize
-import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.layout.wrapContentHeight
-import androidx.compose.foundation.layout.wrapContentSize
-import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.lazy.grid.GridCells
-import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
-import androidx.compose.foundation.lazy.grid.items
 import androidx.compose.foundation.lazy.staggeredgrid.LazyVerticalStaggeredGrid
 import androidx.compose.foundation.lazy.staggeredgrid.StaggeredGridCells
-import androidx.compose.foundation.selection.selectable
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
@@ -37,8 +26,6 @@ import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.FloatingActionButton
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
-import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.ModalBottomSheet
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.TopAppBarDefaults
@@ -47,27 +34,21 @@ import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.snapshots.SnapshotStateList
-import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Shape
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.res.painterResource
-import androidx.compose.ui.text.PlatformTextStyle
-import androidx.compose.ui.text.TextStyle
-import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
+import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import androidx.navigation.NavController
 import androidx.paging.compose.collectAsLazyPagingItems
 import androidx.paging.compose.itemKey
 import com.example.v.data.model.Category
 import com.example.v.data.model.Folder
-import com.example.v.ui.navigation.NavigationItems
 import com.example.v.data.model.Note
+import com.example.v.ui.navigation.NavigationItems
 import com.example.v.ui.navigation.Route
 import com.example.v.ui.theme.typetheme.MaterialCurrentTheme
-import com.example.v.ui.theme.typetheme.paletteColors
 import com.example.v.ui.viewmodels.FoldersViewModel
 import com.example.v.ui.viewmodels.MainViewModel
 
@@ -90,7 +71,6 @@ fun NavigationTopAppBar(
             navigationIconContentColor = MaterialCurrentTheme.colorSchema.onBackground
         ),
         title = {
-
             titleBar?.let {
                 Text(
                     text = it,
@@ -283,6 +263,7 @@ fun GetFolders(
     isRename: MutableState<Boolean>,
     newFolder: MutableState<Folder>
 ){
+    val mainViewModel: MainViewModel = hiltViewModel()
     val pagingFolders = foldersViewModel.folders.collectAsLazyPagingItems()
     val gridType by foldersViewModel.gridType.collectAsState()
     LazyVerticalStaggeredGrid(
@@ -312,6 +293,7 @@ fun GetFolders(
                         else selectedFolder.add(thFolder)
                     }
                     else {
+                        mainViewModel.setType(Category.Others,thFolder.id)
                         navController.navigate(Route.FolderNotes(thFolder.name,thFolder.id))
                     }
                 }

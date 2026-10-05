@@ -14,9 +14,10 @@ class SharedManager @Inject constructor(
 ) {
     companion object {
         private const val THEME = "theme"
-
-        private const val TOPOGRAPHY = "topography"
         private const val COLUMN_COUNT = "column"
+
+        private const val TOPOGRAPHY_SP = "topography_sp"
+        private const val TOPOGRAPHY_FONT = "topography_font"
     }
 
     private val sharedPreferences = context.getSharedPreferences("settings_param",MODE_PRIVATE)
@@ -28,8 +29,36 @@ class SharedManager @Inject constructor(
         putInt(COLUMN_COUNT, count)
         apply()
     }
-    fun getGrid() = sharedPreferences.getInt(COLUMN_COUNT,1)
-    fun getTheme() = sharedPreferences.getInt(THEME, R.string.default_theme)
 
-    //fun getTopography() = sharedPreferences.getString(TOPOGRAPHY,)
+    fun setTopographySp(newSp: Int) {
+        sharedPreferences.edit().putInt(TOPOGRAPHY_SP, newSp).apply()
+    }
+
+    fun setTopographyFont(newFont: Int) {
+        sharedPreferences.edit().putInt(TOPOGRAPHY_FONT, newFont).apply()
+    }
+
+    fun getGrid(): Int = try {
+        sharedPreferences.getInt(COLUMN_COUNT, 1)
+    } catch (e: Exception) {
+        1
+    }
+
+    fun getTheme(): Int = try {
+        sharedPreferences.getInt(THEME, R.string.default_theme)
+    } catch (e: Exception) {
+        R.string.default_theme
+    }
+
+    fun getTopographySp(): Int = try {
+        sharedPreferences.getInt(TOPOGRAPHY_SP, R.string.small_font)
+    } catch (e: Exception) {
+        R.string.small_font
+    }
+
+    fun getTopographyFont(): Int = try {
+        sharedPreferences.getInt(TOPOGRAPHY_FONT, R.string.default_font)
+    } catch (e: Exception) {
+        R.string.default_font
+    }
 }

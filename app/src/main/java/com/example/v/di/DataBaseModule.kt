@@ -24,7 +24,7 @@ object DataBaseModule {
             context,
             DataBase::class.java,
             "notes.db"
-        ).build()
+        ).fallbackToDestructiveMigration().build()
     }
 
     @Singleton

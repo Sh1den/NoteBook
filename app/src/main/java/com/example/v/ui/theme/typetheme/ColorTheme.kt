@@ -25,12 +25,12 @@ val paletteColors = listOf(
 
 val darkTheme = ColorSchema(
     background = Color(0xFF171616),
-    onBackground = Color(0xFFE6E1E5),
+    onBackground = Color(0xFFF8F6F7),
     titleIcon = Color(0xFFE6E1E5),
     component = Color(0xFF262525),
     onComponent = Color(0xFFE6E1E5),
     titleComponent = Color(0xFFFFFFFF),
-    labelComponent = Color(0xFF9E9E9E),
+    labelComponent = Color(0xFFA19D9D),
     componentIcon = Color(0xFFE6E1E5),
     primary = Color(0xFF8B6BEE),
     onPrimary = Color(0xFFFFFFFF),
@@ -46,7 +46,7 @@ val lightTheme = ColorSchema(
     component = Color(0xFFFAF8F8),
     onComponent = Color(0xFF171616),
     titleComponent = Color(0xFF171616),
-    labelComponent = Color(0xFF7C7C7C),
+    labelComponent = Color(0xFF9F9898),
     componentIcon = Color(0xFF171616),
     primary = Color(0xFF6750A4),
     onPrimary = Color(0xFFFFFFFF),
@@ -79,4 +79,8 @@ fun ColorTheme.toColorSchema(
         ColorTheme.Dark -> darkTheme
         ColorTheme.Light -> lightTheme
     }
+}
+
+fun getColorTheme(isDarkTheme: Boolean): ColorTheme{
+    return if(isDarkTheme) ColorTheme.Dark else ColorTheme.Light
 }

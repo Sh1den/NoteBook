@@ -24,7 +24,6 @@ import com.example.v.ui.navigation.NavigationItems
 import com.example.v.data.model.Note
 import com.example.v.ui.components.GetNotes
 import com.example.v.ui.components.NavigationTopAppBar
-import com.example.v.ui.theme.typetheme.ColorSchema
 import com.example.v.ui.theme.typetheme.MaterialCurrentTheme
 import com.example.v.ui.viewmodels.MainViewModel
 

@@ -33,7 +33,6 @@ import com.example.v.ui.components.NavigationTopAppBar
 import com.example.v.ui.navigation.Route
 import com.example.v.ui.theme.typetheme.MaterialCurrentTheme
 import com.example.v.ui.viewmodels.MainViewModel
-import com.example.v.ui.viewmodels.SettingViewModel
 
 @Composable
 fun MainScreen(

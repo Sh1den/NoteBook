@@ -21,10 +21,25 @@ val TitleFonts = FontFamily(
     Font(resId = R.font.playfairdisplay_blackitalic, weight = FontWeight.Black, style = FontStyle.Italic)
 )
 
-val QuickSandFonts = FontFamily(
-    Font(resId = R.font.quicksand_light, weight = FontWeight.Light, style = FontStyle.Normal),
-    Font(resId = R.font.quicksand_regular, weight = FontWeight.Normal, style = FontStyle.Normal),
-    Font(resId = R.font.quicksand_medium, weight = FontWeight.Medium, style = FontStyle.Normal),
-    Font(resId = R.font.quicksand_semibold, weight = FontWeight.SemiBold, style = FontStyle.Normal),
-    Font(resId = R.font.quicksand_bold, weight = FontWeight.Bold, style = FontStyle.Normal)
+val MontserratFonts = FontFamily(
+    Font(resId = R.font.montserrat_light, weight = FontWeight.Light, style = FontStyle.Normal),
+    Font(resId = R.font.montserrat_regular, weight = FontWeight.Normal, style = FontStyle.Normal),
+    Font(resId = R.font.montserrat_medium, weight = FontWeight.Medium, style = FontStyle.Normal),
+    Font(resId = R.font.montserrat_semibold, weight = FontWeight.SemiBold, style = FontStyle.Normal),
+    Font(resId = R.font.montserrat_bold, weight = FontWeight.Bold, style = FontStyle.Normal)
+)
+
+val UbuntuFonts = FontFamily(
+    Font(resId = R.font.ubuntu_light, weight = FontWeight.Light, style = FontStyle.Normal),
+    Font(resId = R.font.ubuntu_regular, weight = FontWeight.Normal, style = FontStyle.Normal),
+    Font(resId = R.font.ubuntu_medium, weight = FontWeight.Medium, style = FontStyle.Normal),
+    Font(resId = R.font.ubuntu_bold, weight = FontWeight.Bold, style = FontStyle.Normal)
+)
+
+val FiraSansFonts = FontFamily(
+    Font(resId = R.font.firasans_light, weight = FontWeight.Light, style = FontStyle.Normal),
+    Font(resId = R.font.firasans_regular, weight = FontWeight.Normal, style = FontStyle.Normal),
+    Font(resId = R.font.firasans_medium, weight = FontWeight.Medium, style = FontStyle.Normal),
+    Font(resId = R.font.firasans_semibold, weight = FontWeight.SemiBold, style = FontStyle.Normal),
+    Font(resId = R.font.firasans_bold, weight = FontWeight.Bold, style = FontStyle.Normal)
 )

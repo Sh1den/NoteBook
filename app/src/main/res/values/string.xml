@@ -13,7 +13,7 @@
     <string name="language_app">Язык приложения</string>
     <string name="dark_theme">Темная</string>
     <string name="light_theme">Светлая</string>
-    <string name="default_theme">По умолчанию</string>
+    <string name="default_theme">Системная</string>
     <string name="language_rus">Русский</string>
     <string name="language_en">Английский</string>
     <string name="general">Общие</string>
@@ -33,4 +33,14 @@
     <string name="two_column">В две колонки</string>
     <string name="three_column">В три колонки</string>
     <string name="notes_counter">заметки: %1$d</string>
+    <string name="font_size">Размер шрифта</string>
+    <string name="small_font">Маленький</string>
+    <string name="medium_font">Средний</string>
+    <string name="large_font">Большой</string>
+    <string name="font_type">Тип шрифта</string>
+    <string name="default_font">Стандартный</string>
+    <string name="playfair_font">Playfair Display</string>
+    <string name="montserrat_font">Montserrat</string>
+    <string name="ubuntu_font">Ubuntu</string>
+    <string name="firasans_font">Fira sans</string>
 </resources>

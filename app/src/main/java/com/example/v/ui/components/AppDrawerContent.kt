@@ -4,6 +4,7 @@ import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.defaultMinSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
@@ -13,7 +14,6 @@ import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
-import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.ModalDrawerSheet
 import androidx.compose.material3.NavigationDrawerItem
 import androidx.compose.material3.NavigationDrawerItemDefaults
@@ -26,9 +26,7 @@ import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import androidx.navigation.NavDestination
 import androidx.navigation.NavDestination.Companion.hasRoute
@@ -50,16 +48,16 @@ fun AppDrawerContent(
             .safeDrawingPadding()
     ) {
         Row(
-            modifier = Modifier.fillMaxWidth().height(80.dp).background(Color(0xFFA989EF)),
+            modifier = Modifier.fillMaxWidth().defaultMinSize(minHeight = 90.dp).background(Color(0xFFA989EF)),
             verticalAlignment = Alignment.CenterVertically
         ) {
             Image(
                 painter = painterResource(R.drawable.image_note),
                 contentScale = ContentScale.Crop,
-                modifier = Modifier.size(width = 40.dp, height = 80.dp),
+                modifier = Modifier.size(width = 54.dp, height = 90.dp),
                 contentDescription = null
             )
-            Spacer(Modifier.size(15.dp))
+            Spacer(Modifier.size(7.dp))
             Text(
                 text = stringResource(R.string.menu),
                 style = MaterialCurrentTheme.topography.displayText
@@ -95,11 +93,12 @@ fun AppDrawerContent(
         }
         HorizontalDivider(
             Modifier.padding(
-                start = 15.dp,
-                end = 15.dp,
+                start = 20.dp,
+                end = 20.dp,
                 bottom = 10.dp,
                 top = 5.dp
-            )
+            ),
+            color = MaterialCurrentTheme.colorSchema.labelComponent
         )
         DrawItem(NavigationItems.Setting.title, painter = NavigationItems.Setting.painter) {
             onDetailsScreensClick()
@@ -142,7 +141,10 @@ fun DrawItem(
             unselectedTextColor = MaterialCurrentTheme.colorSchema.onBackground
         ),
         label = {
-            Text(text = title?.let { stringResource(it) } ?: "")
+            Text(
+                text = title?.let { stringResource(it) } ?: "",
+                style = MaterialCurrentTheme.topography.bodyText
+            )
         },
         onClick = onClick,
         shape = RoundedCornerShape(15.dp),

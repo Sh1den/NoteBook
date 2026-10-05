@@ -1,5 +1,6 @@
 package com.example.v.ui.components
 
+import android.graphics.drawable.Icon
 import androidx.appcompat.app.AppCompatDelegate
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.AnimatedVisibilityScope
@@ -9,14 +10,23 @@ import androidx.compose.animation.expandVertically
 import androidx.compose.animation.fadeIn
 import androidx.compose.animation.fadeOut
 import androidx.compose.animation.shrinkVertically
+import androidx.compose.foundation.background
+import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.ColumnScope
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.KeyboardArrowDown
+import androidx.compose.material.icons.filled.KeyboardArrowRight
+import androidx.compose.material.icons.filled.KeyboardArrowUp
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
@@ -30,6 +40,8 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.alpha
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.RectangleShape
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
@@ -37,6 +49,8 @@ import androidx.compose.ui.unit.dp
 import androidx.core.os.LocaleListCompat
 import com.example.v.data.model.ColorTheme
 import com.example.v.data.model.GridColumn
+import com.example.v.data.model.TextStyleFontFamilyTheme
+import com.example.v.data.model.TextStyleSpTheme
 import com.example.v.ui.theme.typetheme.MaterialCurrentTheme
 import com.example.v.ui.viewmodels.SettingViewModel
 
@@ -78,7 +92,6 @@ fun SettingAlignment(
     var optionOpen by remember { mutableStateOf(false) }
     TextButton(
         modifier = Modifier
-            .fillMaxWidth()
             .height(70.dp),
         shape = RectangleShape,
         colors = ButtonDefaults.buttonColors(
@@ -90,25 +103,41 @@ fun SettingAlignment(
         }
     ) {
         Row(
-            modifier = Modifier.fillMaxWidth(),
-            horizontalArrangement = Arrangement.spacedBy(12.dp, Alignment.Start),
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(start = 5.dp),
+            horizontalArrangement = Arrangement.SpaceBetween,
             verticalAlignment = Alignment.CenterVertically
         ) {
-            Icon(
-                painter = painterResource(painter),
-                contentDescription = null,
-                tint = MaterialCurrentTheme.colorSchema.componentIcon
-            )
-            Column {
-                Text(
-                    text = primaryText,
-                    color = MaterialCurrentTheme.colorSchema.onComponent
+            Row(
+                horizontalArrangement = Arrangement.spacedBy(12.dp, Alignment.Start),
+                verticalAlignment = Alignment.CenterVertically
+            ) {
+                Icon(
+                    painter = painterResource(painter),
+                    contentDescription = null,
+                    tint = MaterialCurrentTheme.colorSchema.componentIcon,
+                    modifier = Modifier.fillMaxHeight()
                 )
-                Text(
-                    text = secondText,
-                    color = MaterialCurrentTheme.colorSchema.labelComponent
-                )
+                Column{
+                    Text(
+                        text = primaryText,
+                        style = MaterialCurrentTheme.topography.labelMediumText,
+                        color = MaterialCurrentTheme.colorSchema.onBackground
+                    )
+                    Text(
+                        text = secondText,
+                        style = MaterialCurrentTheme.topography.labelMediumText,
+                        color = MaterialCurrentTheme.colorSchema.labelComponent
+                    )
+                }
             }
+            Icon(
+                imageVector = if(optionOpen) Icons.Default.KeyboardArrowUp else Icons.Default.KeyboardArrowDown,
+                contentDescription = null,
+                tint = MaterialCurrentTheme.colorSchema.labelComponent
+            )
+
         }
     }
     AnimatedVisibility(
@@ -124,18 +153,8 @@ fun GridBottom(
     currentGrid: GridColumn,
     settingViewModel: SettingViewModel
 ){
-    TextButton(
-        modifier = Modifier.fillMaxWidth(),
-        colors = ButtonDefaults.textButtonColors(
-            contentColor = MaterialCurrentTheme.colorSchema.primary
-        ),
-        onClick = {
-            settingViewModel.setGridLayout(currentGrid)
-        }
-    ) {
-        Text(
-            text = stringResource(currentGrid.type),
-        )
+    SettingBottom(stringResource(currentGrid.type)) {
+        settingViewModel.setGridLayout(currentGrid)
     }
 }
 
@@ -144,35 +163,56 @@ fun LanguageButton(
     languageName: String,
     languageTabs: String
 ) {
-    TextButton(
-        modifier = Modifier.fillMaxWidth(),
-        colors = ButtonDefaults.textButtonColors(
-            contentColor = MaterialCurrentTheme.colorSchema.primary
-        ),
-        onClick = {
-            val localeListCompat = LocaleListCompat.forLanguageTags(languageTabs)
-            AppCompatDelegate.setApplicationLocales(localeListCompat)
-        }
-    ) {
-        Text(languageName)
+    SettingBottom(languageName) {
+        val localeListCompat = LocaleListCompat.forLanguageTags(languageTabs)
+        AppCompatDelegate.setApplicationLocales(localeListCompat)
     }
 }
 
 @Composable
 fun ThemeBottom(
-    currentTheme: ColorTheme,
-    settingViewModel: SettingViewModel
+    currentTheme: ColorTheme
 ){
     val themeController = MaterialCurrentTheme.themeUpdater
+    SettingBottom(stringResource(currentTheme.idTheme)) {
+        themeController(currentTheme)
+    }
+}
+
+@Composable
+fun TopographySpBottom(
+    textStyleSpTheme: TextStyleSpTheme
+){
+    val textSpController = MaterialCurrentTheme.topographySpUpdater
+    SettingBottom(stringResource(textStyleSpTheme.value)) {
+        textSpController(textStyleSpTheme)
+    }
+}
+
+@Composable
+fun TopographyFontBottom(
+    textStyleFontFamilyTheme: TextStyleFontFamilyTheme
+){
+    val textFontController = MaterialCurrentTheme.topographyFontUdapter
+    SettingBottom(stringResource(textStyleFontFamilyTheme.value)) {
+        textFontController(textStyleFontFamilyTheme)
+    }
+}
+@Composable
+fun SettingBottom(
+    textBottom: String,
+    onClick: () -> Unit
+){
     TextButton(
         modifier = Modifier.fillMaxWidth(),
         colors = ButtonDefaults.textButtonColors(
             contentColor = MaterialCurrentTheme.colorSchema.primary
         ),
-        onClick = {
-            themeController(currentTheme)
-        }
+        onClick = onClick
     ) {
-        Text(stringResource(currentTheme.idTheme))
+        Text(
+            text = textBottom,
+            style = MaterialCurrentTheme.topography.labelMediumText
+        )
     }
 }

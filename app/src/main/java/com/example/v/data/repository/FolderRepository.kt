@@ -12,7 +12,9 @@ import com.example.v.data.model.Folder
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
 import javax.inject.Inject
+import javax.inject.Singleton
 
+@Singleton
 class FolderRepository @Inject constructor(
     private val foldersDao: FoldersDao
 ) {

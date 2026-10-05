@@ -14,8 +14,9 @@ import com.example.v.data.model.ScreenType
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
 import javax.inject.Inject
+import javax.inject.Singleton
 
-
+@Singleton
 class NoteRepository @Inject constructor(
     private val noteDao: NoteDao
 ){
@@ -33,7 +34,6 @@ class NoteRepository @Inject constructor(
         }
     }
     fun getNotesByCategory(searchCategory: ScreenType): Flow<PagingData<Note>> {
-        Log.d("ASDADA",searchCategory.name.toString())
         return Pager(
             config = DEFAULT_PAGER_CONFIG,
             pagingSourceFactory = {
@@ -45,7 +45,6 @@ class NoteRepository @Inject constructor(
             }
         ).flow.map { pagingData ->
             pagingData.map {
-                Log.d("ASDADA",it.toString())
                 it.toDomain()
             }
         }
@@ -55,15 +54,12 @@ class NoteRepository @Inject constructor(
     }
 
     suspend fun insertNote(note: Note){
-        Log.d("SDNISDSID",note.toEntity().toString())
         noteDao.insertNote(note.toEntity())
     }
     suspend fun updateNote(note: Note){
-        Log.d("SDNISDSID",note.toString())
         noteDao.updateNote(note.toEntity())
     }
     suspend fun deleteNote(note: Note){
-        Log.d("SDNISDSID",note.toString())
         noteDao.deleteNote(note.toEntity())
     }
 }

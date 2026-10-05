@@ -32,12 +32,14 @@ import com.example.v.ui.screens.MainScreen
 import com.example.v.ui.screens.SettingsScreen
 import com.example.v.ui.theme.typetheme.MaterialCurrentTheme
 import com.example.v.ui.viewmodels.EditNoteViewModel
+import com.example.v.ui.viewmodels.MainViewModel
 import kotlinx.coroutines.launch
 
 @Composable
 fun NavAppGraph(
     navController: NavHostController
 ) {
+    val mainViewModel: MainViewModel = hiltViewModel()
     val scope = rememberCoroutineScope()
     val backStackEntry by navController.currentBackStackEntryAsState()
     val thScreen = backStackEntry?.destination
@@ -194,6 +196,7 @@ fun NavAppGraph(
                     }
                 ) {
                     BasketScreen(navController) {
+
                         navController.navigate(Route.HomeScreen){
                             launchSingleTop = true
                             popUpTo(navController.graph.startDestinationId){

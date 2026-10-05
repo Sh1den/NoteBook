@@ -4,6 +4,7 @@ import androidx.lifecycle.viewModelScope
 import androidx.paging.cachedIn
 import com.example.v.data.repository.FolderRepository
 import com.example.v.data.model.Folder
+import com.example.v.data.repository.SharedRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -14,12 +15,12 @@ import javax.inject.Inject
 @HiltViewModel
 class FoldersViewModel @Inject constructor(
     private val folderRepository: FolderRepository,
-    injector: Injector
+    sharedRepository: SharedRepository
 ): ViewModel() {
 
     private val _searchQuery = MutableStateFlow<String>("")
 
-    val gridType = injector.countColumn
+    val gridType = sharedRepository.countColumn
 
     @OptIn(ExperimentalCoroutinesApi::class)
     val folders = _searchQuery.flatMapLatest {

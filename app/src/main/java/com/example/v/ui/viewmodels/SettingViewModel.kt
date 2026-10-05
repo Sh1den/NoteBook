@@ -4,6 +4,9 @@ import androidx.lifecycle.ViewModel
 import com.example.v.data.local.room.preference.SharedManager
 import com.example.v.data.model.ColorTheme
 import com.example.v.data.model.GridColumn
+import com.example.v.data.model.TextStyleFontFamilyTheme
+import com.example.v.data.model.TextStyleSpTheme
+import com.example.v.data.repository.SharedRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -13,18 +16,20 @@ import javax.inject.Inject
 
 @HiltViewModel
 class SettingViewModel @Inject constructor(
-    private val injector: Injector
+    private val sharedRepository: SharedRepository
 ): ViewModel(){
 
-    val gridType = injector.countColumn
+    val gridType = sharedRepository.countColumn
 
-    fun getTheme(): ColorTheme {
-        return ColorTheme.getTheme(injector.theme)
-    }
+    val theme = sharedRepository.theme
 
-    fun saveTheme(newColorTheme: ColorTheme) =  injector.getSharedManager().setTheme(newColorTheme.idTheme)
+    val topography = sharedRepository.settingTopography
 
-    fun setGridLayout(newGrid: GridColumn){
-        injector.setGrid(newGrid)
-    }
+    fun saveTheme(newColorTheme: ColorTheme) = sharedRepository.saveTheme(newColorTheme)
+
+    fun setGridLayout(newGrid: GridColumn) = sharedRepository.setGrid(newGrid)
+
+    fun setTopographySp(newSp: TextStyleSpTheme) = sharedRepository.setStyleSpTheme(newSp)
+
+    fun setTopographyFont(newFont: TextStyleFontFamilyTheme) = sharedRepository.setStyleFontTheme(newFont)
 }

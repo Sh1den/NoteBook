@@ -1,6 +1,7 @@
 package com.example.v.ui.theme.typetheme
 
 import androidx.compose.ui.text.TextStyle
+import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.sp
 
@@ -17,7 +18,7 @@ data class TextStyles(
 val MainTopography = TextStyles(
     displayText = TextStyle(
         fontWeight = FontWeight.Medium,
-        fontSize = 32.sp,
+        fontSize = 34.sp,
         lineHeight = 44.sp
     ),
     headlineText = TextStyle(
@@ -33,7 +34,7 @@ val MainTopography = TextStyles(
     bodyText = TextStyle(
         fontWeight = FontWeight.Normal,
         fontSize = 17.sp,
-        lineHeight = 24.sp
+        lineHeight = 23.sp
     ),
     labelLargeText = TextStyle(
         fontWeight = FontWeight.Light,
@@ -48,6 +49,41 @@ val MainTopography = TextStyles(
     labelSmallTextStyle = TextStyle(
         fontWeight = FontWeight.Light,
         fontSize = 10.sp,
-        lineHeight = 15.sp
+        lineHeight = 14.sp
     )
 )
+
+private fun generateTextStyle(
+    oldTextStyle: TextStyle,
+    newFontFamily: FontFamily?,
+    addFontSp: Int,
+    addLineSp: Int
+): TextStyle = oldTextStyle.copy(
+    fontFamily = newFontFamily ?: oldTextStyle.fontFamily,
+    fontSize = (oldTextStyle.fontSize.value+addFontSp).sp,
+    lineHeight = (oldTextStyle.lineHeight.value+addLineSp).sp
+)
+
+internal fun TextStyles.generateTopography(
+    fontFamily: FontFamily? = null,
+    addSp: Int = 0
+): TextStyles{
+    return this.copy(
+        displayText = generateTextStyle(this.displayText,fontFamily,addSp,addSp),
+        headlineText = generateTextStyle(this.headlineText,fontFamily,addSp,addSp),
+        titleText = generateTextStyle(this.titleText,fontFamily,addSp,addSp),
+        bodyText = generateTextStyle(this.bodyText,fontFamily,addSp,addSp),
+        labelLargeText = generateTextStyle(this.labelLargeText,fontFamily,addSp,addSp),
+        labelMediumText = generateTextStyle(this.labelMediumText,fontFamily,addSp,addSp),
+        labelSmallTextStyle = generateTextStyle(this.labelSmallTextStyle,fontFamily,addSp,addSp)
+    )
+}
+
+fun TextStyles.setFontFamily(newFontFamily: FontFamily?): TextStyles {
+    return this.generateTopography(fontFamily = newFontFamily)
+}
+
+fun TextStyles.setFontSp(newSp: Int): TextStyles {
+    return this.generateTopography(addSp = newSp)
+}
+
