@@ -39,7 +39,6 @@ import kotlinx.coroutines.launch
 fun NavAppGraph(
     navController: NavHostController
 ) {
-    val mainViewModel: MainViewModel = hiltViewModel()
     val scope = rememberCoroutineScope()
     val backStackEntry by navController.currentBackStackEntryAsState()
     val thScreen = backStackEntry?.destination
@@ -59,7 +58,6 @@ fun NavAppGraph(
                 navController = navController,
                 startDestination = Route.HomeScreen
             ) {
-
                 composable<Route.SettingsScreen>(
                     enterTransition = {
                         slideInHorizontally(

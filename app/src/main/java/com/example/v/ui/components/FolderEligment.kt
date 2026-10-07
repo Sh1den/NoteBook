@@ -44,14 +44,20 @@ import com.example.v.data.model.Folder
 import com.example.v.ui.theme.typetheme.MaterialCurrentTheme
 import com.example.v.ui.theme.typetheme.WarningColor
 
+
+@Composable
+fun RenameDialog(
+    onRename: (String) -> Unit
+){
+
+}
 @Composable
 fun CustomDialog(
-    onValueChange: (String) -> Unit,
     onDismissRequest: () -> Unit,
-    nameNewCategory: String,
-    onSaveClick: () -> Unit
+    onSaveClick: (String) -> Unit
 ){
     var nameValid by remember { mutableStateOf(true) }
+    var newCategoryName by remember { mutableStateOf("") }
     val focusColor by animateColorAsState(
         if (nameValid) MaterialCurrentTheme.colorSchema.primary
         else WarningColor
@@ -91,8 +97,8 @@ fun CustomDialog(
                         fontSize = 19.sp,
                         color = MaterialCurrentTheme.colorSchema.primary
                     )
-                    CastOutlineTextField(nameNewCategory, focusColor, unfocusColor) {
-                        onValueChange(it)
+                    CastOutlineTextField(newCategoryName, focusColor, unfocusColor) {
+                        newCategoryName = it
                         nameValid = true
                     }
                     Spacer(Modifier.size(22.dp))
@@ -106,9 +112,9 @@ fun CustomDialog(
                             onDismissRequest()
                         }
                         CastTextClickable(stringResource(R.string.save)) {
-                            if (nameNewCategory.isNotBlank()) {
+                            if (newCategoryName.isNotBlank()) {
                                 nameValid = true
-                                onSaveClick()
+                                onSaveClick(newCategoryName)
                             } else {
                                 nameValid = false
                             }

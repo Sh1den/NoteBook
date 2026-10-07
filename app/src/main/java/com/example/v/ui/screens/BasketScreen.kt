@@ -25,6 +25,7 @@ import com.example.v.data.model.Note
 import com.example.v.ui.components.GetNotes
 import com.example.v.ui.components.NavigationTopAppBar
 import com.example.v.ui.theme.typetheme.MaterialCurrentTheme
+import com.example.v.ui.viewmodels.BasketViewModel
 import com.example.v.ui.viewmodels.MainViewModel
 
 @Composable
@@ -32,10 +33,7 @@ fun BasketScreen(
     navController: NavController,
     onClick: () -> Unit
 ){
-    val mainViewModel: MainViewModel = hiltViewModel()
-    LaunchedEffect(Unit) {
-        mainViewModel.setType(Category.Basket)
-    }
+    val basketViewModel: BasketViewModel = hiltViewModel()
     var searchString by remember { mutableStateOf("") }
     val selectedNote = remember { mutableStateListOf<Note>()}
     var isSearch by remember { mutableStateOf(false) }
@@ -57,12 +55,12 @@ fun BasketScreen(
                     ),
                     onActionsClicksText = mutableListOf({
                         selectedNote.forEach {
-                            mainViewModel.restoreToBasket(it)
+                            basketViewModel.restoreToBasket(it)
                         }
                         selectedNote.clear()
                     }, {
                         selectedNote.forEach {
-                            mainViewModel.deleteNotes(it)
+                            basketViewModel.deleteNotes(it)
                         }
                         selectedNote.clear()
                     }),
@@ -88,7 +86,7 @@ fun BasketScreen(
                                 value = searchString,
                                 onValueChange = {
                                     searchString = it
-                                    mainViewModel.searchNote(searchString)
+                                    basketViewModel.searchNote(searchString)
                                 },
                                 modifier = Modifier.fillMaxWidth().focusRequester(focusRequester),
                                 colors = TextFieldDefaults.colors(
@@ -104,7 +102,7 @@ fun BasketScreen(
                         navIcons = NavigationItems.Back,
                         onNavClick = {
                             searchString = ""
-                            mainViewModel.searchNote()
+                            basketViewModel.searchNote()
                             isSearch = false
                         }
                     )
@@ -112,6 +110,6 @@ fun BasketScreen(
             }
         }
     ) {
-        GetNotes(mainViewModel,navController,it,selectedNote)
+        GetNotes(basketViewModel,navController,it,selectedNote)
     }
 }

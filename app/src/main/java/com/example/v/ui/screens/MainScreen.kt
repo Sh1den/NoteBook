@@ -28,6 +28,7 @@ import com.example.v.ui.navigation.NavigationItems
 import com.example.v.data.model.Note
 import com.example.v.ui.components.CastFloatingActionButton
 import com.example.v.ui.components.GetNotes
+import com.example.v.ui.components.ModalBottomColors
 //import com.example.v.ui.components.ModalBottomColors
 import com.example.v.ui.components.NavigationTopAppBar
 import com.example.v.ui.navigation.Route
@@ -40,9 +41,6 @@ fun MainScreen(
     onClick: () -> Unit
 ) {
     val mainViewModel: MainViewModel = hiltViewModel()
-    LaunchedEffect(Unit) {
-        mainViewModel.setType(Category.Main)
-    }
     var searchString by remember { mutableStateOf("") }
     val selectedNote = remember { mutableStateListOf<Note>()}
     var isSearch by remember { mutableStateOf(false) }
@@ -131,8 +129,8 @@ fun MainScreen(
         }
     ) {
         GetNotes(mainViewModel,navController,it,selectedNote)
-        //if (bottomIsOpen.value){
-            //ModalBottomColors(bottomIsOpen,mainViewModel,selectedNote)
-        //}
+        if (bottomIsOpen.value){
+            ModalBottomColors(bottomIsOpen,selectedNote){mainViewModel.colorChange(it)}
+        }
     }
 }

@@ -75,7 +75,9 @@ fun FolderScreen(
                                     searchString = it
                                     foldersViewModel.searchFolder(searchString)
                                 },
-                                modifier = Modifier.fillMaxWidth().focusRequester(focusRequester),
+                                modifier = Modifier
+                                    .fillMaxWidth()
+                                    .focusRequester(focusRequester),
                                 colors = TextFieldDefaults.colors(
                                     focusedContainerColor = Color.Transparent,
                                     unfocusedContainerColor = Color.Transparent,
@@ -94,53 +96,38 @@ fun FolderScreen(
                         }
                     )
                 }
-            }
-            else {
-                if (isRename.value) {
-                    NavigationTopAppBar(
-                        navIcons = NavigationItems.Cancel,
-                        actionIcons = mutableListOf(NavigationItems.Ok),
-                        onActionsClicksIcons = mutableListOf({
-                            Log.d("PESA",currentUpdateFolder.value.toString())
-                            foldersViewModel.update(currentUpdateFolder.value)
-                            selectedFolder.clear()
-                            isRename.value = false
-                        })
-                    ){
-                        isRename.value = false
+            } else {
+                val actionText = mutableListOf(stringResource(R.string.delete))
+                val onActionClicks = mutableListOf(
+                    {
+                        selectedFolder.forEach { item ->
+                            foldersViewModel.deleteFolder(item)
+                        }
                         selectedFolder.clear()
                     }
+                )
+                if (selectedFolder.size == 1) {
+                    actionText.add(0, stringResource(R.string.rename))
+                    onActionClicks.add(0) { isRename.value = true }
                 }
-                else {
-                    val actionText = mutableListOf(stringResource(R.string.delete))
-                    val onActionClicks = mutableListOf(
-                        {
-                            selectedFolder.forEach { item ->
-                                foldersViewModel.deleteFolder(item)
-                            }
-                            selectedFolder.clear()
-                        }
-                    )
-                    if (selectedFolder.size == 1) {
-                        actionText.add(0,stringResource(R.string.rename))
-                        onActionClicks.add(0) { isRename.value = true }
-                    }
-                    NavigationTopAppBar(
-                        navIcons = NavigationItems.Back,
-                        actionText = actionText,
-                        onActionsClicksText = onActionClicks,
-                        onNavClick = { selectedFolder.clear() }
-                    )
-                }
+                NavigationTopAppBar(
+                    navIcons = NavigationItems.Back,
+                    actionText = actionText,
+                    onActionsClicksText = onActionClicks,
+                    onNavClick = { selectedFolder.clear() }
+                )
             }
         }
     ) {
         if (showDialog.value) {
-            val nameNewCategory = remember { mutableStateOf("") }
-            CustomDialog({nameNewCategory.value = it},{showDialog.value = false},nameNewCategory.value){
-                foldersViewModel.insertFolder(Folder(name = nameNewCategory.value))
+            CustomDialog({showDialog.value = false}){
+                name ->
+                foldersViewModel.insertFolder(Folder(name = name))
                 showDialog.value = false
             }
+        }
+        if (isRename.value){
+
         }
         GetFolders(foldersViewModel,navController,it,selectedFolder, isRename,currentUpdateFolder)
     }

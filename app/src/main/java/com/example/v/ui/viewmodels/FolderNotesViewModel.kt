@@ -1,34 +1,32 @@
 package com.example.v.ui.viewmodels
-import android.util.Log
-import androidx.lifecycle.ViewModel
+
+import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.viewModelScope
-import androidx.paging.PagingData
+import androidx.navigation.toRoute
 import androidx.paging.cachedIn
-import com.example.v.data.repository.NoteRepository
-import com.example.v.data.local.room.preference.SharedManager
 import com.example.v.data.model.Category
 import com.example.v.data.model.Note
 import com.example.v.data.model.ScreenType
+import com.example.v.data.repository.NoteRepository
 import com.example.v.data.repository.SharedRepository
+import com.example.v.ui.navigation.Route
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.ExperimentalCoroutinesApi
-import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.StateFlow
-import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.flatMapLatest
-import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
-
 @HiltViewModel
-class MainViewModel @Inject constructor(
-    private val noteRepository: NoteRepository,
-    sharedRepository: SharedRepository
-): BaseNotesViewModel(sharedRepository,noteRepository)  {
+class FolderNotesViewModel @Inject constructor(
+    sharedRepository: SharedRepository,
+    savedStateHandle: SavedStateHandle,
+    private val noteRepository: NoteRepository
+): BaseNotesViewModel(sharedRepository,noteRepository) {
 
-    override val searchCategory: MutableStateFlow<ScreenType> = MutableStateFlow(ScreenType())
+    val route = savedStateHandle.toRoute<Route.FolderNotes>()
+
+    override val searchCategory: MutableStateFlow<ScreenType> = MutableStateFlow(ScreenType(Category.Others,route.id))
 
     @OptIn(ExperimentalCoroutinesApi::class)
     override val tableRepository = searchCategory.flatMapLatest { searchCategory ->

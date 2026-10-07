@@ -13,8 +13,13 @@ import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.defaultMinSize
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.wrapContentSize
+import androidx.compose.foundation.lazy.grid.GridCells
+import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
+import androidx.compose.foundation.lazy.grid.items
 import androidx.compose.foundation.lazy.staggeredgrid.LazyVerticalStaggeredGrid
 import androidx.compose.foundation.lazy.staggeredgrid.StaggeredGridCells
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -26,6 +31,7 @@ import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.FloatingActionButton
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
+import androidx.compose.material3.ModalBottomSheet
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.TopAppBarDefaults
@@ -34,21 +40,26 @@ import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.snapshots.SnapshotStateList
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Shape
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import androidx.navigation.NavController
 import androidx.paging.compose.collectAsLazyPagingItems
 import androidx.paging.compose.itemKey
+import com.example.v.R
 import com.example.v.data.model.Category
 import com.example.v.data.model.Folder
 import com.example.v.data.model.Note
 import com.example.v.ui.navigation.NavigationItems
 import com.example.v.ui.navigation.Route
 import com.example.v.ui.theme.typetheme.MaterialCurrentTheme
+import com.example.v.ui.theme.typetheme.paletteColors
+import com.example.v.ui.viewmodels.BaseNotesViewModel
 import com.example.v.ui.viewmodels.FoldersViewModel
 import com.example.v.ui.viewmodels.MainViewModel
 
@@ -141,7 +152,7 @@ fun CastFloatingActionButton(
         onClick = onClick,
         shape = shape,
         containerColor = MaterialCurrentTheme.colorSchema.primary,
-        contentColor = MaterialCurrentTheme.colorSchema.onPrimary
+        contentColor = MaterialCurrentTheme.colorSchema.background
     ) {
        Icon(
            imageVector = Icons.Default.Add,
@@ -215,13 +226,13 @@ fun NoteCard(
 
 @Composable
 fun GetNotes(
-    mainViewModel: MainViewModel,
+    viewModel: BaseNotesViewModel,
     navController: NavController,
     paddingValues: PaddingValues,
     selectedNote: SnapshotStateList<Note>
 ){
-    val notesPaging = mainViewModel.tableRepository.collectAsLazyPagingItems()
-    val gridType by mainViewModel.gridType.collectAsState()
+    val notesPaging = viewModel.tableRepository.collectAsLazyPagingItems()
+    val gridType by viewModel.gridType.collectAsState()
     LazyVerticalStaggeredGrid(
         columns = StaggeredGridCells.Fixed(gridType.countColumn),
         modifier = Modifier
@@ -246,7 +257,7 @@ fun GetNotes(
                         else selectedNote.add(it)
                     }
                     else {
-                        if (mainViewModel.isEditNotes()) navController.navigate(Route.NoteScreen(it.id,it.categoryId))
+                        if (viewModel.isEditNotes()) navController.navigate(Route.NoteScreen(it.id,it.categoryId))
                     }
                 }
             }
@@ -263,7 +274,6 @@ fun GetFolders(
     isRename: MutableState<Boolean>,
     newFolder: MutableState<Folder>
 ){
-    val mainViewModel: MainViewModel = hiltViewModel()
     val pagingFolders = foldersViewModel.folders.collectAsLazyPagingItems()
     val gridType by foldersViewModel.gridType.collectAsState()
     LazyVerticalStaggeredGrid(
@@ -293,7 +303,6 @@ fun GetFolders(
                         else selectedFolder.add(thFolder)
                     }
                     else {
-                        mainViewModel.setType(Category.Others,thFolder.id)
                         navController.navigate(Route.FolderNotes(thFolder.name,thFolder.id))
                     }
                 }
@@ -302,12 +311,12 @@ fun GetFolders(
     }
 }
 
-/*@OptIn(ExperimentalMaterial3Api::class)
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun ModalBottomColors(
     bottomIsOpen: MutableState<Boolean>,
-    mainViewModel: MainViewModel,
-    selectedNote: SnapshotStateList<Note>
+    selectedNote: SnapshotStateList<Note>,
+    colorChange: ((Note) -> Unit)
 ) {
     ModalBottomSheet(
         onDismissRequest = {
@@ -316,7 +325,6 @@ fun ModalBottomColors(
         modifier = Modifier.wrapContentSize(),
         shape = RoundedCornerShape(17.dp)
     ) {
-        Spacer(Modifier.size(10.dp))
         Column(
             modifier = Modifier
                 .fillMaxWidth()
@@ -324,8 +332,8 @@ fun ModalBottomColors(
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
             Text(
-                text = "Цвет заметки",
-                fontSize = 20.sp,
+                text = stringResource(R.string.color_note),
+                style = MaterialCurrentTheme.topography.headlineText
             )
             LazyVerticalGrid(
                 columns = GridCells.Fixed(3),
@@ -343,7 +351,7 @@ fun ModalBottomColors(
                             .size(37.dp)
                             .clickable {
                                 selectedNote.firstOrNull()?.let { note ->
-                                    mainViewModel.colorChange(note.copy(color = color))
+                                    colorChange(note.copy(color = color))
                                 }
                                 selectedNote.clear()
                                 bottomIsOpen.value = false
@@ -355,4 +363,4 @@ fun ModalBottomColors(
             }
         }
     }
-}*/
+}

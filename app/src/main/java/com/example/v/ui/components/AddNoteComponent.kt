@@ -28,15 +28,12 @@ fun CastTextField(
                 Text(
                     text = secondText,
                     color = MaterialCurrentTheme.colorSchema.labelComponent,
-                    fontSize = 23.sp
+                    style = MaterialCurrentTheme.topography.titleText
                 )
             }
             it()
         },
-        textStyle = TextStyle(
-            fontSize = 23.sp,
-            color = MaterialCurrentTheme.colorSchema.onBackground
-        ),
+        textStyle = MaterialCurrentTheme.topography.titleText,
         lineLimits = lineLimits,
         cursorBrush = SolidColor(MaterialCurrentTheme.colorSchema.primary)
     )

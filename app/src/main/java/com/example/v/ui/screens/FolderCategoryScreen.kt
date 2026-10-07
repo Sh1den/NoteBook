@@ -27,10 +27,12 @@ import com.example.v.data.model.Folder
 import com.example.v.data.model.Note
 import com.example.v.ui.components.CastFloatingActionButton
 import com.example.v.ui.components.GetNotes
+import com.example.v.ui.components.ModalBottomColors
 import com.example.v.ui.components.NavigationTopAppBar
 import com.example.v.ui.navigation.NavigationItems
 import com.example.v.ui.navigation.Route
 import com.example.v.ui.theme.typetheme.MaterialCurrentTheme
+import com.example.v.ui.viewmodels.FolderNotesViewModel
 import com.example.v.ui.viewmodels.MainViewModel
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -40,10 +42,7 @@ fun FolderCategoryScreen(
     thFolder: Folder,
     onClick: () -> Unit
 ){
-    val mainViewModel: MainViewModel = hiltViewModel()
-    LaunchedEffect(Unit) {
-        mainViewModel.setType(Category.Others, thFolder.id)
-    }
+    val folderNotesViewModel: FolderNotesViewModel = hiltViewModel()
     var searchString by remember { mutableStateOf("") }
     val selectedNote = remember { mutableStateListOf<Note>() }
     var isSearch by remember { mutableStateOf(false) }
@@ -60,7 +59,7 @@ fun FolderCategoryScreen(
             if (selectedNote.isNotEmpty()) {
                 val actionIcons: MutableList<NavigationItems> = mutableListOf(NavigationItems.Basket)
                 val onActionClicks = mutableListOf({
-                    selectedNote.forEach { mainViewModel.toBasket(it) }
+                    selectedNote.forEach { folderNotesViewModel.toBasket(it) }
                     selectedNote.clear()
                 })
                 if (selectedNote.size == 1){
@@ -95,7 +94,7 @@ fun FolderCategoryScreen(
                                 value = searchString,
                                 onValueChange = {
                                     searchString = it
-                                    mainViewModel.searchNote(searchString)
+                                    folderNotesViewModel.searchNote(searchString)
                                 },
                                 modifier = Modifier.fillMaxWidth().focusRequester(focusRequester),
                                 colors = TextFieldDefaults.colors(
@@ -113,7 +112,7 @@ fun FolderCategoryScreen(
                         navIcons = NavigationItems.Back,
                         onNavClick = {
                             searchString = ""
-                            mainViewModel.searchNote()
+                            folderNotesViewModel.searchNote()
                             isSearch = false
                         }
                     )
@@ -133,6 +132,9 @@ fun FolderCategoryScreen(
             }
         }
     ) {
-        GetNotes(mainViewModel, navController, it, selectedNote)
+        GetNotes(folderNotesViewModel, navController, it, selectedNote)
+        if (bottomIsOpen.value){
+            ModalBottomColors(bottomIsOpen,selectedNote){folderNotesViewModel.colorChange(it)}
+        }
     }
 }

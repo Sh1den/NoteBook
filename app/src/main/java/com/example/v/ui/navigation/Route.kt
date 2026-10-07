@@ -1,5 +1,6 @@
 package com.example.v.ui.navigation
 import androidx.annotation.Keep
+import com.example.v.data.model.Category
 import kotlinx.serialization.Serializable
 
 sealed interface Route {

@@ -18,18 +18,18 @@ data class TextStyles(
 val MainTopography = TextStyles(
     displayText = TextStyle(
         fontWeight = FontWeight.Medium,
-        fontSize = 34.sp,
+        fontSize = 35.sp,
         lineHeight = 44.sp
     ),
     headlineText = TextStyle(
         fontWeight = FontWeight.SemiBold,
-        fontSize = 24.sp,
+        fontSize = 25.sp,
         lineHeight = 30.sp,
     ),
     titleText = TextStyle(
         fontWeight = FontWeight.Normal,
-        fontSize = 22.sp,
-        lineHeight = 28.sp
+        fontSize = 23.sp,
+        lineHeight = 25.sp
     ),
     bodyText = TextStyle(
         fontWeight = FontWeight.Normal,

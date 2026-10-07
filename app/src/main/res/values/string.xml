@@ -17,6 +17,7 @@
     <string name="language_rus">Русский</string>
     <string name="language_en">Английский</string>
     <string name="general">Общие</string>
+    <string name="color_note">Цвет заметки</string>
     <string name="title_note">Заголовок</string>
     <string name="description_note">Описание</string>
     <string name="symbols_note">симв</string>
