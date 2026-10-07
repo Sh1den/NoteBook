@@ -271,8 +271,6 @@ fun GetFolders(
     navController: NavController,
     paddingValues: PaddingValues,
     selectedFolder: SnapshotStateList<Folder>,
-    isRename: MutableState<Boolean>,
-    newFolder: MutableState<Folder>
 ){
     val pagingFolders = foldersViewModel.folders.collectAsLazyPagingItems()
     val gridType by foldersViewModel.gridType.collectAsState()
@@ -295,8 +293,6 @@ fun GetFolders(
                 FolderCard(
                     thFolder,
                     { selectedFolder.contains(thFolder) },
-                    {isRename.value},
-                    { newFolder.value = Folder(id = thFolder.id, name =  it, countNotes = thFolder.countNotes)},
                     { if(!selectedFolder.contains(thFolder)) selectedFolder.add(thFolder) }) {
                     if(selectedFolder.isNotEmpty()){
                         if(selectedFolder.contains(thFolder)) selectedFolder.remove(thFolder)

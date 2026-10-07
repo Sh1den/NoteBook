@@ -22,6 +22,7 @@ import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import androidx.navigation.NavController
 import com.example.v.R
 import com.example.v.data.model.Folder
+import com.example.v.data.model.ModelDialog
 import com.example.v.ui.navigation.NavigationItems
 import com.example.v.ui.components.CustomDialog
 import com.example.v.ui.components.GetFolders
@@ -35,13 +36,11 @@ fun FolderScreen(
     navController: NavController,
     onClick: () -> Unit
 ) {
-    val showDialog = remember { mutableStateOf(false) }
+    val showDialog = remember { mutableStateOf(ModelDialog()) }
     var searchString by remember { mutableStateOf("") }
     val foldersViewModel: FoldersViewModel = hiltViewModel()
     val selectedFolder = remember { mutableStateListOf<Folder>()}
     val focusRequester = remember { FocusRequester() }
-    val currentUpdateFolder = remember { mutableStateOf(Folder()) }
-    val isRename = remember { mutableStateOf(false) }
     var isSearch by remember { mutableStateOf(false) }
     val keyboardController = LocalSoftwareKeyboardController.current
     LaunchedEffect(isSearch) {
@@ -62,7 +61,7 @@ fun FolderScreen(
                             NavigationItems.Search
                         ),
                         actionText =  null,
-                        onActionsClicksIcons =  listOf({ showDialog.value = true }, {isSearch = true}),
+                        onActionsClicksIcons =  listOf({ showDialog.value = showDialog.value.copy(isOpen = true) }, {isSearch = true}),
                         onNavClick = onClick
                     )
                 }
@@ -108,7 +107,9 @@ fun FolderScreen(
                 )
                 if (selectedFolder.size == 1) {
                     actionText.add(0, stringResource(R.string.rename))
-                    onActionClicks.add(0) { isRename.value = true }
+                    onActionClicks.add(0) {
+                        showDialog.value = ModelDialog(title = R.string.new_folder_name, categoryName = selectedFolder.first().name, isOpen = true)
+                    }
                 }
                 NavigationTopAppBar(
                     navIcons = NavigationItems.Back,
@@ -119,16 +120,13 @@ fun FolderScreen(
             }
         }
     ) {
-        if (showDialog.value) {
-            CustomDialog({showDialog.value = false}){
+        if (showDialog.value.isOpen) {
+            CustomDialog(nameCategory = showDialog.value.categoryName, title = stringResource(showDialog.value.title), onDismissRequest =  {showDialog.value = showDialog.value.copy(isOpen = false)}){
                 name ->
                 foldersViewModel.insertFolder(Folder(name = name))
-                showDialog.value = false
+                showDialog.value = showDialog.value.copy(isOpen = false)
             }
         }
-        if (isRename.value){
-
-        }
-        GetFolders(foldersViewModel,navController,it,selectedFolder, isRename,currentUpdateFolder)
+        GetFolders(foldersViewModel,navController,it,selectedFolder)
     }
 }

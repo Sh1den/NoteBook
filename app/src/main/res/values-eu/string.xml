@@ -19,6 +19,7 @@
     <string name="general">General</string>
     <string name="color_note">Сolor notes</string>
     <string name="title_note">Title</string>
+    <string name="new_folder_name">New name</string>
     <string name="description_note">Description</string>
     <string name="symbols_note">symb</string>
     <string name="delete">Delete</string>

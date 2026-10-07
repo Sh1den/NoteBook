@@ -1,5 +1,6 @@
 package com.example.v.ui.viewmodels
 import android.util.Log
+import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import androidx.paging.PagingData
@@ -25,7 +26,8 @@ import javax.inject.Inject
 @HiltViewModel
 class MainViewModel @Inject constructor(
     private val noteRepository: NoteRepository,
-    sharedRepository: SharedRepository
+    sharedRepository: SharedRepository,
+    savedStateHandle: SavedStateHandle
 ): BaseNotesViewModel(sharedRepository,noteRepository)  {
 
     override val searchCategory: MutableStateFlow<ScreenType> = MutableStateFlow(ScreenType())

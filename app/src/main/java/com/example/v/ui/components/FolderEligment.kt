@@ -7,6 +7,7 @@ import androidx.compose.foundation.combinedClickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.ColumnScope
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.defaultMinSize
@@ -45,19 +46,16 @@ import com.example.v.ui.theme.typetheme.MaterialCurrentTheme
 import com.example.v.ui.theme.typetheme.WarningColor
 
 
-@Composable
-fun RenameDialog(
-    onRename: (String) -> Unit
-){
 
-}
 @Composable
 fun CustomDialog(
+    nameCategory: String? = null,
+    title: String,
     onDismissRequest: () -> Unit,
     onSaveClick: (String) -> Unit
-){
+) {
     var nameValid by remember { mutableStateOf(true) }
-    var newCategoryName by remember { mutableStateOf("") }
+    var newCategoryName by remember { mutableStateOf(nameCategory ?: "") }
     val focusColor by animateColorAsState(
         if (nameValid) MaterialCurrentTheme.colorSchema.primary
         else WarningColor
@@ -81,7 +79,6 @@ fun CustomDialog(
                 ),
                 shape = RoundedCornerShape(28.dp)
             ) {
-
                 Column(
                     modifier = Modifier
                         .fillMaxSize()
@@ -89,7 +86,7 @@ fun CustomDialog(
                 ) {
                     Spacer(Modifier.size(10.dp))
                     Text(
-                        text = stringResource(R.string.new_packege),
+                        text = title,
                         modifier = Modifier.padding(
                             horizontal = 15.dp,
                             vertical = 5.dp
@@ -126,6 +123,7 @@ fun CustomDialog(
         }
     }
 }
+
 
 @Composable
 fun CastOutlineTextField(
@@ -174,13 +172,11 @@ fun CastTextClickable(
 fun FolderCard(
     folder: Folder,
     isSelected: () -> Boolean,
-    isRename: () -> Boolean,
-    toRename: (text: String) -> Unit,
     combinedClickable: () -> Unit,
     onClick: () -> Unit
 ) {
     val animateLongClick by animateColorAsState(
-        targetValue = when (isSelected() && !isRename()) {
+        targetValue = when (isSelected()) {
             false -> MaterialCurrentTheme.colorSchema.component
             true -> MaterialCurrentTheme.colorSchema.selectNavigationComponent
         }
@@ -198,9 +194,9 @@ fun FolderCard(
                 .combinedClickable(onLongClick = {
                     combinedClickable()
                 }) {
-                    if (!isRename()) onClick()
+                    onClick()
                 }
-        ){
+        ) {
             Row(
                 modifier = Modifier
                     .fillMaxWidth()
@@ -214,43 +210,20 @@ fun FolderCard(
                     contentDescription = null
                 )
                 Spacer(modifier = Modifier.size(12.dp))
-                if (isRename() && isSelected()) {
-                    val keyboardController = LocalSoftwareKeyboardController.current
-                    val focusRequester = remember { FocusRequester() }
-                    var newName by remember { mutableStateOf(folder.name) }
-                    LaunchedEffect(Unit) {
-                        focusRequester.requestFocus()
-                        keyboardController?.show()
-                    }
-                    OutlinedTextField(
-                        value = newName,
-                        onValueChange = {
-                            newName = it
-                            toRename(newName)
-                        },
-                        colors = OutlinedTextFieldDefaults.colors(
-                            focusedTextColor = MaterialCurrentTheme.colorSchema.onComponent,
-                            unfocusedTextColor = MaterialCurrentTheme.colorSchema.onComponent,
-                            focusedBorderColor = Color.Transparent,
-                            unfocusedBorderColor = Color.Transparent
-                        ),
-                        modifier = Modifier.focusRequester(focusRequester)
+
+                Column {
+                    Text(
+                        text = folder.name,
+                        style = MaterialCurrentTheme.topography.bodyText,
+                        color = MaterialCurrentTheme.colorSchema.onComponent,
+                        maxLines = 1,
+                        overflow = TextOverflow.Ellipsis
                     )
-                } else {
-                    Column {
-                        Text(
-                            text = folder.name,
-                            style = MaterialCurrentTheme.topography.bodyText,
-                            color = MaterialCurrentTheme.colorSchema.onComponent,
-                            maxLines = 1,
-                            overflow = TextOverflow.Ellipsis
-                        )
-                        Text(
-                            text = stringResource(R.string.notes_counter, folder.countNotes),
-                            style = MaterialCurrentTheme.topography.labelSmallTextStyle,
-                            color = MaterialCurrentTheme.colorSchema.labelComponent
-                        )
-                    }
+                    Text(
+                        text = stringResource(R.string.notes_counter, folder.countNotes),
+                        style = MaterialCurrentTheme.topography.labelSmallTextStyle,
+                        color = MaterialCurrentTheme.colorSchema.labelComponent
+                    )
                 }
             }
         }
