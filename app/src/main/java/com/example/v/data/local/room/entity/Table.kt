@@ -14,8 +14,8 @@ import androidx.room.PrimaryKey
             entity = Folders::class,
             parentColumns = ["id"],
             childColumns = ["foreignCategory"],
-            onDelete = ForeignKey.CASCADE,
-            onUpdate = ForeignKey.CASCADE
+            onUpdate = ForeignKey.CASCADE,
+            onDelete = ForeignKey.CASCADE
         ),
     ]
 )

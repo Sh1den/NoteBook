@@ -4,6 +4,7 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.material.icons.filled.Check
 import androidx.compose.material.icons.filled.Close
+import androidx.compose.material.icons.filled.Edit
 import androidx.compose.material.icons.filled.Menu
 import androidx.compose.material.icons.filled.Search
 import androidx.compose.ui.graphics.vector.ImageVector
@@ -20,9 +21,6 @@ sealed class NavigationItems(
     object Search: NavigationItems(
         imageVector = Icons.Default.Search
     )
-    object Cancel: NavigationItems(
-        imageVector = Icons.Default.Close
-    )
     object Back: NavigationItems(
         imageVector = Icons.Filled.ArrowBack
     )
@@ -35,6 +33,10 @@ sealed class NavigationItems(
     object Basket: NavigationItems(
         title = R.string.basket_app,
         painter = R.drawable.outline_delete_24
+    )
+
+    object Rename: NavigationItems(
+        imageVector = Icons.Default.Edit
     )
     object Home: NavigationItems(
         title = R.string.Home,

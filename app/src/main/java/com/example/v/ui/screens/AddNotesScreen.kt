@@ -84,13 +84,13 @@ fun AddNoteScreen(
                 Text(
                     text = editNoteViewModel.thTime ?: "",
                     color = MaterialCurrentTheme.colorSchema.labelComponent,
-                    fontSize = 12.sp
+                    style = MaterialCurrentTheme.topography.labelLargeText
                 )
                 Spacer(Modifier.size(25.dp))
                 Text(
                     text = "${description.text.length} ${stringResource(R.string.symbols_note)}",
                     color = MaterialCurrentTheme.colorSchema.labelComponent,
-                    fontSize = 12.sp
+                    style = MaterialCurrentTheme.topography.labelLargeText
                 )
             }
             Spacer(Modifier.size(15.dp))

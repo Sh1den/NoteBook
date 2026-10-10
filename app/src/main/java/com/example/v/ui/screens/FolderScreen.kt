@@ -1,6 +1,7 @@
 package com.example.v.ui.screens
 import android.util.Log
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.material.icons.Icons
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Scaffold
@@ -22,7 +23,7 @@ import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import androidx.navigation.NavController
 import com.example.v.R
 import com.example.v.data.model.Folder
-import com.example.v.data.model.ModelDialog
+import com.example.v.data.model.ModelFolderDialog
 import com.example.v.ui.navigation.NavigationItems
 import com.example.v.ui.components.CustomDialog
 import com.example.v.ui.components.GetFolders
@@ -36,7 +37,7 @@ fun FolderScreen(
     navController: NavController,
     onClick: () -> Unit
 ) {
-    val showDialog = remember { mutableStateOf(ModelDialog()) }
+    val showDialog = remember { mutableStateOf(ModelFolderDialog()) }
     var searchString by remember { mutableStateOf("") }
     val foldersViewModel: FoldersViewModel = hiltViewModel()
     val selectedFolder = remember { mutableStateListOf<Folder>()}
@@ -108,7 +109,7 @@ fun FolderScreen(
                 if (selectedFolder.size == 1) {
                     actionText.add(0, stringResource(R.string.rename))
                     onActionClicks.add(0) {
-                        showDialog.value = ModelDialog(title = R.string.new_folder_name, categoryName = selectedFolder.first().name, isOpen = true)
+                        showDialog.value = ModelFolderDialog(title = R.string.new_folder_name, folder = selectedFolder.first(), isOpen = true)
                     }
                 }
                 NavigationTopAppBar(
@@ -121,10 +122,11 @@ fun FolderScreen(
         }
     ) {
         if (showDialog.value.isOpen) {
-            CustomDialog(nameCategory = showDialog.value.categoryName, title = stringResource(showDialog.value.title), onDismissRequest =  {showDialog.value = showDialog.value.copy(isOpen = false)}){
+            CustomDialog(nameCategory = showDialog.value.folder.name, title = stringResource(showDialog.value.title), onDismissRequest =  {showDialog.value = showDialog.value.copy(isOpen = false)}){
                 name ->
-                foldersViewModel.insertFolder(Folder(name = name))
-                showDialog.value = showDialog.value.copy(isOpen = false)
+                foldersViewModel.insertNewFolder(showDialog.value.folder.copy(name = name))
+                showDialog.value = ModelFolderDialog()
+                selectedFolder.clear()
             }
         }
         GetFolders(foldersViewModel,navController,it,selectedFolder)

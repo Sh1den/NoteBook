@@ -1,6 +1,7 @@
 package com.example.v.data.local.room.entity
 
 import androidx.annotation.Keep
+import androidx.room.ColumnInfo
 import androidx.room.Entity
 import androidx.room.PrimaryKey
 

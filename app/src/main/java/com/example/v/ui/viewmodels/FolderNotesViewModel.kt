@@ -11,8 +11,10 @@ import com.example.v.data.repository.NoteRepository
 import com.example.v.data.repository.SharedRepository
 import com.example.v.ui.navigation.Route
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.flatMapLatest
 import kotlinx.coroutines.launch
 import javax.inject.Inject
@@ -32,6 +34,7 @@ class FolderNotesViewModel @Inject constructor(
     override val tableRepository = searchCategory.flatMapLatest { searchCategory ->
         noteRepository.getNotesByCategory(searchCategory)
     }.cachedIn(viewModelScope)
+
 
     fun colorChange(note: Note) = viewModelScope.launch { noteRepository.updateNote(note) }
 }

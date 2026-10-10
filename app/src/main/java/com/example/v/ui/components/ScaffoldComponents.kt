@@ -111,7 +111,9 @@ fun NavigationTopAppBar(
                                 onActionsClicksText?.let {
                                     it[index]()
                                 }
-                            }
+                            },
+                            style = MaterialCurrentTheme.topography.bodyText,
+                            color = MaterialCurrentTheme.colorSchema.onBackground
                         )
                         Spacer(Modifier.size(30.dp))
                     }

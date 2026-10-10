@@ -33,7 +33,7 @@ fun CastTextField(
             }
             it()
         },
-        textStyle = MaterialCurrentTheme.topography.titleText,
+        textStyle = MaterialCurrentTheme.topography.titleText.copy(color = MaterialCurrentTheme.colorSchema.onBackground),
         lineLimits = lineLimits,
         cursorBrush = SolidColor(MaterialCurrentTheme.colorSchema.primary)
     )

@@ -49,13 +49,13 @@ import com.example.v.ui.theme.typetheme.WarningColor
 
 @Composable
 fun CustomDialog(
-    nameCategory: String? = null,
+    nameCategory: String,
     title: String,
     onDismissRequest: () -> Unit,
     onSaveClick: (String) -> Unit
 ) {
     var nameValid by remember { mutableStateOf(true) }
-    var newCategoryName by remember { mutableStateOf(nameCategory ?: "") }
+    var newCategoryName by remember { mutableStateOf(nameCategory) }
     val focusColor by animateColorAsState(
         if (nameValid) MaterialCurrentTheme.colorSchema.primary
         else WarningColor
